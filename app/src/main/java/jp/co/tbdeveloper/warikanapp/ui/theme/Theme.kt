@@ -7,18 +7,21 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 
 private val DarkColorPalette = darkColors(
-    primary = Purple200,
+    primary = MainAccent,
     primaryVariant = Purple700,
-    secondary = Teal200
-)
+    secondary = Teal200,
+    background = BackGroundWhite,
+    surface = TextBlack,
+    )
 
 private val LightColorPalette = lightColors(
-    primary = Purple500,
+    primary = MainAccent,
     primaryVariant = Purple700,
-    secondary = Teal200
+    secondary = Teal200,
+    background = BackGroundWhite,
+    surface = TextBlack,
 
     /* Other default colors to override
-    background = Color.White,
     surface = Color.White,
     onPrimary = Color.White,
     onSecondary = Color.Black,
@@ -28,7 +31,7 @@ private val LightColorPalette = lightColors(
 )
 
 @Composable
-fun WarikanappTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
+fun WarikanAppTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val colors = if (darkTheme) {
         DarkColorPalette
     } else {

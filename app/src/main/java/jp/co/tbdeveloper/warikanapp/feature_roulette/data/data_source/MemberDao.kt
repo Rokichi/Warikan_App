@@ -1,0 +1,23 @@
+package jp.co.tbdeveloper.warikanapp.feature_roulette.data.data_source
+
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.Query
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.MemberEntity
+import kotlinx.coroutines.flow.Flow
+
+@Dao
+interface MemberDao {
+    @Query("SELECT * FROM memberentity")
+    fun getAllMembers(): Flow<List<MemberEntity>>
+
+    @Query("SELECT * FROM memberentity WHERE RouletteId = :id")
+    suspend fun getMembersById(id: Int): Flow<List<MemberEntity>>?
+
+    @Insert
+    suspend fun insertMember(member: MemberEntity)
+
+    @Delete
+    suspend fun deleteMember(member: MemberEntity)
+}
