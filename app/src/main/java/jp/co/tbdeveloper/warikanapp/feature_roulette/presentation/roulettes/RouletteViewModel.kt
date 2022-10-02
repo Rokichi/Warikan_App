@@ -1,35 +1,71 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes
 
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.MemberFactory
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.RouletteFactory
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.member.MemberUseCases
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.roulette.RouletteUseCases
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
+const val DEFAULT_MEMBER_NUM = 2
+const val MAX_MEMBER_NUM = 3
+
 @HiltViewModel
 class RouletteViewModel @Inject constructor(
-    private val rouletteUseCases: RouletteUseCases
+    private val rouletteUseCases: RouletteUseCases,
+    private val memberUseCases: MemberUseCases
 ) : ViewModel() {
+    var rouletteId = 0
 
-    private val _state = mutableStateOf(RoulettesState())
-    val state: State<RoulettesState> = _state
+    // メンバー
+    private val _memberState = MutableStateFlow(
+        MutableList(DEFAULT_MEMBER_NUM) { i ->
+            Member("", i)
+        }
+    )
+    val memberState = _memberState.asStateFlow()
+
+    // 合計金額
+    private val _totalState = mutableStateOf(0)
+    val totalState = _totalState
+
+    private val _eventFlow = MutableSharedFlow<UiEvent>()
+    val eventFlow = _eventFlow.asSharedFlow()
 
     private var getRouletteJob: Job? = null
 
     fun onEvent(event: RoulettesEvent) {
-        when (event) {
-            is RoulettesEvent.DeleteRoulette -> {
+        when (event){
+            is RoulettesEvent.AddMember -> {
+                if (memberState.value.size < MAX_MEMBER_NUM){
+                    _memberState.value.add(
+                        Member("", memberState.value.size)
+                    )
+                }
+            }
+            is RoulettesEvent.SaveRoulette ->{
                 viewModelScope.launch {
-                    rouletteUseCases.deleteRoulette(event.roulette)
+                    val rouletteEntity = RouletteFactory.create(total = totalState.value)
+                    rouletteId = rouletteEntity.id
+                    val memberEntities = MemberFactory.create(rouletteId = rouletteId, members = memberState.value)
+                    // save
+                    rouletteUseCases.addRoulette(rouletteEntity)
+                    memberUseCases.addMember(memberEntities)
                 }
             }
         }
+    }
+
+    sealed class UiEvent{
+        object SaveRoulette: UiEvent()
     }
 
     private fun getRoulettes() {

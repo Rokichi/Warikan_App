@@ -14,7 +14,7 @@ interface WarikanDao {
     fun getAllWarikans(): Flow<List<WarikanEntity>>
 
     @Query("SELECT * FROM warikanentity WHERE RouletteId = :id")
-    suspend fun getWarikansById(id: Int): Flow<List<WarikanEntity>>?
+    fun getWarikansById(id: Int): Flow<List<WarikanEntity>>?
 
     @Insert
     suspend fun insertWarikan(warikan: WarikanEntity)

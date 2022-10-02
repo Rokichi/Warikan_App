@@ -20,8 +20,18 @@ class MemberRepositoryImpl(
         dao.insertMember(member)
     }
 
+    override suspend fun insertMembers(members: List<MemberEntity>) {
+        dao.insertMembers(members)
+    }
+
     override suspend fun deleteMember(member: MemberEntity) {
         dao.deleteMember(member)
+    }
+
+    override suspend fun deleteMembers(members: List<MemberEntity>) {
+        for (member in members) {
+            dao.deleteMember(member)
+        }
     }
 
 }

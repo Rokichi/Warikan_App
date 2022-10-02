@@ -9,6 +9,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,10 +24,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import jp.co.tbdeveloper.warikanapp.R
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.MemberViewModel
-import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.MembersState
-import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.RoulettesState
-import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.RouletteViewModel
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.CustomTextField
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.ShadowButton
 
@@ -39,7 +38,7 @@ fun MembersScreen(
     // 画面外のフォーカスを検知
     val focusManager = LocalFocusManager.current
 
-    val state = viewModel.state.value
+    val memberState = viewModel.memberState.collectAsState()
     val scope = rememberCoroutineScope()
 
     val context = LocalContext.current
@@ -88,7 +87,7 @@ fun MembersScreen(
         ) {
             MemberAndColorsScrollView(
                 modifier = Modifier.weight(6.0f),
-                state = state
+                members = memberState.value
             )
             ShadowButton(
                 text = "次へ！",
@@ -211,7 +210,7 @@ fun ColumnTableText() {
 
 @Composable
 fun MemberAndColorsScrollView(
-    state: MembersState,
+    members: List<Member>,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -220,7 +219,7 @@ fun MemberAndColorsScrollView(
             .padding(horizontal = 20.dp),
         verticalArrangement = Arrangement.spacedBy(5.dp)
     ) {
-        items(state.Members.toList()) { member ->
+        items(members) { member ->
             MemberItem(Modifier, member = member, onDeleteClick = { }, onValueChange = {})
         }
     }
