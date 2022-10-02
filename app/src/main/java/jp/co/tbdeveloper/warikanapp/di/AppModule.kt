@@ -9,10 +9,10 @@ import dagger.hilt.components.SingletonComponent
 import jp.co.tbdeveloper.warikanapp.feature_roulette.data.data_source.RouletteDatabase
 import jp.co.tbdeveloper.warikanapp.feature_roulette.data.repository.RouletteRepositoryImpl
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.RouletteRepository
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.AddRoulette
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.DeleteRoulette
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.GetRoulettes
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.RouletteUseCases
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.roulette.AddRoulette
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.roulette.DeleteRoulette
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.roulette.GetRoulettes
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.roulette.RouletteUseCases
 import javax.inject.Singleton
 
 @Module
@@ -37,7 +37,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideRouletteUseCases(repository: RouletteRepository):RouletteUseCases{
+    fun provideRouletteUseCases(repository: RouletteRepository): RouletteUseCases {
         return RouletteUseCases(
             getRoulettes = GetRoulettes(repository),
             deleteRoulette = DeleteRoulette(repository),

@@ -16,7 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import jp.co.tbdeveloper.warikanapp.R
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.Member
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.utlis.CustomTextField
 
 @Composable

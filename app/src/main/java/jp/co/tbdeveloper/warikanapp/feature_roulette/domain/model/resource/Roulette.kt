@@ -1,4 +1,4 @@
-package jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model
+package jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource
 
 data class Roulette(
     val total: Int,

@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.Roulette
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.RouletteUseCases
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Roulette
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.roulette.RouletteUseCases
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
