@@ -21,6 +21,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import dagger.hilt.android.AndroidEntryPoint
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.MemberViewModel
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.components.MembersScreen
@@ -28,6 +29,7 @@ import jp.co.tbdeveloper.warikanapp.ui.theme.WarikanAppTheme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -41,9 +43,9 @@ class MainActivity : ComponentActivity() {
                         NavHost(
                             modifier = Modifier.weight(1f),
                             navController = navController,
-                            startDestination = "AddMember"
+                            startDestination = "MembersScreen"
                         ) {
-                            composable(route = "AddMemberPage") {
+                            composable(route = "MembersScreen") {
                                 val viewModel: MemberViewModel = hiltViewModel()
                                 MembersScreen(navController, viewModel, {})
                             }
@@ -61,7 +63,7 @@ class MainActivity : ComponentActivity() {
                                         width
                                     )
                                 )
-                                adView.adUnitId = "ca-app-pub-3940256099942544/6300978111" // テストID
+                                adView.adUnitId = "ca-app-pub-3940256099942544/6300978111"
                                 adView.loadAd(AdRequest.Builder().build())
                                 adView
                             },
@@ -70,6 +72,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        MobileAds.initialize(this) {}
     }
 }
 

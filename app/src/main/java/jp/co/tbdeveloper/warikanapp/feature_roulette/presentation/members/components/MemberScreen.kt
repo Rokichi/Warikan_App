@@ -103,14 +103,6 @@ fun MembersScreen(
                 }
             )
             Spacer(Modifier.weight(1.0f))
-            Text(
-                text = "広告",
-                Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colors.primary)
-                    .weight(1.0f),
-                textAlign = TextAlign.Center
-            )
         }
     }
 }
@@ -127,7 +119,7 @@ fun SettingAndHistoryBar() {
     ) {
         Image(
             painter = painterResource(id = R.drawable.ic_settings),
-            contentScale = ContentScale.Crop,
+            contentScale = ContentScale.FillHeight,
             modifier = Modifier
                 .fillMaxHeight()
                 .clickable(
