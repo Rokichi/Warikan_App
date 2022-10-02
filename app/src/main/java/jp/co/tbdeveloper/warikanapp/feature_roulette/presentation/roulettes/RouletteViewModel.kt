@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Roulette
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.roulette.RouletteUseCases
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
@@ -14,14 +13,12 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class RoulettesViewModel @Inject constructor(
+class RouletteViewModel @Inject constructor(
     private val rouletteUseCases: RouletteUseCases
 ) : ViewModel() {
 
     private val _state = mutableStateOf(RoulettesState())
     val state: State<RoulettesState> = _state
-
-    private var recentlyDeleteRoulette: Roulette? = null
 
     private var getRouletteJob: Job? = null
 
@@ -30,19 +27,12 @@ class RoulettesViewModel @Inject constructor(
             is RoulettesEvent.DeleteRoulette -> {
                 viewModelScope.launch {
                     rouletteUseCases.deleteRoulette(event.roulette)
-                    recentlyDeleteRoulette = event.roulette
-                }
-            }
-            is RoulettesEvent.RestoreRoulette -> {
-                viewModelScope.launch {
-                    rouletteUseCases.addRoulette(recentlyDeleteRoulette ?: return@launch)
-                    recentlyDeleteRoulette = null
                 }
             }
         }
     }
 
-    private fun getRoulettes(){
+    private fun getRoulettes() {
         getRouletteJob?.cancel()
         rouletteUseCases.getRoulettes().launchIn(viewModelScope)
     }

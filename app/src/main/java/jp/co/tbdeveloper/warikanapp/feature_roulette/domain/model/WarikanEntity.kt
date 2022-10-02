@@ -5,7 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class WarikanEntity(
-    @PrimaryKey val id: Int? = null,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int,
     val RouletteId:Int,
     val ratios: String,
     val proportion: Int,

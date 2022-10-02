@@ -1,14 +1,14 @@
-package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.members.components
+package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.components
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,15 +23,17 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import jp.co.tbdeveloper.warikanapp.R
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.MemberViewModel
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.MembersState
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.RoulettesState
-import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.RoulettesViewModel
-import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.utlis.CustomTextField
-import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.utlis.ShadowButton
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.RouletteViewModel
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.CustomTextField
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.ShadowButton
 
 @Composable
 fun MembersScreen(
     navController: NavController,
-    viewModel: RoulettesViewModel = hiltViewModel(),
+    viewModel: MemberViewModel = hiltViewModel(),
     onPageMoveButtonClick: () -> Unit
 ) {
     // 画面外のフォーカスを検知
@@ -85,7 +87,8 @@ fun MembersScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             MemberAndColorsScrollView(
-                modifier = Modifier.weight(6.0f)
+                modifier = Modifier.weight(6.0f),
+                state = state
             )
             ShadowButton(
                 text = "次へ！",
@@ -208,7 +211,7 @@ fun ColumnTableText() {
 
 @Composable
 fun MemberAndColorsScrollView(
-    state: RoulettesState,
+    state: MembersState,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -216,8 +219,9 @@ fun MemberAndColorsScrollView(
             .fillMaxWidth()
             .padding(horizontal = 20.dp),
         verticalArrangement = Arrangement.spacedBy(5.dp)
-
     ) {
-
+        items(state.Members.toList()) { member ->
+            MemberItem(Modifier, member = member, onDeleteClick = { }, onValueChange = {})
+        }
     }
 }

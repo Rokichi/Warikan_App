@@ -1,4 +1,4 @@
-package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.utlis
+package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis
 
 import android.view.KeyEvent
 import androidx.compose.foundation.*

@@ -1,4 +1,4 @@
-package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.members.components
+package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import jp.co.tbdeveloper.warikanapp.R
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
-import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.utlis.CustomTextField
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.CustomTextField
 
 @Composable
 fun MemberItem(

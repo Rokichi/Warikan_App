@@ -4,5 +4,5 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Roule
 
 sealed class RoulettesEvent {
     data class DeleteRoulette(val roulette: Roulette) : RoulettesEvent()
-    object RestoreRoulette: RoulettesEvent()
+
 }
