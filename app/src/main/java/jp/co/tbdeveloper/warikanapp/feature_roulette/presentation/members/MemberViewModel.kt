@@ -1,5 +1,6 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -44,11 +45,10 @@ class MemberViewModel @Inject constructor(
 
     fun onEvent(event: MembersEvent) {
         when (event) {
-            is MembersEvent.AddMembers -> {
+            is MembersEvent.AddMember -> {
                 if (memberState.value.size < MAX_MEMBER_NUM) {
-                    _memberState.value.add(
-                        Member("", memberState.value.size)
-                    )
+                    val tmpList = _memberState.value
+                    _memberState.value  = (_memberState.value + Member ("", memberState.value.size)) as MutableList<Member>
                 }
             }
             is MembersEvent.SaveRoulette -> {

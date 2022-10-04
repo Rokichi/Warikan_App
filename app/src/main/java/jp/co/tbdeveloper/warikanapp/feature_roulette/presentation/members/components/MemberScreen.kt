@@ -10,12 +10,10 @@ import androidx.compose.material.Text
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -26,6 +24,7 @@ import androidx.navigation.NavController
 import jp.co.tbdeveloper.warikanapp.R
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.MemberViewModel
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.MembersEvent
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.CustomTextField
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.ShadowButton
 
@@ -39,10 +38,10 @@ fun MembersScreen(
     val focusManager = LocalFocusManager.current
 
     val memberState = viewModel.memberState.collectAsState()
+    /*
     val scope = rememberCoroutineScope()
-
     val context = LocalContext.current
-
+    */
     Column(
         // 一回り小さく配置
         modifier = Modifier
@@ -73,7 +72,7 @@ fun MembersScreen(
             textStyle = MaterialTheme.typography.body1,
             offsetY = 9.dp,
             offsetX = 0.dp,
-            onClick = {}
+            onClick = { viewModel.onEvent(MembersEvent.AddMember) }
         )
         Spacer(Modifier.height(5.dp))
         // お金入力フィールド
