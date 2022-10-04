@@ -25,6 +25,7 @@ import com.google.android.gms.ads.MobileAds
 import dagger.hilt.android.AndroidEntryPoint
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.MemberViewModel
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.components.MembersScreen
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Screen
 import jp.co.tbdeveloper.warikanapp.ui.theme.WarikanAppTheme
 
 @AndroidEntryPoint
@@ -43,13 +44,14 @@ class MainActivity : ComponentActivity() {
                         NavHost(
                             modifier = Modifier.weight(1f),
                             navController = navController,
-                            startDestination = "MembersScreen"
+                            startDestination = Screen.MemberScreen.route
                         ) {
-                            composable(route = "MembersScreen") {
+                            composable(route = Screen.MemberScreen.route) {
                                 val viewModel: MemberViewModel = hiltViewModel()
                                 MembersScreen(navController, viewModel, {})
                             }
                         }
+                        // admob
                         AndroidView(
                             modifier = Modifier.fillMaxWidth(),
                             factory = { context ->

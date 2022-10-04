@@ -104,15 +104,14 @@ fun CustomTextField(
     height: Dp = 50.dp,
     offsetX: Dp = 0.dp,
     offsetY: Dp = (-3).dp,
-//    onValueChange: (String, Int) -> Unit,
-    onValueChange: () -> Unit,
+    onValueChange: (String) -> Unit,
     cursorHeight: Float = 0.8f,
     isOnlyNum: Boolean = false,
 ) {
     Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(bottom = 5.dp)) {
-        val tmp = text
-        var text by rememberSaveable { mutableStateOf("") }
-        text = tmp
+        //val tmp = text
+        var text by rememberSaveable { mutableStateOf(text) }
+        //text = tmp
 
         val focusManager = LocalFocusManager.current
         val selectionColors = TextSelectionColors(
@@ -150,7 +149,7 @@ fun CustomTextField(
                 ),
                 value = text,
                 onValueChange = {
-                    //onValueChange(it, number)
+                    onValueChange(it)
                     text = it
                 },
                 singleLine = true,
