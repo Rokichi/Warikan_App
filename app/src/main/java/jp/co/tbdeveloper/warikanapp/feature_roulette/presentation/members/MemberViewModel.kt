@@ -2,9 +2,11 @@ package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
+import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.RouletteEntity
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.MemberFactory
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.RouletteFactory
@@ -13,6 +15,7 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.roulette.Ro
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.random.Random
 
 
 const val DEFAULT_MEMBER_NUM = 2
@@ -39,13 +42,11 @@ class MemberViewModel @Inject constructor(
     val totalState = _totalState
 
 
-    /*
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
+    /*
     private var getRouletteJob: Job? = null
     */
-
-
 
     fun onEvent(event: MemberEvent) {
         when (event) {
@@ -53,7 +54,7 @@ class MemberViewModel @Inject constructor(
                 if (memberState.value.size < MAX_MEMBER_NUM) {
                     _memberState.value = (_memberState.value + Member(
                         "",
-                        unusedColorNums.removeAt(unusedColorNums.random())
+                        unusedColorNums.removeAt(Random.nextInt(unusedColorNums.size))
                     )) as MutableList<Member>
                 }
             }
@@ -63,27 +64,39 @@ class MemberViewModel @Inject constructor(
             }
 
             is MemberEvent.EditMemberEvent -> {
-                _memberState.value = _memberState.value.mapIndexed{ index, member ->
-                    if(index == event.index) Member(event.value, member.color)
+                _memberState.value = _memberState.value.mapIndexed { index, member ->
+                    if (index == event.index) Member(event.value, member.color)
                     else member
                 } as MutableList<Member>
             }
 
             is MemberEvent.DeleteMemberEvent -> {
-                unusedColorNums.add(_memberState.value[event.index].color)
-                _memberState.value = _memberState.value.filterIndexed { index, _ ->
-                    index != event.index
-                } as MutableList<Member>
+                if (_memberState.value.size > 2) {
+                    unusedColorNums.add(_memberState.value[event.index].color)
+                    _memberState.value = _memberState.value.filterIndexed { index, _ ->
+                        index != event.index
+                    } as MutableList<Member>
+                    return
+                }
+                viewModelScope.launch { _eventFlow.emit(UiEvent.DeleteError) }
             }
 
-            is MemberEvent.SaveRoulette -> {
+            is MemberEvent.NextPageEvent -> {
                 viewModelScope.launch {
+                    // 入力金額が不正
+                    if (_totalState.value.isEmpty() || !_totalState.value.isDigitsOnly() || _totalState.value.toInt() == 0) {
+                        _eventFlow.emit(UiEvent.InputError(0))
+                        return@launch
+                    }
+                    // メンバー名が不正
+                    if ((_memberState.value.filter { member -> member.name.isEmpty() }).size > 0) {
+                        _eventFlow.emit(UiEvent.InputError(1))
+                        return@launch
+                    }
                     val rouletteEntity = RouletteFactory.create(total = totalState.value.toInt())
-                    rouletteId = rouletteEntity.id
+                    val rouletteId = rouletteUseCases.addRoulette(rouletteEntity)
                     val memberEntities =
                         MemberFactory.create(rouletteId = rouletteId, members = memberState.value)
-                    // save
-                    rouletteUseCases.addRoulette(rouletteEntity)
                     memberUseCases.addMember(memberEntities)
                 }
             }
@@ -91,7 +104,7 @@ class MemberViewModel @Inject constructor(
     }
 
     fun showState() {
-        for(num in unusedColorNums){
+        for (num in unusedColorNums) {
             Log.i("$unusedColorNums.size", "$num")
         }
         for (member in memberState.value) {
@@ -100,10 +113,12 @@ class MemberViewModel @Inject constructor(
         Log.i("total", totalState.value)
     }
 
-    /*
     sealed class UiEvent {
-        object SaveRoulette : UiEvent()
+        object DeleteError : UiEvent()
+        data class InputError(val errorNum: Int) : UiEvent()
+        object NextPage : UiEvent()
     }
+    /*
 
     private fun getRoulettes() {
         getRouletteJob?.cancel()

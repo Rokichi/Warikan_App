@@ -54,7 +54,7 @@ class RouletteViewModel @Inject constructor(
             is RoulettesEvent.SaveRoulette ->{
                 viewModelScope.launch {
                     val rouletteEntity = RouletteFactory.create(total = totalState.value)
-                    rouletteId = rouletteEntity.id
+                    val rouletteId = rouletteEntity.id
                     val memberEntities = MemberFactory.create(rouletteId = rouletteId, members = memberState.value)
                     // save
                     rouletteUseCases.addRoulette(rouletteEntity)

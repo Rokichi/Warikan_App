@@ -6,5 +6,5 @@ sealed class MemberEvent {
     data class DeleteMemberEvent(val index:Int):MemberEvent()
     data class EditMemberEvent(val value: String, val index:Int): MemberEvent()
     data class EditTotalEvent(val value: String): MemberEvent()
-    object SaveRoulette: MemberEvent()
+    object NextPageEvent: MemberEvent()
 }

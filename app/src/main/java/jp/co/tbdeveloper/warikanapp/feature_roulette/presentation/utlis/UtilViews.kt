@@ -109,9 +109,9 @@ fun CustomTextField(
     isOnlyNum: Boolean = false,
 ) {
     Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(bottom = 5.dp)) {
-        //val tmp = text
+        val tmp = text
         var text by rememberSaveable { mutableStateOf(text) }
-        //text = tmp
+        text = tmp
 
         val focusManager = LocalFocusManager.current
         val selectionColors = TextSelectionColors(

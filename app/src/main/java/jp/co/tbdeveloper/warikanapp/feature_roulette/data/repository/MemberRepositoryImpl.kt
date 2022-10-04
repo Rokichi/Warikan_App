@@ -12,7 +12,7 @@ class MemberRepositoryImpl(
         return dao.getAllMembers()
     }
 
-    override suspend fun getMembersById(id: Int): Flow<List<MemberEntity>>? {
+    override suspend fun getMembersById(id: Long): Flow<List<MemberEntity>>? {
         return dao.getMembersById(id)
     }
 

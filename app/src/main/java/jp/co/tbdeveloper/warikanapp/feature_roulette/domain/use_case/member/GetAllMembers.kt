@@ -4,10 +4,10 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.MemberEntity
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.MemberRepository
 import kotlinx.coroutines.flow.Flow
 
-class GetMembersById(
+class GetAllMembers(
     private val repository: MemberRepository
 ) {
-    suspend operator fun invoke(id: Long): Flow<List<MemberEntity>>?{
-        return repository.getMembersById(id)
+    operator fun invoke(): Flow<List<MemberEntity>>{
+        return repository.getMembers()
     }
 }

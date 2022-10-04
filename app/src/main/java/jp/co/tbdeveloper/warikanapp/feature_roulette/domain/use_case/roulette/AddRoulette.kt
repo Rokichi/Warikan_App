@@ -9,10 +9,10 @@ class AddRoulette(
 ) {
 
     @Throws(InvalidRouletteException::class)
-    suspend operator fun invoke(roulette: RouletteEntity) {
+    suspend operator fun invoke(roulette: RouletteEntity):Long {
         if (roulette.total <= 0) {
             throw InvalidRouletteException("Total must be over zero.")
         }
-        repository.insertRoulette(roulette)
+        return repository.insertRoulette(roulette)
     }
 }

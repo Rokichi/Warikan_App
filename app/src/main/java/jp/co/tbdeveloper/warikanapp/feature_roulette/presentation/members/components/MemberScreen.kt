@@ -1,5 +1,6 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.components
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -10,11 +11,13 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -28,6 +31,7 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.Member
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.MemberViewModel
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.CustomTextField
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.ShadowButton
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun MembersScreen(
@@ -44,6 +48,28 @@ fun MembersScreen(
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     */
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is MemberViewModel.UiEvent.DeleteError -> {
+                    Toast.makeText(context, "メンバーを二人未満にすることはできません", Toast.LENGTH_SHORT).show()
+                }
+                is MemberViewModel.UiEvent.InputError -> {
+                    when (event.errorNum) {
+                        0 -> {
+                            Toast.makeText(context, "合計金額を正しく入力してください", Toast.LENGTH_SHORT).show()
+                        }
+                        1 -> {
+                            Toast.makeText(context, "メンバー名が未入力です", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+                is MemberViewModel.UiEvent.NextPage -> {}
+            }
+        }
+    }
+
     Column(
         // 一回り小さく配置
         modifier = Modifier
@@ -101,8 +127,7 @@ fun MembersScreen(
                 offsetY = 9.dp,
                 offsetX = 0.dp,
                 onClick = {
-                    // navController.navigate(Screen.WarikanScreen.route)
-                    viewModel.showState()
+                    viewModel.onEvent(MemberEvent.NextPageEvent)
                 }
             )
         }

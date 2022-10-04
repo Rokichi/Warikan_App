@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity
 data class RouletteEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val id: Long,
     val total: Int,
 )
 
