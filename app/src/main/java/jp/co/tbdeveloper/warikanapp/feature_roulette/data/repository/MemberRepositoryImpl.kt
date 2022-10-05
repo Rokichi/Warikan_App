@@ -28,10 +28,8 @@ class MemberRepositoryImpl(
         dao.deleteMember(member)
     }
 
-    override suspend fun deleteMembers(members: List<MemberEntity>) {
-        for (member in members) {
-            dao.deleteMember(member)
-        }
+    override suspend fun deleteMembers(id: Long) {
+        dao.deleteMembers(id)
     }
 
 }

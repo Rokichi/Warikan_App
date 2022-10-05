@@ -33,7 +33,6 @@ class MemberViewModel @Inject constructor(
     // メンバー
     private val _memberState = MutableStateFlow(
         MutableList(DEFAULT_MEMBER_NUM) { i ->
-            Log.i("", "${unusedColorNums}")
             Member("", unusedColorNums.removeAt(Random.nextInt(unusedColorNums.size)))
         }
     )

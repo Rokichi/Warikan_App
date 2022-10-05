@@ -9,5 +9,5 @@ interface MemberRepository {
     suspend fun insertMember(member: MemberEntity)
     suspend fun insertMembers(members: List<MemberEntity>)
     suspend fun deleteMember(member: MemberEntity)
-    suspend fun deleteMembers(members: List<MemberEntity>)
+    suspend fun deleteMembers(id: Long)
 }

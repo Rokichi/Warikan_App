@@ -23,4 +23,7 @@ interface MemberDao {
 
     @Delete
     suspend fun deleteMember(member: MemberEntity)
+
+    @Query("DELETE FROM memberentity WHERE RouletteId = :id")
+    suspend fun deleteMembers(id: Long)
 }

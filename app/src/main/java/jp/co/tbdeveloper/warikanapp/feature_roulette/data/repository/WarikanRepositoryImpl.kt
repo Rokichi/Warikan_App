@@ -12,7 +12,7 @@ class WarikanRepositoryImpl(
         return dao.getAllWarikans()
     }
 
-    override suspend fun getWarikansById(id: Int): Flow<List<WarikanEntity>>? {
+    override suspend fun getWarikansById(id: Long): Flow<List<WarikanEntity>>? {
         return dao.getWarikansById(id)
     }
 
@@ -20,8 +20,16 @@ class WarikanRepositoryImpl(
         dao.insertWarikan(warikan)
     }
 
+    override suspend fun insertWarikans(warikans: List<WarikanEntity>) {
+        dao.insertWarikans(warikans)
+    }
+
     override suspend fun deleteWarikan(warikan: WarikanEntity) {
         dao.deleteWarikan(warikan)
+    }
+
+    override suspend fun deleteWarikans(id: Long) {
+        dao.deleteWarikans(id)
     }
 
 }
