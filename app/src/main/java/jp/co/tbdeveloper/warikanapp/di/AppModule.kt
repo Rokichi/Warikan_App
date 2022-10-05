@@ -17,10 +17,7 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.RouletteR
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.WarikanRepository
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.member.*
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.roulette.*
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.warikan.AddWarikan
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.warikan.DeleteWarikan
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.warikan.GetWarikansById
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.warikan.WarikanUseCases
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.warikan.*
 import javax.inject.Singleton
 
 @Module
@@ -76,6 +73,7 @@ object AppModule {
         return MemberUseCases(
             getMembersById = GetMembersById(repository),
             deleteMember = DeleteMember(repository),
+            deleteMembers = DeleteMembers(repository),
             addMember = AddMember(repository),
             getAllMembers = GetAllMembers(repository)
         )
@@ -102,7 +100,9 @@ object AppModule {
     fun provideWarikanUseCases(repository: WarikanRepository): WarikanUseCases {
         return WarikanUseCases(
             getWarikansById = GetWarikansById(repository),
+            getAllWarikans = GetAllWarikans(repository),
             deleteWarikan = DeleteWarikan(repository),
+            deleteWarikans = DeleteWarikans(repository),
             addWarikan = AddWarikan(repository)
         )
     }
