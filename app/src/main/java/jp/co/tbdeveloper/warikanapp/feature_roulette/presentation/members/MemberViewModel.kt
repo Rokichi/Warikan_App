@@ -6,7 +6,7 @@ import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.RouletteEntity
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.MemberEntity
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.MemberFactory
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.RouletteFactory
@@ -27,12 +27,14 @@ class MemberViewModel @Inject constructor(
     private val memberUseCases: MemberUseCases
 ) : ViewModel() {
     var rouletteId = 0
+
     private val unusedColorNums = MutableList(Member.memberColors.size) { it }
 
     // メンバー
     private val _memberState = MutableStateFlow(
         MutableList(DEFAULT_MEMBER_NUM) { i ->
-            Member("", unusedColorNums.removeAt(unusedColorNums.random()))
+            Log.i("", "${unusedColorNums}")
+            Member("", unusedColorNums.removeAt(Random.nextInt(unusedColorNums.size)))
         }
     )
     val memberState = _memberState.asStateFlow()
@@ -98,31 +100,19 @@ class MemberViewModel @Inject constructor(
                     val memberEntities =
                         MemberFactory.create(rouletteId = rouletteId, members = memberState.value)
                     memberUseCases.addMember(memberEntities)
+                    _eventFlow.emit(UiEvent.NextPage(rouletteId))
                 }
             }
         }
     }
 
-    fun showState() {
-        for (num in unusedColorNums) {
-            Log.i("$unusedColorNums.size", "$num")
-        }
-        for (member in memberState.value) {
-            Log.i("member", member.name)
-        }
-        Log.i("total", totalState.value)
-    }
-
     sealed class UiEvent {
         object DeleteError : UiEvent()
         data class InputError(val errorNum: Int) : UiEvent()
-        object NextPage : UiEvent()
+        data class NextPage(val id: Long) : UiEvent()
     }
-    /*
 
-    private fun getRoulettes() {
-        getRouletteJob?.cancel()
-        rouletteUseCases.getRoulettes().launchIn(viewModelScope)
+    suspend fun getMembers(id: Long): Flow<List<MemberEntity>>? {
+        return memberUseCases.getMembersById(id)
     }
-     */
 }

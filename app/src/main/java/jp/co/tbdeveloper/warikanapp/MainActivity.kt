@@ -15,14 +15,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import dagger.hilt.android.AndroidEntryPoint
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.Warikans.components.WarikansScreen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.MemberViewModel
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.components.MembersScreen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Screen
@@ -48,8 +51,20 @@ class MainActivity : ComponentActivity() {
                         ) {
                             composable(route = Screen.MemberScreen.route) {
                                 val viewModel: MemberViewModel = hiltViewModel()
-                                MembersScreen(navController, viewModel, {})
+                                MembersScreen(navController, viewModel)
                             }
+
+                            composable(
+                                route = Screen.WarikanScreen.route + "/{id}",
+                                arguments = listOf(
+                                    navArgument("id") { type = NavType.LongType }
+                                )
+                            ) { backStackEntry ->
+                                val id = backStackEntry.arguments?.getLong("id") ?: 0
+                                val viewModel: MemberViewModel = hiltViewModel()
+                                WarikansScreen(viewModel, id)
+                            }
+
                         }
                         // admob
                         AndroidView(

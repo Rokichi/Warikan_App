@@ -30,6 +30,7 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Membe
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.MemberEvent
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.MemberViewModel
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.CustomTextField
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Screen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.ShadowButton
 import kotlinx.coroutines.flow.collectLatest
 
@@ -37,17 +38,13 @@ import kotlinx.coroutines.flow.collectLatest
 fun MembersScreen(
     navController: NavController,
     viewModel: MemberViewModel = hiltViewModel(),
-    onPageMoveButtonClick: () -> Unit
 ) {
     // 画面外のフォーカスを検知
     val focusManager = LocalFocusManager.current
 
     val totalState = viewModel.totalState.value
     val memberState = viewModel.memberState.collectAsState()
-    /*
-    val scope = rememberCoroutineScope()
-    val context = LocalContext.current
-    */
+
     val context = LocalContext.current
     LaunchedEffect(Unit) {
         viewModel.eventFlow.collectLatest { event ->
@@ -65,7 +62,9 @@ fun MembersScreen(
                         }
                     }
                 }
-                is MemberViewModel.UiEvent.NextPage -> {}
+                is MemberViewModel.UiEvent.NextPage -> {
+                    navController.navigate(Screen.WarikanScreen.route + "/${event.id}")
+                }
             }
         }
     }
