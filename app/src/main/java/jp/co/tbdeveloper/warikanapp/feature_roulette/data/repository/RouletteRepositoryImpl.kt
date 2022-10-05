@@ -16,7 +16,7 @@ class RouletteRepositoryImpl(
         return dao.getRouletteById(id)
     }
 
-    override suspend fun insertRoulette(roulette: RouletteEntity) {
+    override suspend fun insertRoulette(roulette: RouletteEntity):Long {
         return dao.insertRoulette(roulette)
     }
 

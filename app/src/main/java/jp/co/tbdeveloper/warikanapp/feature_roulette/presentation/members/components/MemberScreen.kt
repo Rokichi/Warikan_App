@@ -1,15 +1,18 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.components
 
-import androidx.compose.foundation.*
+import android.widget.Toast
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,26 +26,48 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import jp.co.tbdeveloper.warikanapp.R
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.MemberEvent
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.MemberViewModel
-import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.MembersState
-import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.RoulettesState
-import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.RouletteViewModel
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.CustomTextField
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Screen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.ShadowButton
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun MembersScreen(
     navController: NavController,
     viewModel: MemberViewModel = hiltViewModel(),
-    onPageMoveButtonClick: () -> Unit
 ) {
     // 画面外のフォーカスを検知
     val focusManager = LocalFocusManager.current
 
-    val state = viewModel.state.value
-    val scope = rememberCoroutineScope()
+    val totalState = viewModel.totalState.value
+    val memberState = viewModel.memberState.collectAsState()
 
     val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is MemberViewModel.UiEvent.DeleteError -> {
+                    Toast.makeText(context, "メンバーを二人未満にすることはできません", Toast.LENGTH_SHORT).show()
+                }
+                is MemberViewModel.UiEvent.InputError -> {
+                    when (event.errorNum) {
+                        0 -> {
+                            Toast.makeText(context, "合計金額を正しく入力してください", Toast.LENGTH_SHORT).show()
+                        }
+                        1 -> {
+                            Toast.makeText(context, "メンバー名が未入力です", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+                is MemberViewModel.UiEvent.NextPage -> {
+                    navController.navigate(Screen.WarikanScreen.route + "/${event.id}")
+                }
+            }
+        }
+    }
 
     Column(
         // 一回り小さく配置
@@ -74,11 +99,11 @@ fun MembersScreen(
             textStyle = MaterialTheme.typography.body1,
             offsetY = 9.dp,
             offsetX = 0.dp,
-            onClick = {}
+            onClick = { viewModel.onEvent(MemberEvent.AddMember) }
         )
         Spacer(Modifier.height(5.dp))
         // お金入力フィールド
-        InputSumOfAccount()
+        InputSumOfAccount(totalState, viewModel)
         // メンバ追加用
         ColumnTableText()
         Column(
@@ -88,7 +113,8 @@ fun MembersScreen(
         ) {
             MemberAndColorsScrollView(
                 modifier = Modifier.weight(6.0f),
-                state = state
+                members = memberState.value,
+                viewModel = viewModel
             )
             ShadowButton(
                 text = "次へ！",
@@ -100,17 +126,8 @@ fun MembersScreen(
                 offsetY = 9.dp,
                 offsetX = 0.dp,
                 onClick = {
-                    //viewModel.onNextPageButtonClick(onPageMoveButtonClick, context)
+                    viewModel.onEvent(MemberEvent.NextPageEvent)
                 }
-            )
-            Spacer(Modifier.weight(1.0f))
-            Text(
-                text = "広告",
-                Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colors.primary)
-                    .weight(1.0f),
-                textAlign = TextAlign.Center
             )
         }
     }
@@ -128,7 +145,7 @@ fun SettingAndHistoryBar() {
     ) {
         Image(
             painter = painterResource(id = R.drawable.ic_settings),
-            contentScale = ContentScale.Crop,
+            contentScale = ContentScale.FillHeight,
             modifier = Modifier
                 .fillMaxHeight()
                 .clickable(
@@ -144,6 +161,8 @@ fun SettingAndHistoryBar() {
 
 @Composable
 fun InputSumOfAccount(
+    text: String,
+    viewModel: MemberViewModel
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -164,13 +183,10 @@ fun InputSumOfAccount(
             height = 40.dp,
             isOnlyNum = true,
             //text = if (state.value.total == 0) "" else state.value.total.toString(),
-            text = "",
-            onValueChange = {}
-            /*
-            onValueChange = { text, _ ->
-                viewModel.onAmountTextChange(text = text)
-            }*/
-
+            text = text,
+            onValueChange = {
+                viewModel.onEvent(MemberEvent.EditTotalEvent(it))
+            }
         )
         Text(
             text = "円",
@@ -211,8 +227,9 @@ fun ColumnTableText() {
 
 @Composable
 fun MemberAndColorsScrollView(
-    state: MembersState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    members: List<Member>,
+    viewModel: MemberViewModel
 ) {
     LazyColumn(
         modifier = modifier
@@ -220,8 +237,12 @@ fun MemberAndColorsScrollView(
             .padding(horizontal = 20.dp),
         verticalArrangement = Arrangement.spacedBy(5.dp)
     ) {
-        items(state.Members.toList()) { member ->
-            MemberItem(Modifier, member = member, onDeleteClick = { }, onValueChange = {})
+        itemsIndexed(members) { index, member ->
+            MemberItem(
+                Modifier,
+                member = member,
+                onDeleteClick = { viewModel.onEvent(MemberEvent.DeleteMemberEvent(index)) },
+                onValueChange = { viewModel.onEvent(MemberEvent.EditMemberEvent(it, index)) })
         }
     }
 }

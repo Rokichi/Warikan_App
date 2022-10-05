@@ -13,7 +13,7 @@ interface RouletteDao {
     suspend fun getRouletteById(id: Int): RouletteEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertRoulette(roulette: RouletteEntity)
+    suspend fun insertRoulette(roulette: RouletteEntity):Long
 
     @Delete
     suspend fun deleteRoulette(roulette: RouletteEntity)

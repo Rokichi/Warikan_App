@@ -6,8 +6,8 @@ import androidx.room.PrimaryKey
 @Entity
 data class MemberEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
-    val RouletteId: Int,
+    val id: Long,
+    val RouletteId: Long,
     val name: String,
     val color: Int,
 )

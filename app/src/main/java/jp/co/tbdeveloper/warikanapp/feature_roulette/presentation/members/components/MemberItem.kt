@@ -25,8 +25,7 @@ fun MemberItem(
     member: Member,
     height: Dp = 40.dp,
     onDeleteClick: () -> Unit,
-    onValueChange: () -> Unit
-
+    onValueChange: (String) -> Unit,
 ) {
     Row(
         modifier = modifier
@@ -41,8 +40,7 @@ fun MemberItem(
                 placeholderText = "name",
                 text = member.name,
                 height = height,
-//                onValueChange = { _, _ ->  }
-                onValueChange = { onValueChange() }
+                onValueChange = {onValueChange(it)}
             )
         }
         Box(Modifier.weight(1.5f), contentAlignment = Alignment.Center) {

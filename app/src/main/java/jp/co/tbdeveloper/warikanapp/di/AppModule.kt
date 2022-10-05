@@ -15,10 +15,7 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.data.repository.WarikanRepo
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.MemberRepository
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.RouletteRepository
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.WarikanRepository
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.member.AddMember
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.member.DeleteMember
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.member.GetMembersById
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.member.MemberUseCases
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.member.*
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.roulette.*
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.warikan.AddWarikan
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.warikan.DeleteWarikan
@@ -79,7 +76,8 @@ object AppModule {
         return MemberUseCases(
             getMembersById = GetMembersById(repository),
             deleteMember = DeleteMember(repository),
-            addMember = AddMember(repository)
+            addMember = AddMember(repository),
+            getAllMembers = GetAllMembers(repository)
         )
     }
 

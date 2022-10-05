@@ -14,4 +14,14 @@ class AddMember(
         }
         repository.insertMember(member)
     }
+
+    @Throws(InvalidMemberException::class)
+    suspend operator fun invoke(members: List<MemberEntity>) {
+        for(member in members){
+            if(member.name.isBlank()){
+                throw InvalidMemberException("The name of the member can't be empty.")
+            }
+        }
+        repository.insertMembers(members)
+    }
 }

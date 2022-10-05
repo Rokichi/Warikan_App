@@ -12,7 +12,7 @@ class MemberRepositoryImpl(
         return dao.getAllMembers()
     }
 
-    override suspend fun getMembersById(id: Int): Flow<List<MemberEntity>>? {
+    override suspend fun getMembersById(id: Long): Flow<List<MemberEntity>>? {
         return dao.getMembersById(id)
     }
 
@@ -20,8 +20,16 @@ class MemberRepositoryImpl(
         dao.insertMember(member)
     }
 
+    override suspend fun insertMembers(members: List<MemberEntity>) {
+        dao.insertMembers(members)
+    }
+
     override suspend fun deleteMember(member: MemberEntity) {
         dao.deleteMember(member)
+    }
+
+    override suspend fun deleteMembers(id: Long) {
+        dao.deleteMembers(id)
     }
 
 }

@@ -13,11 +13,17 @@ interface MemberDao {
     fun getAllMembers(): Flow<List<MemberEntity>>
 
     @Query("SELECT * FROM memberentity WHERE RouletteId = :id")
-    suspend fun getMembersById(id: Int): Flow<List<MemberEntity>>?
+    fun getMembersById(id: Long): Flow<List<MemberEntity>>?
 
     @Insert
     suspend fun insertMember(member: MemberEntity)
 
+    @Insert
+    suspend fun insertMembers(members: List<MemberEntity>)
+
     @Delete
     suspend fun deleteMember(member: MemberEntity)
+
+    @Query("DELETE FROM memberentity WHERE RouletteId = :id")
+    suspend fun deleteMembers(id: Long)
 }

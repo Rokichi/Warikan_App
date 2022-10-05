@@ -7,7 +7,8 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.WarikanEntity
 
 @Database(
     entities = [WarikanEntity::class],
-    version = 1
+    version = 1,
+    exportSchema = false
 )
 
 abstract class WarikanDatabase() : RoomDatabase() {

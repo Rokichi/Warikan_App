@@ -6,6 +6,6 @@ import kotlinx.coroutines.flow.Flow
 interface RouletteRepository {
     fun getRoulettes(): Flow<List<RouletteEntity>>
     suspend fun getRouletteById(id: Int): RouletteEntity?
-    suspend fun insertRoulette(roulette: RouletteEntity)
+    suspend fun insertRoulette(roulette: RouletteEntity): Long
     suspend fun deleteRoulette(roulette: RouletteEntity)
 }

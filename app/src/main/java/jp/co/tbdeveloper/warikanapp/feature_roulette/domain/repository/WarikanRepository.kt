@@ -5,7 +5,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface WarikanRepository {
     fun getWarikans(): Flow<List<WarikanEntity>>
-    suspend fun getWarikansById(id: Int): Flow<List<WarikanEntity>>?
+    suspend fun getWarikansById(id: Long): Flow<List<WarikanEntity>>?
     suspend fun insertWarikan(warikan: WarikanEntity)
+    suspend fun insertWarikans(warikans: List<WarikanEntity>)
     suspend fun deleteWarikan(warikan: WarikanEntity)
+    suspend fun deleteWarikans(id: Long)
 }
