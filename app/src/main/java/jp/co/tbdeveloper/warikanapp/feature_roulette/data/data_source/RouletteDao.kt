@@ -10,7 +10,7 @@ interface RouletteDao {
     fun getRoulettes(): Flow<List<RouletteEntity>>
 
     @Query("SELECT * FROM rouletteentity WHERE id = :id")
-    suspend fun getRouletteById(id: Int): RouletteEntity?
+    suspend fun getRouletteById(id: Long): RouletteEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRoulette(roulette: RouletteEntity):Long

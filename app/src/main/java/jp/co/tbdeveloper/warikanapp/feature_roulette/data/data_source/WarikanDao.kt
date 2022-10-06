@@ -11,10 +11,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface WarikanDao {
     @Query("SELECT * FROM warikanentity")
-    fun getAllWarikans(): Flow<List<WarikanEntity>>
+    fun getAllWarikans(): List<WarikanEntity>
 
     @Query("SELECT * FROM warikanentity WHERE RouletteId = :id")
-    fun getWarikansById(id:Long): Flow<List<WarikanEntity>>?
+    fun getWarikansById(id:Long): List<WarikanEntity>
 
     @Insert
     suspend fun insertWarikan(warikan: WarikanEntity)

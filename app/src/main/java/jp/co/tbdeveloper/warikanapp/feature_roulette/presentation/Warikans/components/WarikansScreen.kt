@@ -27,13 +27,14 @@ fun WarikansScreen(
             MemberEntity(0, 0, "ccc", 0),
         ))
     }
-
+    /*
     LaunchedEffect(Unit) {
         viewModel.getMembers(id)!!.collect { members ->
             state.value = members
             Log.i("members", "$members")
         }
     }
+     */
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()

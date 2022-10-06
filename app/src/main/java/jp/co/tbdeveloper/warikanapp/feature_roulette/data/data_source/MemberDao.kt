@@ -10,10 +10,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface MemberDao {
     @Query("SELECT * FROM memberentity")
-    fun getAllMembers(): Flow<List<MemberEntity>>
+    fun getAllMembers(): List<MemberEntity>
 
     @Query("SELECT * FROM memberentity WHERE RouletteId = :id")
-    fun getMembersById(id: Long): Flow<List<MemberEntity>>?
+    fun getMembersById(id: Long): List<MemberEntity>?
 
     @Insert
     suspend fun insertMember(member: MemberEntity)

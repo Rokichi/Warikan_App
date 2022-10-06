@@ -12,7 +12,7 @@ class RouletteRepositoryImpl(
         return dao.getRoulettes()
     }
 
-    override suspend fun getRouletteById(id: Int): RouletteEntity? {
+    override suspend fun getRouletteById(id: Long): RouletteEntity? {
         return dao.getRouletteById(id)
     }
 

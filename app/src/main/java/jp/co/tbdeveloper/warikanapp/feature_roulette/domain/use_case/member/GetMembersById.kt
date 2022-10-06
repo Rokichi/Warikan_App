@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 class GetMembersById(
     private val repository: MemberRepository
 ) {
-    suspend operator fun invoke(id: Long): Flow<List<MemberEntity>>?{
+    suspend operator fun invoke(id: Long): List<MemberEntity>?{
         return repository.getMembersById(id)
     }
 }

@@ -4,38 +4,36 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.ResultWarikan
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Roulette
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.MemberFactory
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.RouletteFactory
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.WarikanFactory
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.member.MemberUseCases
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.roulette.RouletteUseCases
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.warikan.WarikanUseCases
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-const val DEFAULT_MEMBER_NUM = 2
-const val MAX_MEMBER_NUM = 3
-
 @HiltViewModel
 class RouletteViewModel @Inject constructor(
     private val rouletteUseCases: RouletteUseCases,
-    private val memberUseCases: MemberUseCases
+    private val memberUseCases: MemberUseCases,
+    private val warikanUseCases: WarikanUseCases,
 ) : ViewModel() {
-    var rouletteId = 0
 
-    // メンバー
-    private val _memberState = MutableStateFlow(
-        MutableList(DEFAULT_MEMBER_NUM) { i ->
-            Member("", i)
-        }
+    var rouletteState = mutableStateOf(Roulette())
+
+    // 割り勘結果
+    private val _resultWarikanState = MutableStateFlow<List<ResultWarikan>>(
+        mutableListOf()
     )
-    val memberState = _memberState.asStateFlow()
+    val resultWarikanState = _resultWarikanState.asStateFlow()
 
-    // 合計金額
-    private val _totalState = mutableStateOf(0)
-    val totalState = _totalState
+    var sumOfProprotion = 0
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -43,29 +41,33 @@ class RouletteViewModel @Inject constructor(
     private var getRouletteJob: Job? = null
 
     fun onEvent(event: RoulettesEvent) {
-        when (event){
-            is RoulettesEvent.AddMember -> {
-                if (memberState.value.size < MAX_MEMBER_NUM){
-                    _memberState.value.add(
-                        Member("", memberState.value.size)
+        when (event) {
+            is RoulettesEvent.InitRouletteEvent -> {
+                viewModelScope.launch {
+                    val rouletteEntity = rouletteUseCases.getRouletteById(event.id)
+                    val memberEntitys = memberUseCases.getMembersById(event.id)
+                    val warikanEntitys = warikanUseCases.getWarikansById(event.id)
+                    if (rouletteEntity == null) return@launch
+                    if (memberEntitys == null) return@launch
+                    if (warikanEntitys == null) return@launch
+                    rouletteState.value = RouletteFactory.create(
+                        rouletteEntity,
+                        MemberFactory.create(memberEntitys),
+                        WarikanFactory.create(warikanEntitys)
                     )
+                    rouletteState.value.Warikans.forEach { warikan ->
+                        sumOfProprotion += warikan.proportion
+                    }
                 }
             }
-            is RoulettesEvent.SaveRoulette ->{
-                viewModelScope.launch {
-                    val rouletteEntity = RouletteFactory.create(total = totalState.value)
-                    val rouletteId = rouletteEntity.id
-                    val memberEntities = MemberFactory.create(rouletteId = rouletteId, members = memberState.value)
-                    // save
-                    rouletteUseCases.addRoulette(rouletteEntity)
-                    memberUseCases.addMember(memberEntities)
-                }
+            is RoulettesEvent.StartClickEvent -> {
+                // 割り勘結果を計算
             }
         }
     }
 
-    sealed class UiEvent{
-        object SaveRoulette: UiEvent()
+    sealed class UiEvent {
+        data class StartRoulette(val resultDeg: Float)
     }
 
     private fun getRoulettes() {

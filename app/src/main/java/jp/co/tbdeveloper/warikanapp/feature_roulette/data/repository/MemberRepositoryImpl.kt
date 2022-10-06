@@ -8,11 +8,11 @@ import kotlinx.coroutines.flow.Flow
 class MemberRepositoryImpl(
     private val dao: MemberDao
 ) : MemberRepository {
-    override fun getMembers(): Flow<List<MemberEntity>> {
+    override fun getMembers(): List<MemberEntity> {
         return dao.getAllMembers()
     }
 
-    override suspend fun getMembersById(id: Long): Flow<List<MemberEntity>>? {
+    override suspend fun getMembersById(id: Long): List<MemberEntity>? {
         return dao.getMembersById(id)
     }
 

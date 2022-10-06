@@ -1,6 +1,5 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
@@ -8,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.MemberEntity
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.MemberFactory
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.RouletteFactory
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.MemberEntityFactory
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.RouletteEntityFactory
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.member.MemberUseCases
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.roulette.RouletteUseCases
 import kotlinx.coroutines.flow.*
@@ -94,10 +93,10 @@ class MemberViewModel @Inject constructor(
                         _eventFlow.emit(UiEvent.InputError(1))
                         return@launch
                     }
-                    val rouletteEntity = RouletteFactory.create(total = totalState.value.toInt())
+                    val rouletteEntity = RouletteEntityFactory.create(total = totalState.value.toInt())
                     val rouletteId = rouletteUseCases.addRoulette(rouletteEntity)
                     val memberEntities =
-                        MemberFactory.create(rouletteId = rouletteId, members = memberState.value)
+                        MemberEntityFactory.create(rouletteId = rouletteId, members = memberState.value)
                     memberUseCases.addMember(memberEntities)
                     _eventFlow.emit(UiEvent.NextPage(rouletteId))
                 }
@@ -110,8 +109,9 @@ class MemberViewModel @Inject constructor(
         data class InputError(val errorNum: Int) : UiEvent()
         data class NextPage(val id: Long) : UiEvent()
     }
-
-    suspend fun getMembers(id: Long): Flow<List<MemberEntity>>? {
+    /*
+    suspend fun getMembers(id: Long): List<MemberEntity>? {
         return memberUseCases.getMembersById(id)
     }
+     */
 }

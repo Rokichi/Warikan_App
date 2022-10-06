@@ -47,7 +47,7 @@ object AppModule {
             getRoulettes = GetRoulettes(repository),
             deleteRoulette = DeleteRoulette(repository),
             addRoulette = AddRoulette(repository),
-            getRoulette = GetRoulette(repository),
+            getRouletteById = GetRouletteById(repository),
         )
     }
 
