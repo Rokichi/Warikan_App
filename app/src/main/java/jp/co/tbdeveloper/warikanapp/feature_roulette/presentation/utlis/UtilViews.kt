@@ -108,7 +108,7 @@ fun CustomTextField(
     cursorHeight: Float = 0.8f,
     isOnlyNum: Boolean = false,
 ) {
-    Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(bottom = 5.dp)) {
+    Box(contentAlignment = Alignment.Center, modifier = modifier.padding(bottom = 5.dp)) {
         val tmp = text
         var text by rememberSaveable { mutableStateOf(text) }
         text = tmp
@@ -120,7 +120,7 @@ fun CustomTextField(
         )
         CompositionLocalProvider(LocalTextSelectionColors provides selectionColors) {
             BasicTextField(
-                modifier = modifier
+                modifier = Modifier
                     .background(
                         MaterialTheme.colors.background,
                         RoundedCornerShape(0.dp),

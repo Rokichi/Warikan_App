@@ -1,13 +1,11 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members
 
 import androidx.compose.runtime.mutableStateOf
-import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.InvalidMemberException
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.InvalidRouletteException
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.MemberEntity
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.MemberEntityFactory
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.RouletteEntityFactory
@@ -48,7 +46,7 @@ class MemberViewModel @Inject constructor(
 
     fun onEvent(event: MemberEvent) {
         when (event) {
-            is MemberEvent.AddMember -> {
+            is MemberEvent.AddMemberEvent -> {
                 if (memberState.value.size < MAX_MEMBER_NUM) {
                     _memberState.value = (_memberState.value + Member(
                         "",

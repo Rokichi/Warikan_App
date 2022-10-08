@@ -63,7 +63,7 @@ class MainActivity : ComponentActivity() {
                                 )
                             ) { backStackEntry ->
                                 val id = backStackEntry.arguments?.getLong("id") ?: 0
-                                WarikansScreen(id)
+                                //WarikansScreen(id)
                             }
 
                             composable(

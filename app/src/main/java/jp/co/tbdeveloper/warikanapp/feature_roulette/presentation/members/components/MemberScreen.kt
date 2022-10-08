@@ -50,7 +50,7 @@ fun MembersScreen(
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is MemberViewModel.UiEvent.DeleteError -> {
-                    Toast.makeText(context, "メンバーを二人未満にすることはできません", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "メンバーを2人未満にすることはできません", Toast.LENGTH_SHORT).show()
                 }
                 is MemberViewModel.UiEvent.InputError -> {
                     when (event.errorNum) {
@@ -99,7 +99,7 @@ fun MembersScreen(
             textStyle = MaterialTheme.typography.body1,
             offsetY = 9.dp,
             offsetX = 0.dp,
-            onClick = { viewModel.onEvent(MemberEvent.AddMember) }
+            onClick = { viewModel.onEvent(MemberEvent.AddMemberEvent) }
         )
         Spacer(Modifier.height(5.dp))
         // お金入力フィールド
