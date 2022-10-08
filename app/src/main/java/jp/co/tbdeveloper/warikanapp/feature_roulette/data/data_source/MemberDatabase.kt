@@ -4,7 +4,10 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.MemberEntity
 
-
+/**
+ * MemberEntityDB
+ *
+ */
 @Database(
     entities = [MemberEntity::class],
     version = 1,

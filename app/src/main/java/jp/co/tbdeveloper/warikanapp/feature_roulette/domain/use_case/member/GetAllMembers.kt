@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 class GetAllMembers(
     private val repository: MemberRepository
 ) {
-    operator fun invoke(): Flow<List<MemberEntity>>{
+    operator fun invoke(): List<MemberEntity>{
         return repository.getMembers()
     }
 }

@@ -8,11 +8,11 @@ import kotlinx.coroutines.flow.Flow
 class WarikanRepositoryImpl(
     private val dao: WarikanDao
 ) : WarikanRepository {
-    override fun getWarikans(): Flow<List<WarikanEntity>> {
+    override fun getWarikans(): List<WarikanEntity> {
         return dao.getAllWarikans()
     }
 
-    override suspend fun getWarikansById(id: Long): Flow<List<WarikanEntity>>? {
+    override suspend fun getWarikansById(id: Long): List<WarikanEntity>? {
         return dao.getWarikansById(id)
     }
 

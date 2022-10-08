@@ -8,32 +8,38 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.MemberEntity
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.MemberViewModel
 
 @Composable
 fun WarikansScreen(
-    viewModel: MemberViewModel,
-    id: Long
+    id: Long,
+    viewModel: MemberViewModel = hiltViewModel(),
 ) {
     Log.i("id", id.toString())
     val state = remember {
-        mutableStateOf(listOf<MemberEntity>(
-            MemberEntity(0, 0, "aaa", 0),
-            MemberEntity(0, 0, "bbb", 0),
-            MemberEntity(0, 0, "ccc", 0),
-        ))
+        mutableStateOf(
+            listOf<MemberEntity>(
+                MemberEntity(0, 0, "aaa", 0),
+                MemberEntity(0, 0, "bbb", 0),
+                MemberEntity(0, 0, "ccc", 0),
+            )
+        )
     }
-
+    /*
     LaunchedEffect(Unit) {
         viewModel.getMembers(id)!!.collect { members ->
             state.value = members
             Log.i("members", "$members")
         }
     }
+     */
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()

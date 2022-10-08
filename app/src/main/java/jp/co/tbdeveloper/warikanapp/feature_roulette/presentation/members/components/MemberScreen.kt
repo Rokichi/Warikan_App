@@ -82,7 +82,7 @@ fun MembersScreen(
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         // トップバー
-        SettingAndHistoryBar()
+        SettingAndHistoryBar(onHistoryClick = {navController.navigate(Screen.RouletteScreen.route + "/27/true")})
         Text(
             text = "メンバーを決めてね",
             modifier = Modifier.fillMaxWidth(),
@@ -134,7 +134,10 @@ fun MembersScreen(
 }
 
 @Composable
-fun SettingAndHistoryBar() {
+fun SettingAndHistoryBar(
+    onSettingClick: () -> Unit = {},
+    onHistoryClick: () -> Unit = {}
+) {
     Row(
         // 横幅Max, 横は等間隔，縦は真ん中に
         modifier = Modifier
@@ -151,11 +154,11 @@ fun SettingAndHistoryBar() {
                 .clickable(
                     interactionSource = MutableInteractionSource(),
                     indication = rememberRipple(color = Color.Black, radius = 19.dp),
-                    onClick = {}
+                    onClick = { onSettingClick() }
                 ),
             contentDescription = "setting image btn"
         )
-        ShadowButton(text = "りれき", onClick = {})
+        ShadowButton(text = "りれき", onClick = { onHistoryClick() })
     }
 }
 

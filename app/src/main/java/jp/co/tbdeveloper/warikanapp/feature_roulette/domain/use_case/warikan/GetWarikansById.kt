@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 class GetWarikansById(
     private val repository: WarikanRepository
 ) {
-    suspend operator fun invoke(id: Long): Flow<List<WarikanEntity>>? {
+    suspend operator fun invoke(id: Long): List<WarikanEntity>? {
         return repository.getWarikansById(id)
     }
 }

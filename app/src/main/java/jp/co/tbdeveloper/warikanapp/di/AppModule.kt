@@ -20,10 +20,13 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.roulette.*
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.warikan.*
 import javax.inject.Singleton
 
+/**
+ * 各インスタンスをDI
+ */
+
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
     @Provides
     @Singleton
     fun provideRouletteDatabase(app: Application): RouletteDatabase {
@@ -47,7 +50,8 @@ object AppModule {
             getRoulettes = GetRoulettes(repository),
             deleteRoulette = DeleteRoulette(repository),
             addRoulette = AddRoulette(repository),
-            getRoulette = GetRoulette(repository),
+            getRouletteById = GetRouletteById(repository),
+            rouletteValidation = RouletteValidation()
         )
     }
 
@@ -75,9 +79,11 @@ object AppModule {
             deleteMember = DeleteMember(repository),
             deleteMembers = DeleteMembers(repository),
             addMember = AddMember(repository),
-            getAllMembers = GetAllMembers(repository)
+            getAllMembers = GetAllMembers(repository),
+            memberValidation = MemberValidation()
         )
     }
+
 
     @Provides
     @Singleton
@@ -89,11 +95,13 @@ object AppModule {
         ).build()
     }
 
+
     @Provides
     @Singleton
-    fun provideWarikanRepository(db: WarikanDatabase): WarikanRepository {
+    fun provideWarikanRepository(db:WarikanDatabase): WarikanRepository {
         return WarikanRepositoryImpl(db.warikanDao)
     }
+
 
     @Provides
     @Singleton

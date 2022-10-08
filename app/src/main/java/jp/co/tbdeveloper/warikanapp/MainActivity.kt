@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -26,10 +27,12 @@ import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import dagger.hilt.android.AndroidEntryPoint
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.Warikans.components.WarikansScreen
-import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.MemberViewModel
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.components.MembersScreen
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.RouletteViewModel
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.components.RouletteScreen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Screen
 import jp.co.tbdeveloper.warikanapp.ui.theme.WarikanAppTheme
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -50,8 +53,7 @@ class MainActivity : ComponentActivity() {
                             startDestination = Screen.MemberScreen.route
                         ) {
                             composable(route = Screen.MemberScreen.route) {
-                                val viewModel: MemberViewModel = hiltViewModel()
-                                MembersScreen(navController, viewModel)
+                                MembersScreen(navController)
                             }
 
                             composable(
@@ -61,10 +63,22 @@ class MainActivity : ComponentActivity() {
                                 )
                             ) { backStackEntry ->
                                 val id = backStackEntry.arguments?.getLong("id") ?: 0
-                                val viewModel: MemberViewModel = hiltViewModel()
-                                WarikansScreen(viewModel, id)
+                                WarikansScreen(id)
                             }
 
+                            composable(
+                                route = Screen.RouletteScreen.route + "/{id}/{isSave}",
+                                arguments = listOf(
+                                    navArgument("id") { type = NavType.LongType },
+                                    navArgument("isSave") { type = NavType.BoolType }
+                                )
+                            ) { backStackEntry ->
+                                val isSave = backStackEntry.arguments?.getBoolean("isSave") ?: true
+                                RouletteScreen(
+                                    navController = navController,
+                                    isSave = isSave
+                                )
+                            }
                         }
                         // admob
                         AndroidView(
@@ -93,15 +107,11 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
+
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     WarikanAppTheme {
-        Greeting("Android")
     }
 }

@@ -4,8 +4,8 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.WarikanEntity
 import kotlinx.coroutines.flow.Flow
 
 interface WarikanRepository {
-    fun getWarikans(): Flow<List<WarikanEntity>>
-    suspend fun getWarikansById(id: Long): Flow<List<WarikanEntity>>?
+    fun getWarikans(): List<WarikanEntity>
+    suspend fun getWarikansById(id: Long): List<WarikanEntity>?
     suspend fun insertWarikan(warikan: WarikanEntity)
     suspend fun insertWarikans(warikans: List<WarikanEntity>)
     suspend fun deleteWarikan(warikan: WarikanEntity)

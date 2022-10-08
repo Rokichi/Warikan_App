@@ -5,5 +5,6 @@ data class MemberUseCases(
     val addMember: AddMember,
     val deleteMember: DeleteMember,
     val deleteMembers: DeleteMembers,
-    val getAllMembers: GetAllMembers
+    val getAllMembers: GetAllMembers,
+    val memberValidation: MemberValidation
 )
