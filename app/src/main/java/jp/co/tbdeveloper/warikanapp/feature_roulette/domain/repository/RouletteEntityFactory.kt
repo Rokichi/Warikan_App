@@ -2,8 +2,17 @@ package jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository
 
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.RouletteEntity
 
+/**
+ * Roulette -> RouletteEntity
+ */
 object RouletteEntityFactory {
-    fun create(id: Long = 0, total: Int): RouletteEntity {
-        return RouletteEntity(id, total)
+    /**
+     * Roulette -> RouletteEntity
+     *
+     * @param total 合計金額
+     * @return RouletteEntity
+     */
+    fun create(total: Int): RouletteEntity {
+        return RouletteEntity(0, total)
     }
 }

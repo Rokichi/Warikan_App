@@ -4,6 +4,11 @@ plugins {
     /* add id */
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'org.jetbrains.dokka'
+}
+
+dokkaHtml.configure {
+    outputDirectory.set(new File("${buildDir}/dokkaHtml"))
 }
 
 android {

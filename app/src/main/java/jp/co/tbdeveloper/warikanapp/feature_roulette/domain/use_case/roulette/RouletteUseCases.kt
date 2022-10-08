@@ -5,4 +5,5 @@ data class RouletteUseCases(
     val deleteRoulette: DeleteRoulette,
     val addRoulette: AddRoulette,
     val getRouletteById: GetRouletteById,
+    val rouletteValidation: RouletteValidation
 )

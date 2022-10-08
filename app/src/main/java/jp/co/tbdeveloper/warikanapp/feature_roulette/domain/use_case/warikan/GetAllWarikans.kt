@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 class GetAllWarikans(
     private val repository: WarikanRepository
 ) {
-    operator fun invoke(): Flow<List<WarikanEntity>>{
+    operator fun invoke(): List<WarikanEntity>{
         return repository.getWarikans()
     }
 }
