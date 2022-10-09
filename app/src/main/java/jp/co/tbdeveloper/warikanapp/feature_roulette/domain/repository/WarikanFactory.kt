@@ -16,7 +16,7 @@ object WarikanFactory {
     fun create(warikanEntities: List<WarikanEntity>): List<Warikan> {
         return List(warikanEntities.size) { i ->
             Warikan(
-                warikanEntities[i].ratios,
+                warikanEntities[i].ratios.split(":"),
                 warikanEntities[i].proportion,
                 warikanEntities[i].color
             )

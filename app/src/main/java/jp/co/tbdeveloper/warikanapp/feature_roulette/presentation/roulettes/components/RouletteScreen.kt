@@ -289,7 +289,7 @@ fun CircleOfRoulette(
                     .padding(horizontal = 5.dp),
                 contentAlignment = Alignment.Center
             ) {
-                RoundedRatio(memberColors = memberColors, ratios = warikan.ratios.split(":"))
+                RoundedRatio(memberColors = memberColors, ratios = warikan.ratios)
             }
             oldDegree += sweepAngle
         }

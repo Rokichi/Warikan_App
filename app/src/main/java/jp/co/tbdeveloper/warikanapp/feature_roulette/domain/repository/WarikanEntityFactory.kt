@@ -19,7 +19,7 @@ object WarikanEntityFactory {
             WarikanEntity(
                 0,
                 rouletteId,
-                warikans[i].ratios,
+                warikans[i].ratios.joinToString(":"),
                 warikans[i].proportion,
                 warikans[i].color
             )

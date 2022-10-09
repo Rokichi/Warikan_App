@@ -1,6 +1,6 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikans
 
-import android.util.Log
+import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -28,13 +28,19 @@ class WarikanViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     // メンバー
-    private var members = listOf<Member>()
+    var members = listOf<Member>()
 
     // 割り勘
     private val _warikanState = MutableStateFlow(
-        mutableListOf<Warikan>()
+        listOf<Warikan>()
     )
     val warikanState = _warikanState.asStateFlow()
+
+    // 割り勘
+    private val _proportionState = MutableStateFlow(
+        listOf<String>()
+    )
+    val proportionState = _proportionState.asStateFlow()
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -45,11 +51,13 @@ class WarikanViewModel @Inject constructor(
                 val memberEntitys = memberUseCases.getMembersById(id)
                 if (memberEntitys == null) return@launch
                 members = MemberFactory.create(memberEntitys)
-            }
-
-            // init warikan
-            _warikanState.value = MutableList(DEFAULT_WARIKAN_NUM) {
-                makeDefaultWarikan()
+                // init warikan
+                _warikanState.value = List(DEFAULT_WARIKAN_NUM) {
+                    makeDefaultWarikan()
+                }
+                _proportionState.value = List(DEFAULT_WARIKAN_NUM) {
+                    ""
+                }
             }
         }
     }
@@ -58,28 +66,54 @@ class WarikanViewModel @Inject constructor(
         when (event) {
             is WarikanEvent.AddWarikanEvent -> {
                 _warikanState.value =
-                    (_warikanState.value + makeDefaultWarikan()) as MutableList<Warikan>
+                    (_warikanState.value + makeDefaultWarikan())
+                _proportionState.value = (_proportionState.value + "")
+
             }
             is WarikanEvent.DeleteWarikanEvent -> {
                 if (_warikanState.value.size > 2) {
                     _warikanState.value = _warikanState.value.filterIndexed { index, _ ->
                         index != event.index
-                    } as MutableList<Warikan>
+                    }
+                    _proportionState.value = _proportionState.value.filterIndexed { index, _ ->
+                        index != event.index
+                    }
                     return
                 }
                 viewModelScope.launch { _eventFlow.emit(UiEvent.DeleteError) }
             }
-            is WarikanEvent.EditWarikanEvent -> {}
-            is WarikanEvent.EditProportionEvent -> {}
+            is WarikanEvent.EditWarikanEvent -> {
+                _warikanState.value = _warikanState.value.mapIndexed { index, warikan ->
+                    if (index == event.index) {
+                        val ratios = warikan.ratios.mapIndexed { index, ratio ->
+                            if (index == event.num) event.value
+                            else ratio
+                        }
+
+                        warikan.copy(
+                            color =
+                            if (ratios.any { it.isEmpty() or !it.isDigitsOnly() }) -1
+                            else members[ratios.indexOf(ratios.maxBy { it.toInt() })].color,
+                            ratios = ratios
+                        )
+                    } else warikan
+                }
+            }
+            is WarikanEvent.EditProportionEvent -> {
+                _proportionState.value = _proportionState.value.mapIndexed() { index, proportion ->
+                    if (index == event.index) {
+                        event.value
+                    } else proportion
+                }
+            }
             is WarikanEvent.StartEvent -> {}
         }
     }
 
     private fun makeDefaultWarikan(): Warikan {
-        val defRatios = List(members.size) { (10 / members.size).toString() }
-        val ratios = defRatios.joinToString(":")
+        val defRatios = List(members.size) { "".toString() }
         return Warikan(
-            ratios = ratios,
+            ratios = defRatios,
             proportion = 1,
             color = -1
         )

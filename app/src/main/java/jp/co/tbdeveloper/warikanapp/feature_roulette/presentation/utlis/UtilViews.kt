@@ -95,6 +95,7 @@ fun ShadowButton(
 @Composable
 fun CustomTextField(
     modifier: Modifier = Modifier,
+    maxLength: Int? = null,
     leadingIcon: (@Composable () -> Unit)? = null,
     trailingIcon: (@Composable () -> Unit)? = null,
     placeholderText: String = "Placeholder",
@@ -149,8 +150,11 @@ fun CustomTextField(
                 ),
                 value = text,
                 onValueChange = {
-                    onValueChange(it)
-                    text = it
+                    var input = ""
+                    if (maxLength == null) input = it
+                    else input = it.take(maxLength)
+                    onValueChange(input)
+                    text = input
                 },
                 singleLine = true,
                 cursorBrush = Brush.verticalGradient(

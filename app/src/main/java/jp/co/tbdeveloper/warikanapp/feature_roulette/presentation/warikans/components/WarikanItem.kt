@@ -25,14 +25,18 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Warik
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.CustomTextField
 import jp.co.tbdeveloper.warikanapp.ui.theme.WarikanAppTheme
 
+const val MAX_LENGTH_NUM = 2
+
 @Composable
 fun WarikanItem(
     modifier: Modifier = Modifier,
     warikan: Warikan,
+    proportion: String,
     height: Dp = 50.dp,
     width: Dp = 35.dp,
     onDeleteClick: () -> Unit,
-    onValueChange: (String) -> Unit,
+    onProportionValueChange: (String) -> Unit,
+    onWarikanValueChange: (String, Int) -> Unit,
 ) {
     Row(
         modifier = modifier
@@ -56,18 +60,28 @@ fun WarikanItem(
             modifier = Modifier.weight(5.0f),
             height = height,
             width = width,
-            ratios = "1:9".split(":")
+            ratios = warikan.ratios,
+            onValueChange = { value: String, num: Int ->
+                onWarikanValueChange(value, num)
+            }
         )
-        Box(modifier = Modifier.weight(2.0f).padding(horizontal = 5.dp)){
+        Box(
+            modifier = Modifier
+                .weight(2.0f)
+                .padding(horizontal = 5.dp)
+        ) {
             CustomTextField(
+                maxLength = 2,
                 fontSize = MaterialTheme.typography.h2.fontSize,
                 offsetY = (-3).dp,
-                placeholderText = "5",
-                text = "",
+                placeholderText = "1",
+                text = proportion,
                 height = height,
                 width = width,
                 isOnlyNum = true,
-                onValueChange = { onValueChange(it) }
+                onValueChange = {
+                    onProportionValueChange(it)
+                }
             )
         }
         Image(
@@ -92,7 +106,7 @@ fun WarikanField(
     height: Dp = 40.dp,
     width: Dp = 20.dp,
     ratios: List<String>,
-    onValueChange: (String) -> Unit = {}
+    onValueChange: (String, Int) -> Unit = { _, _ -> }
 ) {
     Row(
         modifier = modifier
@@ -102,14 +116,15 @@ fun WarikanField(
         verticalAlignment = Alignment.CenterVertically
     ) {
         CustomTextField(
+            maxLength = 2,
             fontSize = MaterialTheme.typography.h2.fontSize,
             offsetY = (-3).dp,
             placeholderText = "5",
-            text = "",
+            text = ratios[0],
             height = height,
             width = width,
             isOnlyNum = true,
-            onValueChange = { onValueChange(it) }
+            onValueChange = { onValueChange(it, 0) }
         )
         for (i in 1 until ratios.size) {
             Text(
@@ -121,14 +136,15 @@ fun WarikanField(
             )
 
             CustomTextField(
+                maxLength = 2,
                 fontSize = MaterialTheme.typography.h2.fontSize,
                 offsetY = (-3).dp,
                 placeholderText = "5",
-                text = "",
+                text = ratios[i],
                 height = height,
                 width = width,
                 isOnlyNum = true,
-                onValueChange = { onValueChange(it) }
+                onValueChange = { onValueChange(it, i) }
             )
         }
     }
@@ -139,9 +155,13 @@ fun WarikanField(
 fun DefaultPreview() {
     WarikanAppTheme {
         WarikanItem(warikan = Warikan(
-            ratios = "1:9",
+            ratios = "1:9".split(":"),
             proportion = 1,
             color = -1
-        ), onDeleteClick = { /*TODO*/ }, onValueChange = {})
+        ),
+            proportion = "",
+            onDeleteClick = { /*TODO*/ },
+            onWarikanValueChange = { _, _ -> },
+            onProportionValueChange = { _ -> })
     }
 }

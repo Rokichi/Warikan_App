@@ -1,10 +1,13 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikans.components
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -13,12 +16,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Warikan
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.components.SettingAndHistoryBar
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Screen
@@ -35,7 +41,9 @@ fun WarikansScreen(
     // 画面外のフォーカスを検知
     val focusManager = LocalFocusManager.current
     val warikanState = viewModel.warikanState.collectAsState()
+    val proportionState = viewModel.proportionState.collectAsState()
     val context = LocalContext.current
+
     LaunchedEffect(Unit) {
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
@@ -90,6 +98,7 @@ fun WarikansScreen(
             offsetX = 0.dp,
             onClick = { viewModel.onEvent(WarikanEvent.AddWarikanEvent) }
         )
+        NameToColor(members = viewModel.members)
         ColumnTableText()
         Column(
             Modifier.fillMaxHeight(),
@@ -99,7 +108,9 @@ fun WarikansScreen(
             WarikanAndColorsScrollView(
                 modifier = Modifier.weight(6.0f),
                 warikans = warikanState.value,
-                viewModel = viewModel)
+                proprotions = proportionState.value,
+                viewModel = viewModel
+            )
             ShadowButton(
                 text = "スタート！",
                 modifier = Modifier.weight(2.0f),
@@ -121,6 +132,7 @@ fun WarikansScreen(
 fun WarikanAndColorsScrollView(
     modifier: Modifier = Modifier,
     warikans: List<Warikan>,
+    proprotions: List<String>,
     viewModel: WarikanViewModel
 ) {
     LazyColumn(
@@ -130,7 +142,17 @@ fun WarikanAndColorsScrollView(
         verticalArrangement = Arrangement.spacedBy(5.dp)
     ) {
         itemsIndexed(warikans) { index, warikan ->
-            WarikanItem(warikan = warikan, onDeleteClick = {  }, onValueChange = { _ -> })
+            WarikanItem(
+                warikan = warikan,
+                proportion = proprotions[index],
+                onDeleteClick = { viewModel.onEvent(WarikanEvent.DeleteWarikanEvent(index)) },
+                onProportionValueChange = { value: String ->
+                    viewModel.onEvent(WarikanEvent.EditProportionEvent(value, index))
+                },
+                onWarikanValueChange = { value: String, num: Int ->
+                    viewModel.onEvent(WarikanEvent.EditWarikanEvent(value, index, num))
+                }
+            )
         }
     }
 }
@@ -159,5 +181,37 @@ fun ColumnTableText() {
             )
         }
         Spacer(Modifier.weight(1.5f))
+    }
+}
+
+@Composable
+fun NameToColor(
+    members: List<Member>,
+    size: Dp = 20.dp
+) {
+    LazyRow(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        items(members) { member ->
+            Box(
+                Modifier
+                    .height(size)
+                    .width(size)
+                    .background(
+                        Member.memberColors[member.color]
+                    )
+            )
+            Spacer(modifier = Modifier.padding(end=5.dp))
+            Text(
+                text = member.name,
+                style = MaterialTheme.typography.body1,
+                color = MaterialTheme.colors.surface,
+            )
+            Spacer(modifier = Modifier.padding(end=5.dp))
+        }
     }
 }
