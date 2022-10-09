@@ -82,7 +82,10 @@ fun MembersScreen(
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         // トップバー
-        SettingAndHistoryBar(onHistoryClick = {navController.navigate(Screen.RouletteScreen.route + "/27/true")})
+        SettingAndHistoryBar(
+            onSettingClick = { navController.navigate(Screen.WarikanScreen.route + "/27") },
+            onHistoryClick = { navController.navigate(Screen.RouletteScreen.route + "/27/true") }
+        )
         Text(
             text = "メンバーを決めてね",
             modifier = Modifier.fillMaxWidth(),
@@ -180,12 +183,11 @@ fun InputSumOfAccount(
             color = MaterialTheme.colors.surface
         )
         CustomTextField(
-            fontSize = 16.sp,
+            fontSize = MaterialTheme.typography.h2.fontSize,
             placeholderText = "2000",
             width = 100.dp,
-            height = 40.dp,
+            height = 50.dp,
             isOnlyNum = true,
-            //text = if (state.value.total == 0) "" else state.value.total.toString(),
             text = text,
             onValueChange = {
                 viewModel.onEvent(MemberEvent.EditTotalEvent(it))

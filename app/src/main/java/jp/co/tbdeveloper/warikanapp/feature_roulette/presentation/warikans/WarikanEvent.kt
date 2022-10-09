@@ -1,6 +1,4 @@
-package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.Warikans
-
-import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.MemberEvent
+package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikans
 
 sealed class WarikanEvent {
     object AddWarikanEvent: WarikanEvent()

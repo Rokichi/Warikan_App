@@ -1,9 +1,11 @@
-package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.Warikans.components
+package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikans.components
 
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -17,11 +19,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.Warikans.WarikanEvent
-import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.Warikans.WarikanViewModel
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Warikan
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.components.SettingAndHistoryBar
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Screen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.ShadowButton
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikans.WarikanEvent
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikans.WarikanViewModel
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -87,6 +90,74 @@ fun WarikansScreen(
             offsetX = 0.dp,
             onClick = { viewModel.onEvent(WarikanEvent.AddWarikanEvent) }
         )
+        ColumnTableText()
+        Column(
+            Modifier.fillMaxHeight(),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            WarikanAndColorsScrollView(
+                modifier = Modifier.weight(6.0f),
+                warikans = warikanState.value,
+                viewModel = viewModel)
+            ShadowButton(
+                text = "スタート！",
+                modifier = Modifier.weight(2.0f),
+                padding = 80,
+                backGroundColor = MaterialTheme.colors.primary,
+                borderColor = MaterialTheme.colors.background,
+                textStyle = MaterialTheme.typography.body1,
+                offsetY = 9.dp,
+                offsetX = 0.dp,
+                onClick = {
 
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun WarikanAndColorsScrollView(
+    modifier: Modifier = Modifier,
+    warikans: List<Warikan>,
+    viewModel: WarikanViewModel
+) {
+    LazyColumn(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(5.dp)
+    ) {
+        itemsIndexed(warikans) { index, warikan ->
+            WarikanItem(warikan = warikan, onDeleteClick = {  }, onValueChange = { _ -> })
+        }
+    }
+}
+
+@Composable
+fun ColumnTableText() {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(Modifier.weight(5.0f), contentAlignment = Alignment.Center) {
+            Text(
+                text = "割り勘の割合",
+                style = MaterialTheme.typography.body1,
+                color = MaterialTheme.colors.surface
+            )
+        }
+        Box(Modifier.weight(1.0f), contentAlignment = Alignment.Center) {
+            Text(
+                text = "比率",
+                style = MaterialTheme.typography.body1,
+                color = MaterialTheme.colors.surface
+            )
+        }
+        Spacer(Modifier.weight(1.5f))
     }
 }

@@ -15,6 +15,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import jp.co.tbdeveloper.warikanapp.R
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.CustomTextField
@@ -23,7 +24,7 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.CustomTe
 fun MemberItem(
     modifier: Modifier = Modifier,
     member: Member,
-    height: Dp = 40.dp,
+    height: Dp = 50.dp,
     onDeleteClick: () -> Unit,
     onValueChange: (String) -> Unit,
 ) {
@@ -36,17 +37,18 @@ fun MemberItem(
     ) {
         CustomTextField(
             modifier = Modifier.weight(6.0f),
-            fontSize = MaterialTheme.typography.body1.fontSize,
+            fontSize = MaterialTheme.typography.h2.fontSize,
             placeholderText = "name",
             text = member.name,
             height = height,
+            offsetY = (-3).dp,
             onValueChange = { onValueChange(it) }
         )
         Box(Modifier.weight(1.5f), contentAlignment = Alignment.Center) {
             Box(
                 Modifier
-                    .height(height - 10.dp)
-                    .width(height - 10.dp)
+                    .height(height - 15.dp)
+                    .width(height - 15.dp)
                     .background(Member.memberColors[member.color])
             )
         }

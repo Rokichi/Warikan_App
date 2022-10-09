@@ -1,9 +1,10 @@
-package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.Warikans
+package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikans
 
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Warikan
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.MemberFactory
@@ -19,9 +20,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 const val DEFAULT_WARIKAN_NUM = 2
-const val MAX_WARIKAN_NUM = 3
 
-
+@HiltViewModel
 class WarikanViewModel @Inject constructor(
     private val memberUseCases: MemberUseCases,
     private val warikanUseCases: WarikanUseCases,
@@ -41,7 +41,6 @@ class WarikanViewModel @Inject constructor(
 
     init {
         savedStateHandle.get<Long>("id")?.let { id ->
-            Log.i("id", id.toString())
             CoroutineScope(Dispatchers.IO).launch {
                 val memberEntitys = memberUseCases.getMembersById(id)
                 if (memberEntitys == null) return@launch
@@ -77,7 +76,7 @@ class WarikanViewModel @Inject constructor(
     }
 
     private fun makeDefaultWarikan(): Warikan {
-        val defRatios = List(members.size) { (10 / members.size).toInt() }
+        val defRatios = List(members.size) { (10 / members.size).toString() }
         val ratios = defRatios.joinToString(":")
         return Warikan(
             ratios = ratios,

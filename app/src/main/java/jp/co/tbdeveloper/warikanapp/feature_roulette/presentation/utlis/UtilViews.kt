@@ -103,7 +103,7 @@ fun CustomTextField(
     width: Dp = 150.dp,
     height: Dp = 50.dp,
     offsetX: Dp = 0.dp,
-    offsetY: Dp = (-3).dp,
+    offsetY: Dp = (0).dp,
     onValueChange: (String) -> Unit,
     cursorHeight: Float = 0.8f,
     isOnlyNum: Boolean = false,
