@@ -5,5 +5,6 @@ data class WarikanUseCases(
     val getAllWarikans: GetAllWarikans,
     val deleteWarikan: DeleteWarikan,
     val deleteWarikans: DeleteWarikans,
-    val addWarikan: AddWarikan
+    val addWarikan: AddWarikan,
+    val warikanValidation: WarikanValidation
 )

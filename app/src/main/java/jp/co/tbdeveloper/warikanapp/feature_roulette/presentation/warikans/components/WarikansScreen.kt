@@ -10,17 +10,20 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Switch
+import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -43,6 +46,8 @@ fun WarikansScreen(
     val warikanState = viewModel.warikanState.collectAsState()
     val proportionState = viewModel.proportionState.collectAsState()
     val context = LocalContext.current
+    val isSave = remember { viewModel.isSave }
+
 
     LaunchedEffect(Unit) {
         viewModel.eventFlow.collectLatest { event ->
@@ -53,15 +58,12 @@ fun WarikansScreen(
                 is WarikanViewModel.UiEvent.InputError -> {
                     when (event.errorNum) {
                         0 -> {
-                            Toast.makeText(context, "合計金額を正しく入力してください", Toast.LENGTH_SHORT).show()
-                        }
-                        1 -> {
-                            Toast.makeText(context, "メンバー名が未入力です", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "数値を入力してください", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
                 is WarikanViewModel.UiEvent.NextPage -> {
-                    navController.navigate(Screen.WarikanScreen.route + "/${event.id}")
+                    navController.navigate(Screen.RouletteScreen.route + "/${event.id}/${event.isSave}")
                 }
             }
         }
@@ -87,17 +89,42 @@ fun WarikansScreen(
             style = MaterialTheme.typography.h1,
             color = MaterialTheme.colors.surface
         )
-        // 追加ボタン
-        ShadowButton(
-            text = "追加",
-            padding = 80,
-            backGroundColor = MaterialTheme.colors.primary,
-            borderColor = MaterialTheme.colors.background,
-            textStyle = MaterialTheme.typography.body1,
-            offsetY = 9.dp,
-            offsetX = 0.dp,
-            onClick = { viewModel.onEvent(WarikanEvent.AddWarikanEvent) }
-        )
+        ProvideLayoutDirection(layoutDirection = LayoutDirection.Rtl) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Row(horizontalArrangement = Arrangement.spacedBy(5.dp)){
+                    Switch(
+                        modifier = Modifier.rotate(180f),
+                        checked = isSave.value,
+                        onCheckedChange = { isSave.value = it },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = Color.Red,
+                            uncheckedThumbColor = Color.Gray,
+                            uncheckedTrackColor = Color.LightGray
+                        )
+                    )
+                    Text(
+                        text = "保存",
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.body1,
+                        color = MaterialTheme.colors.surface,
+                    )
+                }
+                // 追加ボタン
+                ShadowButton(
+                    text = "追加",
+                    padding = 80,
+                    backGroundColor = MaterialTheme.colors.primary,
+                    borderColor = MaterialTheme.colors.background,
+                    textStyle = MaterialTheme.typography.body1,
+                    offsetY = 9.dp,
+                    offsetX = 0.dp,
+                    onClick = { viewModel.onEvent(WarikanEvent.AddWarikanEvent) }
+                )
+            }
+        }
         NameToColor(members = viewModel.members)
         ColumnTableText()
         Column(
@@ -121,7 +148,7 @@ fun WarikansScreen(
                 offsetY = 9.dp,
                 offsetX = 0.dp,
                 onClick = {
-
+                    viewModel.onEvent(WarikanEvent.StartEvent)
                 }
             )
         }
@@ -205,13 +232,24 @@ fun NameToColor(
                         Member.memberColors[member.color]
                     )
             )
-            Spacer(modifier = Modifier.padding(end=5.dp))
+            Spacer(modifier = Modifier.padding(end = 5.dp))
             Text(
                 text = member.name,
                 style = MaterialTheme.typography.body1,
                 color = MaterialTheme.colors.surface,
             )
-            Spacer(modifier = Modifier.padding(end=5.dp))
+            Spacer(modifier = Modifier.padding(end = 5.dp))
         }
     }
+}
+
+@Composable
+private fun ProvideLayoutDirection(
+    layoutDirection: LayoutDirection,
+    content: @Composable () -> Unit,
+) {
+    CompositionLocalProvider(
+        LocalLayoutDirection provides layoutDirection,
+        content = content,
+    )
 }

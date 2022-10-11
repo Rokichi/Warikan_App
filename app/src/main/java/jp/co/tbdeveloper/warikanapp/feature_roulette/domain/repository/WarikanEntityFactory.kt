@@ -25,4 +25,24 @@ object WarikanEntityFactory {
             )
         }
     }
+
+    /**
+     * WarikanList -> WarikanEntityList
+     *
+     * @param rouletteId ひも付きルーレットID
+     * @param warikans 保存したいデータ
+     * @param proportions 比率データ
+     * @return WarikanEntityList
+     */
+    fun create(rouletteId: Long, warikans: List<Warikan>, proportions:List<String>): List<WarikanEntity> {
+        return List(warikans.size) { i ->
+            WarikanEntity(
+                0,
+                rouletteId,
+                warikans[i].ratios.joinToString(":"),
+                proportions[i].toInt(),
+                warikans[i].color
+            )
+        }
+    }
 }
