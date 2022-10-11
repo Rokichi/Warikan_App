@@ -95,6 +95,7 @@ fun ShadowButton(
 @Composable
 fun CustomTextField(
     modifier: Modifier = Modifier,
+    maxLength: Int? = null,
     leadingIcon: (@Composable () -> Unit)? = null,
     trailingIcon: (@Composable () -> Unit)? = null,
     placeholderText: String = "Placeholder",
@@ -103,12 +104,12 @@ fun CustomTextField(
     width: Dp = 150.dp,
     height: Dp = 50.dp,
     offsetX: Dp = 0.dp,
-    offsetY: Dp = (-3).dp,
+    offsetY: Dp = (0).dp,
     onValueChange: (String) -> Unit,
     cursorHeight: Float = 0.8f,
     isOnlyNum: Boolean = false,
 ) {
-    Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(bottom = 5.dp)) {
+    Box(contentAlignment = Alignment.Center, modifier = modifier.padding(bottom = 5.dp)) {
         val tmp = text
         var text by rememberSaveable { mutableStateOf(text) }
         text = tmp
@@ -120,7 +121,7 @@ fun CustomTextField(
         )
         CompositionLocalProvider(LocalTextSelectionColors provides selectionColors) {
             BasicTextField(
-                modifier = modifier
+                modifier = Modifier
                     .background(
                         MaterialTheme.colors.background,
                         RoundedCornerShape(0.dp),
@@ -149,8 +150,11 @@ fun CustomTextField(
                 ),
                 value = text,
                 onValueChange = {
-                    onValueChange(it)
-                    text = it
+                    var input = ""
+                    if (maxLength == null) input = it
+                    else input = it.take(maxLength)
+                    onValueChange(input)
+                    text = input
                 },
                 singleLine = true,
                 cursorBrush = Brush.verticalGradient(

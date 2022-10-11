@@ -22,6 +22,11 @@ val Typography = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp
     ),
+    h2 = TextStyle(
+        fontFamily = NotoSansFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 18.sp
+    ),
     button = TextStyle(
         fontFamily = NotoSansFamily,
         fontWeight = FontWeight.Normal,

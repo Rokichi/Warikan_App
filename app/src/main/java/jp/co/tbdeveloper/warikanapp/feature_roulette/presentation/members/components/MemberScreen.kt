@@ -50,7 +50,7 @@ fun MembersScreen(
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is MemberViewModel.UiEvent.DeleteError -> {
-                    Toast.makeText(context, "メンバーを二人未満にすることはできません", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "メンバーを2人未満にすることはできません", Toast.LENGTH_SHORT).show()
                 }
                 is MemberViewModel.UiEvent.InputError -> {
                     when (event.errorNum) {
@@ -82,7 +82,10 @@ fun MembersScreen(
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         // トップバー
-        SettingAndHistoryBar(onHistoryClick = {navController.navigate(Screen.RouletteScreen.route + "/27/true")})
+        SettingAndHistoryBar(
+            onSettingClick = { navController.navigate(Screen.WarikanScreen.route + "/27") },
+            onHistoryClick = { navController.navigate(Screen.RouletteScreen.route + "/27/true") }
+        )
         Text(
             text = "メンバーを決めてね",
             modifier = Modifier.fillMaxWidth(),
@@ -99,7 +102,7 @@ fun MembersScreen(
             textStyle = MaterialTheme.typography.body1,
             offsetY = 9.dp,
             offsetX = 0.dp,
-            onClick = { viewModel.onEvent(MemberEvent.AddMember) }
+            onClick = { viewModel.onEvent(MemberEvent.AddMemberEvent) }
         )
         Spacer(Modifier.height(5.dp))
         // お金入力フィールド
@@ -180,12 +183,11 @@ fun InputSumOfAccount(
             color = MaterialTheme.colors.surface
         )
         CustomTextField(
-            fontSize = 16.sp,
+            fontSize = MaterialTheme.typography.h2.fontSize,
             placeholderText = "2000",
             width = 100.dp,
-            height = 40.dp,
+            height = 50.dp,
             isOnlyNum = true,
-            //text = if (state.value.total == 0) "" else state.value.total.toString(),
             text = text,
             onValueChange = {
                 viewModel.onEvent(MemberEvent.EditTotalEvent(it))

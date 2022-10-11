@@ -9,13 +9,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -26,13 +23,11 @@ import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import dagger.hilt.android.AndroidEntryPoint
-import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.Warikans.components.WarikansScreen
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikans.components.WarikansScreen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.components.MembersScreen
-import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.RouletteViewModel
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.components.RouletteScreen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Screen
 import jp.co.tbdeveloper.warikanapp.ui.theme.WarikanAppTheme
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -59,11 +54,10 @@ class MainActivity : ComponentActivity() {
                             composable(
                                 route = Screen.WarikanScreen.route + "/{id}",
                                 arguments = listOf(
-                                    navArgument("id") { type = NavType.LongType }
+                                    navArgument("id") { type = NavType.LongType },
                                 )
-                            ) { backStackEntry ->
-                                val id = backStackEntry.arguments?.getLong("id") ?: 0
-                                WarikansScreen(id)
+                            ) {
+                                WarikansScreen(navController)
                             }
 
                             composable(

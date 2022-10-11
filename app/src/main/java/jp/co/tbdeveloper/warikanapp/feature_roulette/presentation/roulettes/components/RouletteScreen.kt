@@ -38,7 +38,6 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.Roul
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.RoulettesEvent
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Circle
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.FunShape
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.collectLatest
 import kotlin.math.cos
 import kotlin.math.sin
@@ -249,7 +248,7 @@ fun CircleOfRoulette(
                 ) {
                     currentRotation = value
                 }
-                if(!state.endState.isRunning){
+                if (!state.endState.isRunning) {
                     viewModel.onEvent(RoulettesEvent.EndRouletteEvent)
                 }
             }
@@ -265,7 +264,9 @@ fun CircleOfRoulette(
             val sweepAngle: Float = warikan.proportion * deg
             FunShape(
                 modifier = modifier.size(size),
-                backGroundColor = Member.memberColors[warikan.color],
+                backGroundColor =
+                if (warikan.color != -1) Member.memberColors[warikan.color]
+                else Color.LightGray,
                 startAngle = oldDegree,
                 sweepAngle = sweepAngle,
                 isBordered = isBordered
@@ -288,7 +289,7 @@ fun CircleOfRoulette(
                     .padding(horizontal = 5.dp),
                 contentAlignment = Alignment.Center
             ) {
-                RoundedRatio(memberColors = memberColors, ratios = warikan.ratios.split(":"))
+                RoundedRatio(memberColors = memberColors, ratios = warikan.ratios)
             }
             oldDegree += sweepAngle
         }

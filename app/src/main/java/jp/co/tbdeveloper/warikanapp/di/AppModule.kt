@@ -111,7 +111,8 @@ object AppModule {
             getAllWarikans = GetAllWarikans(repository),
             deleteWarikan = DeleteWarikan(repository),
             deleteWarikans = DeleteWarikans(repository),
-            addWarikan = AddWarikan(repository)
+            addWarikan = AddWarikan(repository),
+            warikanValidation = WarikanValidation()
         )
     }
 }

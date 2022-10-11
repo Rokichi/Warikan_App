@@ -15,6 +15,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import jp.co.tbdeveloper.warikanapp.R
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.CustomTextField
@@ -23,7 +24,7 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.CustomTe
 fun MemberItem(
     modifier: Modifier = Modifier,
     member: Member,
-    height: Dp = 40.dp,
+    height: Dp = 50.dp,
     onDeleteClick: () -> Unit,
     onValueChange: (String) -> Unit,
 ) {
@@ -34,36 +35,35 @@ fun MemberItem(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(Modifier.weight(6.0f), contentAlignment = Alignment.Center) {
-            CustomTextField(
-                fontSize = MaterialTheme.typography.body1.fontSize,
-                placeholderText = "name",
-                text = member.name,
-                height = height,
-                onValueChange = {onValueChange(it)}
-            )
-        }
+        CustomTextField(
+            modifier = Modifier.weight(6.0f),
+            fontSize = MaterialTheme.typography.h2.fontSize,
+            placeholderText = "name",
+            text = member.name,
+            height = height,
+            offsetY = (-3).dp,
+            onValueChange = { onValueChange(it) }
+        )
         Box(Modifier.weight(1.5f), contentAlignment = Alignment.Center) {
             Box(
                 Modifier
-                    .height(height - 10.dp)
-                    .width(height - 10.dp)
+                    .height(height - 15.dp)
+                    .width(height - 15.dp)
                     .background(Member.memberColors[member.color])
             )
         }
-        Box(Modifier.weight(1.0f), contentAlignment = Alignment.Center) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_close),
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .height(height - 10.dp)
-                    .clickable(
-                        interactionSource = MutableInteractionSource(),
-                        indication = rememberRipple(color = Color.Black, bounded = true),
-                        onClick = { onDeleteClick() }
-                    ),
-                contentDescription = "setting image btn",
-            )
-        }
+        Image(
+            painter = painterResource(id = R.drawable.ic_close),
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .weight(1.0f)
+                .height(height - 10.dp)
+                .clickable(
+                    interactionSource = MutableInteractionSource(),
+                    indication = rememberRipple(color = Color.Black, bounded = true),
+                    onClick = { onDeleteClick() }
+                ),
+            contentDescription = "close image btn",
+        )
     }
 }
