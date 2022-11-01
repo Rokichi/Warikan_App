@@ -9,14 +9,16 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.InvalidMemberException
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.InvalidRouletteException
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.MemberEntityFactory
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.RouletteEntityFactory
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.member.MemberUseCases
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.roulette.RouletteUseCases
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.security.MessageDigest
+import java.util.*
 import javax.inject.Inject
-import kotlin.random.Random
 
 
 const val DEFAULT_MEMBER_NUM = 2
@@ -30,11 +32,15 @@ class MemberViewModel @Inject constructor(
 
     // 不使用色データ
     private val unusedColorNums = MutableList(Member.memberColors.size) { it }
+    private var hashLongNum: Int = getMD5Hash(Calendar.getInstance().time.toString())
 
     // メンバー
     private val _memberState = MutableStateFlow(
-        MutableList(DEFAULT_MEMBER_NUM) { i ->
-            Member("", unusedColorNums.removeAt(Random.nextInt(unusedColorNums.size)))
+        MutableList(DEFAULT_MEMBER_NUM) { _ ->
+            Member(
+                "",
+                unusedColorNums.removeAt(getMD5Hash(hashLongNum.toString()) % unusedColorNums.size)
+            )
         }
     )
     val memberState = _memberState.asStateFlow()
@@ -52,7 +58,7 @@ class MemberViewModel @Inject constructor(
                 if (memberState.value.size < MAX_MEMBER_NUM) {
                     _memberState.value = (_memberState.value + Member(
                         "",
-                        unusedColorNums.removeAt(Random.nextInt(unusedColorNums.size))
+                        unusedColorNums.removeAt(getMD5Hash(hashLongNum.toString()) % unusedColorNums.size)
                     )) as MutableList<Member>
                 }
             }
@@ -82,19 +88,17 @@ class MemberViewModel @Inject constructor(
             is MemberEvent.NextPageEvent -> {
                 viewModelScope.launch {
                     // 入力金額が不正
-                    try{
+                    try {
                         rouletteUseCases.rouletteValidation(_totalState.value)
-                    }
-                    catch (e: InvalidRouletteException){
+                    } catch (e: InvalidRouletteException) {
                         _eventFlow.emit(UiEvent.InputError(0))
                         return@launch
                     }
 
                     // メンバー名が不正
-                    try{
+                    try {
                         memberUseCases.memberValidation(_memberState.value)
-                    }
-                    catch (e:InvalidMemberException){
+                    } catch (e: InvalidMemberException) {
                         _eventFlow.emit(UiEvent.InputError(1))
                         return@launch
                     }
@@ -106,9 +110,23 @@ class MemberViewModel @Inject constructor(
         }
     }
 
+    fun ByteArray.toHexInt(): Int {
+        var result = 0
+        for (i in 0..3) {
+            result = result shl 8
+            result = result or this[i].toUByte().toInt()
+        }
+        return result
+    }
+
+    private fun getMD5Hash(original: String): Int {
+        val md = MessageDigest.getInstance("MD5")
+        return md.digest(original.toByteArray()).toHexInt()
+    }
+
     sealed class UiEvent {
         object DeleteError : UiEvent()
         data class InputError(val errorNum: Int) : UiEvent()
-        data class NextPage(val members: String?, val total:String) : UiEvent()
+        data class NextPage(val members: String?, val total: String) : UiEvent()
     }
 }
