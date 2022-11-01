@@ -1,8 +1,10 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members
 
+import android.net.Uri
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.InvalidMemberException
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.InvalidRouletteException
@@ -96,12 +98,9 @@ class MemberViewModel @Inject constructor(
                         _eventFlow.emit(UiEvent.InputError(1))
                         return@launch
                     }
-                    val rouletteEntity = RouletteEntityFactory.create(total = totalState.value.toInt())
-                    val rouletteId = rouletteUseCases.addRoulette(rouletteEntity)
-                    val memberEntities =
-                        MemberEntityFactory.create(rouletteId = rouletteId, members = memberState.value)
-                    memberUseCases.addMember(memberEntities)
-                    _eventFlow.emit(UiEvent.NextPage(rouletteId))
+                    /* json encode */
+                    val memberJson = Uri.encode(Gson().toJson(memberState.value))
+                    _eventFlow.emit(UiEvent.NextPage(memberJson, totalState.value))
                 }
             }
         }
@@ -110,6 +109,6 @@ class MemberViewModel @Inject constructor(
     sealed class UiEvent {
         object DeleteError : UiEvent()
         data class InputError(val errorNum: Int) : UiEvent()
-        data class NextPage(val id: Long) : UiEvent()
+        data class NextPage(val members: String?, val total:String) : UiEvent()
     }
 }

@@ -1,20 +1,18 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikans
 
+import android.net.Uri
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.InvalidWarikanException
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Warikan
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.MemberFactory
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.WarikanEntityFactory
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.member.MemberUseCases
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.warikan.WarikanUseCases
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -31,7 +29,8 @@ class WarikanViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     // メンバー
-    var members = listOf<Member>()
+    var members = mutableListOf<Member>()
+    var total = ""
 
     // 割り勘
     private val _warikanState = MutableStateFlow(
@@ -49,23 +48,19 @@ class WarikanViewModel @Inject constructor(
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
-    val rouletteId = mutableStateOf(0.toLong())
 
     init {
-        savedStateHandle.get<Long>("id")?.let { id ->
-            rouletteId.value = id
-            CoroutineScope(Dispatchers.IO).launch {
-                val memberEntitys = memberUseCases.getMembersById(id)
-                if (memberEntitys == null) return@launch
-                members = MemberFactory.create(memberEntitys)
-                // init warikan
-                _warikanState.value = List(DEFAULT_WARIKAN_NUM) {
-                    makeDefaultWarikan()
-                }
-                _proportionState.value = List(DEFAULT_WARIKAN_NUM) {
-                    "1"
-                }
-            }
+        // load from navigation
+        val memberData = savedStateHandle.get<Array<Member>>("members")
+        total = savedStateHandle.get<String>("total") ?: ""
+        if (memberData != null) {
+            for (member in memberData) members.add(member)
+        }// init warikan
+        _warikanState.value = List(DEFAULT_WARIKAN_NUM) {
+            makeDefaultWarikan()
+        }
+        _proportionState.value = List(DEFAULT_WARIKAN_NUM) {
+            "1"
         }
     }
 
@@ -122,14 +117,10 @@ class WarikanViewModel @Inject constructor(
                         _eventFlow.emit(UiEvent.InputError(0))
                         return@launch
                     }
-                    warikanUseCases.addWarikan(
-                        WarikanEntityFactory.create(
-                            rouletteId.value,
-                            _warikanState.value,
-                            _proportionState.value
-                        )
-                    )
-                    _eventFlow.emit(UiEvent.NextPage(rouletteId.value, isSave.value))
+                    /* json encode */
+                    val memberJson = Uri.encode(Gson().toJson(members))
+                    val warikanJson = Uri.encode(Gson().toJson(warikanState.value))
+                    _eventFlow.emit(UiEvent.NextPage(total, isSave.value, memberJson, warikanJson))
                 }
             }
         }
@@ -147,6 +138,12 @@ class WarikanViewModel @Inject constructor(
     sealed class UiEvent {
         object DeleteError : UiEvent()
         data class InputError(val errorNum: Int) : UiEvent()
-        data class NextPage(val id: Long, val isSave: Boolean) : UiEvent()
+        data class NextPage(
+            val total: String,
+            val isSave: Boolean,
+            val memberJson: String,
+            val warikanJson: String
+        ) :
+            UiEvent()
     }
 }

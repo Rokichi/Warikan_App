@@ -63,7 +63,10 @@ fun WarikansScreen(
                     }
                 }
                 is WarikanViewModel.UiEvent.NextPage -> {
-                    navController.navigate(Screen.RouletteScreen.route + "/${event.id}/${event.isSave}")
+                    navController.navigate(
+                        Screen.RouletteScreen.route +
+                                "/${event.total}/${event.isSave}/${event.memberJson}/${event.warikanJson}"
+                    )
                 }
             }
         }
@@ -94,7 +97,7 @@ fun WarikansScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                Row(horizontalArrangement = Arrangement.spacedBy(5.dp)){
+                Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
                     Switch(
                         modifier = Modifier.rotate(180f),
                         checked = isSave.value,

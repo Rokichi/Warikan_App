@@ -15,6 +15,6 @@ import kotlinx.parcelize.Parcelize
 data class Roulette(
     val Total: Int = 0,
     val RouletteId: Long = 0,
-    val Members: List<Member> = mutableListOf(),
-    val Warikans: List<Warikan> = mutableListOf(),
+    val Members: List<Member> = listOf(),
+    val Warikans: List<Warikan> = listOf(),
 ):Parcelable
