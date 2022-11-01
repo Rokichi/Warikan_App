@@ -22,7 +22,6 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import jp.co.tbdeveloper.warikanapp.R
@@ -63,7 +62,7 @@ fun MembersScreen(
                     }
                 }
                 is MemberViewModel.UiEvent.NextPage -> {
-                    navController.navigate(Screen.WarikanScreen.route + "/${event.id}")
+                    navController.navigate(Screen.WarikanScreen.route + "/${event.members}/${event.total}")
                 }
             }
         }
@@ -134,6 +133,7 @@ fun MembersScreen(
             )
         }
     }
+
 }
 
 @Composable

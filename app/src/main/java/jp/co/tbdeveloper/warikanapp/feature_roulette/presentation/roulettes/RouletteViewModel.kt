@@ -1,23 +1,22 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.ResultWarikan
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Roulette
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.MemberFactory
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Warikan
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.MemberEntityFactory
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.ResultWarikanFactory
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.RouletteFactory
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.WarikanFactory
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.RouletteEntityFactory
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.WarikanEntityFactory
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.member.MemberUseCases
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.roulette.RouletteUseCases
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.warikan.WarikanUseCases
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -55,29 +54,34 @@ class RouletteViewModel @Inject constructor(
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-
     init {
-        savedStateHandle.get<Long>("id")?.let { id ->
-            Log.i("id", id.toString())
-            CoroutineScope(Dispatchers.IO).launch {
-                val rouletteEntity = rouletteUseCases.getRouletteById(id)
-                val memberEntitys = memberUseCases.getMembersById(id)
-                val warikanEntitys = warikanUseCases.getWarikansById(id)
-                if (rouletteEntity == null) return@launch
-                if (memberEntitys == null) return@launch
-                if (warikanEntitys == null) return@launch
-                _rouletteState.value = RouletteFactory.create(
-                    rouletteEntity,
-                    MemberFactory.create(memberEntitys),
-                    WarikanFactory.create(warikanEntitys)
-                )
-                rouletteState.value.Warikans.forEach { warikan ->
-                    sumOfProportion += warikan.proportion
-                }
-                _resultWarikanState.value =
-                    ResultWarikanFactory.create(rouletteState.value.Members)
-            }
+        // load from navigation
+        val total = savedStateHandle.get<String>("total") ?: 0
+        val memberData = savedStateHandle.get<Array<Member>>("members") ?: arrayOf()
+        val warikanData = savedStateHandle.get<Array<Warikan>>("warikans") ?: arrayOf()
+        val isSave = savedStateHandle.get<Boolean>("isSave") ?: false
+        _rouletteState.value = Roulette(
+            Total = total.toString().toInt(),
+            Members = memberData.toList(),
+            Warikans = warikanData.toList()
+        )
+        rouletteState.value.Warikans.forEach { warikan ->
+            sumOfProportion += warikan.proportion
         }
+        _resultWarikanState.value =
+            ResultWarikanFactory.create(rouletteState.value.Members)
+        if (isSave)
+            viewModelScope.launch {
+                // save
+                val id = rouletteUseCases.addRoulette(
+                    RouletteEntityFactory.create(
+                        total.toString().toInt()
+                    )
+                )
+                memberUseCases.addMember(MemberEntityFactory.create(id, memberData.toList()))
+                warikanUseCases.addWarikan(WarikanEntityFactory.create(id, warikanData.toList()))
+                _eventFlow.emit(UiEvent.SaveEvent)
+            }
     }
 
     fun onEvent(event: RoulettesEvent) {
@@ -98,6 +102,7 @@ class RouletteViewModel @Inject constructor(
     }
 
     sealed class UiEvent {
+        object SaveEvent : UiEvent()
         object StartRoulette : UiEvent()
         object StopRoulette : UiEvent()
         object EndRoulette : UiEvent()

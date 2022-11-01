@@ -46,7 +46,6 @@ import kotlin.math.sin
 fun RouletteScreen(
     navController: NavController,
     viewModel: RouletteViewModel = hiltViewModel(),
-    isSave: Boolean = false,
 ) {
     val context = LocalContext.current
 
@@ -56,9 +55,11 @@ fun RouletteScreen(
     val resultDeg = remember { viewModel.resultDeg }
 
     LaunchedEffect(Unit) {
-        if (isSave) Toast.makeText(context, "データを保存しました", Toast.LENGTH_SHORT).show()
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
+                is RouletteViewModel.UiEvent.SaveEvent -> {
+                    Toast.makeText(context, "データを保存しました", Toast.LENGTH_SHORT).show()
+                }
                 is RouletteViewModel.UiEvent.StartRoulette -> {}
                 is RouletteViewModel.UiEvent.StopRoulette -> {}
                 is RouletteViewModel.UiEvent.EndRoulette -> {

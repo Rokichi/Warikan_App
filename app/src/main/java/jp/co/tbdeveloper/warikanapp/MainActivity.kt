@@ -23,10 +23,12 @@ import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import dagger.hilt.android.AndroidEntryPoint
-import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikans.components.WarikansScreen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.components.MembersScreen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.components.RouletteScreen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Screen
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikans.components.WarikansScreen
+import jp.co.tbdeveloper.warikanapp.feature_roulette.utils.MemberArrayType
+import jp.co.tbdeveloper.warikanapp.feature_roulette.utils.WarikanArrayType
 import jp.co.tbdeveloper.warikanapp.ui.theme.WarikanAppTheme
 
 @AndroidEntryPoint
@@ -52,25 +54,26 @@ class MainActivity : ComponentActivity() {
                             }
 
                             composable(
-                                route = Screen.WarikanScreen.route + "/{id}",
+                                route = Screen.WarikanScreen.route + "/{members}/{total}",
                                 arguments = listOf(
-                                    navArgument("id") { type = NavType.LongType },
+                                    navArgument("members") { type = MemberArrayType() },
+                                    navArgument("total") { type = NavType.StringType },
                                 )
                             ) {
                                 WarikansScreen(navController)
                             }
 
                             composable(
-                                route = Screen.RouletteScreen.route + "/{id}/{isSave}",
+                                route = Screen.RouletteScreen.route + "/{total}/{isSave}/{members}/{warikans}",
                                 arguments = listOf(
-                                    navArgument("id") { type = NavType.LongType },
-                                    navArgument("isSave") { type = NavType.BoolType }
+                                    navArgument("total") { type = NavType.StringType },
+                                    navArgument("isSave") { type = NavType.BoolType },
+                                    navArgument("members") { type = MemberArrayType() },
+                                    navArgument("warikans") { type = WarikanArrayType() },
                                 )
-                            ) { backStackEntry ->
-                                val isSave = backStackEntry.arguments?.getBoolean("isSave") ?: true
+                            ) {
                                 RouletteScreen(
                                     navController = navController,
-                                    isSave = isSave
                                 )
                             }
                         }
@@ -100,7 +103,6 @@ class MainActivity : ComponentActivity() {
         MobileAds.initialize(this) {}
     }
 }
-
 
 
 @Preview(showBackground = true)
