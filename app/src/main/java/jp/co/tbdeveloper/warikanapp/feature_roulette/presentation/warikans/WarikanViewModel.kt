@@ -53,13 +53,21 @@ class WarikanViewModel @Inject constructor(
         total = savedStateHandle.get<String>("total") ?: ""
         if (memberData != null) {
             for (member in memberData) members.add(member)
-        }// init warikan
-        _warikanState.value = listOf(
-            makeDefaultWarikan(listOf("1", "1")),
-            makeDefaultWarikan(listOf("1", "2")),
-            makeDefaultWarikan(listOf("2", "1")),
-        )
-        _proportionState.value = List(DEFAULT_WARIKAN_NUM) {
+        }
+        // init warikan
+        _warikanState.value =
+            if (members.size == 2) listOf(
+                makeDefaultWarikan(listOf("1", "1")),
+                makeDefaultWarikan(listOf("1", "2")),
+                makeDefaultWarikan(listOf("2", "1")),
+            )
+            else listOf(
+                makeDefaultWarikan(listOf("1", "1", "1")),
+                makeDefaultWarikan(listOf("2", "1", "1")),
+                makeDefaultWarikan(listOf("1", "2", "1")),
+                makeDefaultWarikan(listOf("1", "1", "2")),
+            )
+        _proportionState.value = List(_warikanState.value.size) {
             "1"
         }
     }
@@ -129,7 +137,7 @@ class WarikanViewModel @Inject constructor(
         }
     }
 
-    private fun makeDefaultWarikan(ratios: List<String> = List(members.size) { "" }): Warikan {
+    private fun makeDefaultWarikan(ratios: List<String> = List(members.size) { "1" }): Warikan {
         val color =
             if (ratios.any { it.isEmpty() or !it.isDigitsOnly() }) -1
             else if (ratios.all { it == ratios[0] }) -1
