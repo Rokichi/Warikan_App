@@ -3,7 +3,6 @@ package jp.co.tbdeveloper.warikanapp.feature_roulette.data.repository
 import jp.co.tbdeveloper.warikanapp.feature_roulette.data.data_source.WarikanDao
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.WarikanEntity
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.WarikanRepository
-import kotlinx.coroutines.flow.Flow
 
 class WarikanRepositoryImpl(
     private val dao: WarikanDao

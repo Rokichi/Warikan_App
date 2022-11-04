@@ -205,7 +205,7 @@ fun ColumnTableText() {
         }
         Box(Modifier.weight(1.0f), contentAlignment = Alignment.Center) {
             Text(
-                text = "比率",
+                text = "確率",
                 style = MaterialTheme.typography.body1,
                 color = MaterialTheme.colors.surface
             )

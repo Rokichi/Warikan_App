@@ -1,6 +1,5 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.components
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
@@ -40,7 +39,6 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.Roul
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Circle
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.FunShape
 import kotlinx.coroutines.flow.collectLatest
-import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -63,9 +61,7 @@ fun RouletteScreen(
                     Toast.makeText(context, "データを保存しました", Toast.LENGTH_SHORT).show()
                 }
                 is RouletteViewModel.UiEvent.StartRoulette -> {}
-                is RouletteViewModel.UiEvent.StopRoulette -> {
-                    Toast.makeText(context, "${event.re + 1}", Toast.LENGTH_SHORT).show()
-                }
+                is RouletteViewModel.UiEvent.StopRoulette -> {}
                 is RouletteViewModel.UiEvent.EndRoulette -> {
                     //Toast.makeText(context, "ルーレットが終了しました", Toast.LENGTH_SHORT).show()
                 }
@@ -153,7 +149,6 @@ fun MuteBar(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.End,
     ) {
-        //Spacer(modifier = Modifier.size(10.dp))
         if (isMuted) {
             Image(
                 painter = painterResource(id = R.drawable.ic_volume_off),

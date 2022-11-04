@@ -1,7 +1,6 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikans
 
 import android.net.Uri
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
@@ -12,7 +11,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.InvalidWarikanException
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Warikan
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.member.MemberUseCases
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.warikan.WarikanUseCases
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +19,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-const val DEFAULT_WARIKAN_NUM = 2
+const val DEFAULT_WARIKAN_NUM = 3
 
 @HiltViewModel
 class WarikanViewModel @Inject constructor(
@@ -56,9 +54,11 @@ class WarikanViewModel @Inject constructor(
         if (memberData != null) {
             for (member in memberData) members.add(member)
         }// init warikan
-        _warikanState.value = List(DEFAULT_WARIKAN_NUM) {
-            makeDefaultWarikan()
-        }
+        _warikanState.value = listOf(
+            makeDefaultWarikan(listOf("1", "1")),
+            makeDefaultWarikan(listOf("1", "2")),
+            makeDefaultWarikan(listOf("2", "1")),
+        )
         _proportionState.value = List(DEFAULT_WARIKAN_NUM) {
             "1"
         }
@@ -117,7 +117,7 @@ class WarikanViewModel @Inject constructor(
                         _eventFlow.emit(UiEvent.InputError(0))
                         return@launch
                     }
-                    _warikanState.value = _warikanState.value.mapIndexed{ index, warikan->
+                    _warikanState.value = _warikanState.value.mapIndexed { index, warikan ->
                         warikan.copy(proportion = _proportionState.value[index].toInt())
                     }
                     /* json encode */
@@ -129,12 +129,16 @@ class WarikanViewModel @Inject constructor(
         }
     }
 
-    private fun makeDefaultWarikan(): Warikan {
-        val defRatios = List(members.size) { "" }
+    private fun makeDefaultWarikan(ratios: List<String> = List(members.size) { "" }): Warikan {
+        val color =
+            if (ratios.any { it.isEmpty() or !it.isDigitsOnly() }) -1
+            else if (ratios.all { it == ratios[0] }) -1
+            else members[ratios.indexOf(ratios.maxBy { it.toInt() })].color
+
         return Warikan(
-            ratios = defRatios,
+            ratios = ratios,
             proportion = 1,
-            color = -1
+            color = color
         )
     }
 

@@ -57,7 +57,7 @@ fun WarikanItem(
             )
         }
         WarikanField(
-            modifier = Modifier.weight(5.0f),
+            modifier = Modifier.weight(6.0f),
             height = height,
             width = width,
             ratios = warikan.ratios,

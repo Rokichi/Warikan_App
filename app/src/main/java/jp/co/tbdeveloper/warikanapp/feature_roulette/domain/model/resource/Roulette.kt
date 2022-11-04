@@ -17,4 +17,4 @@ data class Roulette(
     val RouletteId: Long = 0,
     val Members: List<Member> = listOf(),
     val Warikans: List<Warikan> = listOf(),
-):Parcelable
+) : Parcelable

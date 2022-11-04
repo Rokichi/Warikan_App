@@ -6,6 +6,7 @@ data class RouletteUseCases(
     val addRoulette: AddRoulette,
     val getRouletteById: GetRouletteById,
     val rouletteValidation: RouletteValidation,
-    val getRouletteResultIndex:GetRouletteResultIndex,
+    val getRouletteResultIndex: GetRouletteResultIndex,
     val getResultDeg: GetResultDeg,
+    val getWarikanResult: GetWarikanResult,
 )

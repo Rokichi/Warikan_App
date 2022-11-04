@@ -23,7 +23,7 @@ interface WarikanDao {
      * @return 該当IDをもつわりかん
      */
     @Query("SELECT * FROM warikanentity WHERE RouletteId = :id")
-    fun getWarikansById(id:Long): List<WarikanEntity>
+    fun getWarikansById(id: Long): List<WarikanEntity>
 
     /**
      * データ挿入

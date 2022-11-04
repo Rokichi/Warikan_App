@@ -14,7 +14,7 @@ import kotlinx.parcelize.Parcelize
 data class Member(
     val name: String,
     val color: Int,
-):Parcelable {
+) : Parcelable {
     companion object {
         val memberColors = listOf(Color.Red, Color.Blue, Color.Green, Color.DarkGray)
     }

@@ -8,6 +8,10 @@ import org.junit.Test
 internal class GetRouletteResultIndexTest {
     val getRouletteResultIndex = GetRouletteResultIndex()
 
+    /**
+     * 割り勘の比率に近い値に収束しているか
+     *
+     */
     @Test
     fun proportionAssert() {
         val warikans = listOf(

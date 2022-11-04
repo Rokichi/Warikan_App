@@ -18,8 +18,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.security.MessageDigest
-import java.util.*
 import javax.inject.Inject
 
 
@@ -111,9 +109,6 @@ class MemberViewModel @Inject constructor(
             }
         }
     }
-
-
-
 
 
     sealed class UiEvent {

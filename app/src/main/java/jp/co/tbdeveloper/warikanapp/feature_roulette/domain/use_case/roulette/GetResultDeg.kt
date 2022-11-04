@@ -1,6 +1,8 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.roulette
 
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Warikan
+import jp.co.tbdeveloper.warikanapp.feature_roulette.utils.getCalendarStr
+import jp.co.tbdeveloper.warikanapp.feature_roulette.utils.getMD5HashInt
 
 class GetResultDeg {
     /**
@@ -15,8 +17,10 @@ class GetResultDeg {
         val deg: Float = 360f / sumOfProportion
         // ルーレット開始角度
         var resultDeg = warikans.slice(0 until drawnIndex).sumOf { it.proportion } * deg
+        // get 1 ~ 9 -> 0.1 ~ 0.9
+        var randInt = getMD5HashInt(getCalendarStr()) % 9 + 1
         // 答えの中で角度を調整
-        resultDeg += Math.random().toFloat() * warikans[drawnIndex].proportion * deg
+        resultDeg += randInt / 10f * warikans[drawnIndex].proportion * deg
         return (360f - resultDeg)
     }
 }

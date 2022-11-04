@@ -11,6 +11,6 @@ package jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource
 data class ResultWarikan(
     val name: String = "",
     val color: Int,
-    val proportion: Int = 0,
-    val payment: Double = 0.0,
+    val proportion: Double = 0.0,
+    val payment: Int = 0,
 )
