@@ -1,4 +1,4 @@
-package jp.co.tbdeveloper.warikanapp.feature_roulette.utils
+package jp.co.tbdeveloper.warikanapp.feature_roulette.parser
 
 import android.os.Bundle
 import androidx.navigation.NavType

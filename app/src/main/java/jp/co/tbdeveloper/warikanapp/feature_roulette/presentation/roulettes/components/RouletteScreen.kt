@@ -39,6 +39,7 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.Roul
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Circle
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.FunShape
 import kotlinx.coroutines.flow.collectLatest
+import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -61,9 +62,11 @@ fun RouletteScreen(
                     Toast.makeText(context, "データを保存しました", Toast.LENGTH_SHORT).show()
                 }
                 is RouletteViewModel.UiEvent.StartRoulette -> {}
-                is RouletteViewModel.UiEvent.StopRoulette -> {}
+                is RouletteViewModel.UiEvent.StopRoulette -> {
+                    Toast.makeText(context, "${event.re + 1}", Toast.LENGTH_SHORT).show()
+                }
                 is RouletteViewModel.UiEvent.EndRoulette -> {
-                    Toast.makeText(context, "ルーレットが終了しました", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(context, "ルーレットが終了しました", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -240,10 +243,12 @@ fun CircleOfRoulette(
         } else {
             if (currentRotation > 0f) {
                 // Slow down rotation on pause
+                // current % 360 = 0にして角度調整
+                val targetRotation = currentRotation + 360f - (currentRotation % 360f) + resultDeg
                 val state = rotation.animateTo(
-                    targetValue = currentRotation + resultDeg,
+                    targetValue = targetRotation,
                     animationSpec = tween(
-                        durationMillis = 1250,
+                        durationMillis = 1250 + 200 * (abs((currentRotation % 360) - resultDeg) % 30f).toInt(),
                         easing = LinearOutSlowInEasing,
                     ),
                 ) {

@@ -1,6 +1,7 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikans
 
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
@@ -24,7 +25,6 @@ const val DEFAULT_WARIKAN_NUM = 2
 
 @HiltViewModel
 class WarikanViewModel @Inject constructor(
-    private val memberUseCases: MemberUseCases,
     private val warikanUseCases: WarikanUseCases,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -103,7 +103,7 @@ class WarikanViewModel @Inject constructor(
                 }
             }
             is WarikanEvent.EditProportionEvent -> {
-                _proportionState.value = _proportionState.value.mapIndexed() { index, proportion ->
+                _proportionState.value = _proportionState.value.mapIndexed { index, proportion ->
                     if (index == event.index) {
                         event.value
                     } else proportion
@@ -116,6 +116,9 @@ class WarikanViewModel @Inject constructor(
                     } catch (e: InvalidWarikanException) {
                         _eventFlow.emit(UiEvent.InputError(0))
                         return@launch
+                    }
+                    _warikanState.value = _warikanState.value.mapIndexed{ index, warikan->
+                        warikan.copy(proportion = _proportionState.value[index].toInt())
                     }
                     /* json encode */
                     val memberJson = Uri.encode(Gson().toJson(members))

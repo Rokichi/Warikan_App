@@ -11,6 +11,8 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.InvalidRoulett
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.member.MemberUseCases
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.roulette.RouletteUseCases
+import jp.co.tbdeveloper.warikanapp.feature_roulette.utils.getCalendarStr
+import jp.co.tbdeveloper.warikanapp.feature_roulette.utils.getMD5HashInt
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -32,14 +34,14 @@ class MemberViewModel @Inject constructor(
 
     // 不使用色データ
     private val unusedColorNums = MutableList(Member.memberColors.size) { it }
-    private var hashLongNum: Int = getMD5Hash(Calendar.getInstance().time.toString())
+    private var hashLongNum: Int = getMD5HashInt(getCalendarStr())
 
     // メンバー
     private val _memberState = MutableStateFlow(
         MutableList(DEFAULT_MEMBER_NUM) { _ ->
             Member(
                 "",
-                unusedColorNums.removeAt(getMD5Hash(hashLongNum.toString()) % unusedColorNums.size)
+                unusedColorNums.removeAt(getMD5HashInt(hashLongNum.toString()) % unusedColorNums.size)
             )
         }
     )
@@ -58,7 +60,7 @@ class MemberViewModel @Inject constructor(
                 if (memberState.value.size < MAX_MEMBER_NUM) {
                     _memberState.value = (_memberState.value + Member(
                         "",
-                        unusedColorNums.removeAt(getMD5Hash(hashLongNum.toString()) % unusedColorNums.size)
+                        unusedColorNums.removeAt(getMD5HashInt(hashLongNum.toString()) % unusedColorNums.size)
                     )) as MutableList<Member>
                 }
             }
@@ -110,19 +112,9 @@ class MemberViewModel @Inject constructor(
         }
     }
 
-    fun ByteArray.toHexInt(): Int {
-        var result = 0
-        for (i in 0..3) {
-            result = result shl 8
-            result = result or this[i].toUByte().toInt()
-        }
-        return result
-    }
 
-    private fun getMD5Hash(original: String): Int {
-        val md = MessageDigest.getInstance("MD5")
-        return md.digest(original.toByteArray()).toHexInt()
-    }
+
+
 
     sealed class UiEvent {
         object DeleteError : UiEvent()

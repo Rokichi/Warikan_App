@@ -27,8 +27,8 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.compon
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.components.RouletteScreen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Screen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikans.components.WarikansScreen
-import jp.co.tbdeveloper.warikanapp.feature_roulette.utils.MemberArrayType
-import jp.co.tbdeveloper.warikanapp.feature_roulette.utils.WarikanArrayType
+import jp.co.tbdeveloper.warikanapp.feature_roulette.parser.MemberArrayType
+import jp.co.tbdeveloper.warikanapp.feature_roulette.parser.WarikanArrayType
 import jp.co.tbdeveloper.warikanapp.ui.theme.WarikanAppTheme
 
 @AndroidEntryPoint

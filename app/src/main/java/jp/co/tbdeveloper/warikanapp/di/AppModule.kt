@@ -51,7 +51,9 @@ object AppModule {
             deleteRoulette = DeleteRoulette(repository),
             addRoulette = AddRoulette(repository),
             getRouletteById = GetRouletteById(repository),
-            rouletteValidation = RouletteValidation()
+            rouletteValidation = RouletteValidation(),
+            getRouletteResultIndex = GetRouletteResultIndex(),
+            getResultDeg = GetResultDeg(),
         )
     }
 
