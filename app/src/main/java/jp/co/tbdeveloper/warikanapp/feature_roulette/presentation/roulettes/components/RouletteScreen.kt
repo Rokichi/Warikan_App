@@ -1,5 +1,6 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.components
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
@@ -244,11 +245,13 @@ fun CircleOfRoulette(
             if (currentRotation > 0f) {
                 // Slow down rotation on pause
                 // current % 360 = 0にして角度調整
-                val targetRotation = currentRotation + 360f - (currentRotation % 360f) + resultDeg
+                var targetRotation = currentRotation + 360f - (currentRotation % 360f) + resultDeg
+                targetRotation %= 360f
+
                 val state = rotation.animateTo(
-                    targetValue = targetRotation,
+                    targetValue = if (targetRotation - currentRotation >= 180f) targetRotation else targetRotation + 360f,
                     animationSpec = tween(
-                        durationMillis = 1250 + 200 * (abs((currentRotation % 360) - resultDeg) % 30f).toInt(),
+                        durationMillis = 1200 + 50 * (targetRotation % 100).toInt(),
                         easing = LinearOutSlowInEasing,
                     ),
                 ) {
