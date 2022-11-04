@@ -12,7 +12,7 @@ private val DarkColorPalette = darkColors(
     secondary = Teal200,
     background = BackGroundWhite,
     surface = TextBlack,
-    )
+)
 
 private val LightColorPalette = lightColors(
     primary = MainAccent,

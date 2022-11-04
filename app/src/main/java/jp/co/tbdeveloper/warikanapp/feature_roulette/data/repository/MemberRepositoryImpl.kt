@@ -3,7 +3,6 @@ package jp.co.tbdeveloper.warikanapp.feature_roulette.data.repository
 import jp.co.tbdeveloper.warikanapp.feature_roulette.data.data_source.MemberDao
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.MemberEntity
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.MemberRepository
-import kotlinx.coroutines.flow.Flow
 
 class MemberRepositoryImpl(
     private val dao: MemberDao

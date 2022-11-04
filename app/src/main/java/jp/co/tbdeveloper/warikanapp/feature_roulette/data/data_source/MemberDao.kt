@@ -5,7 +5,6 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.MemberEntity
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MemberDao {

@@ -16,7 +16,7 @@ import androidx.room.PrimaryKey
 data class WarikanEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
-    val RouletteId:Long,
+    val RouletteId: Long,
     val ratios: String,
     val proportion: Int,
     val color: Int,

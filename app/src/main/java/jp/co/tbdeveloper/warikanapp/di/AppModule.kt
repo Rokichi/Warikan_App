@@ -51,7 +51,10 @@ object AppModule {
             deleteRoulette = DeleteRoulette(repository),
             addRoulette = AddRoulette(repository),
             getRouletteById = GetRouletteById(repository),
-            rouletteValidation = RouletteValidation()
+            rouletteValidation = RouletteValidation(),
+            getRouletteResultIndex = GetRouletteResultIndex(),
+            getResultDeg = GetResultDeg(),
+            getWarikanResult = GetWarikanResult(),
         )
     }
 
@@ -98,7 +101,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideWarikanRepository(db:WarikanDatabase): WarikanRepository {
+    fun provideWarikanRepository(db: WarikanDatabase): WarikanRepository {
         return WarikanRepositoryImpl(db.warikanDao)
     }
 

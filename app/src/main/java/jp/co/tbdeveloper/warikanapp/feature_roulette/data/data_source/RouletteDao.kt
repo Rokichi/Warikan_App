@@ -30,7 +30,7 @@ interface RouletteDao {
      * @return Long 割り振られたID
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertRoulette(roulette: RouletteEntity):Long
+    suspend fun insertRoulette(roulette: RouletteEntity): Long
 
     /**
      * データ削除

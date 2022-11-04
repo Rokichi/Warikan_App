@@ -1,7 +1,6 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository
 
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.WarikanEntity
-import kotlinx.coroutines.flow.Flow
 
 interface WarikanRepository {
     fun getWarikans(): List<WarikanEntity>

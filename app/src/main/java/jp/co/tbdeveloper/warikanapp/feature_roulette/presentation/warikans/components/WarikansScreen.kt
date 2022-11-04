@@ -138,7 +138,7 @@ fun WarikansScreen(
             WarikanAndColorsScrollView(
                 modifier = Modifier.weight(6.0f),
                 warikans = warikanState.value,
-                proprotions = proportionState.value,
+                proportions = proportionState.value,
                 viewModel = viewModel
             )
             ShadowButton(
@@ -162,7 +162,7 @@ fun WarikansScreen(
 fun WarikanAndColorsScrollView(
     modifier: Modifier = Modifier,
     warikans: List<Warikan>,
-    proprotions: List<String>,
+    proportions: List<String>,
     viewModel: WarikanViewModel
 ) {
     LazyColumn(
@@ -174,7 +174,7 @@ fun WarikanAndColorsScrollView(
         itemsIndexed(warikans) { index, warikan ->
             WarikanItem(
                 warikan = warikan,
-                proportion = proprotions[index],
+                proportion = proportions[index],
                 onDeleteClick = { viewModel.onEvent(WarikanEvent.DeleteWarikanEvent(index)) },
                 onProportionValueChange = { value: String ->
                     viewModel.onEvent(WarikanEvent.EditProportionEvent(value, index))
@@ -205,7 +205,7 @@ fun ColumnTableText() {
         }
         Box(Modifier.weight(1.0f), contentAlignment = Alignment.Center) {
             Text(
-                text = "比率",
+                text = "確率",
                 style = MaterialTheme.typography.body1,
                 color = MaterialTheme.colors.surface
             )

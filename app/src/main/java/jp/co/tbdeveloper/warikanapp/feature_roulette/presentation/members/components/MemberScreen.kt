@@ -82,8 +82,8 @@ fun MembersScreen(
     ) {
         // トップバー
         SettingAndHistoryBar(
-            onSettingClick = { navController.navigate(Screen.WarikanScreen.route + "/27") },
-            onHistoryClick = { navController.navigate(Screen.RouletteScreen.route + "/27/true") }
+            onSettingClick = { },
+            onHistoryClick = { }
         )
         Text(
             text = "メンバーを決めてね",

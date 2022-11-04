@@ -1,7 +1,6 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository
 
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.MemberEntity
-import kotlinx.coroutines.flow.Flow
 
 interface MemberRepository {
     fun getMembers(): List<MemberEntity>

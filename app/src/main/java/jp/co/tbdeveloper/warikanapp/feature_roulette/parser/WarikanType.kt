@@ -1,4 +1,4 @@
-package jp.co.tbdeveloper.warikanapp.feature_roulette.utils
+package jp.co.tbdeveloper.warikanapp.feature_roulette.parser
 
 import android.os.Bundle
 import androidx.navigation.NavType
@@ -9,9 +9,11 @@ class WarikanType : NavType<Warikan>(isNullableAllowed = false) {
     override fun get(bundle: Bundle, key: String): Warikan? {
         return bundle.getParcelable(key)
     }
+
     override fun parseValue(value: String): Warikan {
         return Gson().fromJson(value, Warikan::class.java)
     }
+
     override fun put(bundle: Bundle, key: String, value: Warikan) {
         bundle.putParcelable(key, value)
     }

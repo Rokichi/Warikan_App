@@ -15,4 +15,4 @@ data class Warikan(
     val ratios: List<String>,
     val proportion: Int,
     val color: Int,
-):Parcelable
+) : Parcelable

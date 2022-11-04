@@ -1,5 +1,6 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
@@ -17,12 +18,14 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.WarikanEn
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.member.MemberUseCases
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.roulette.RouletteUseCases
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.warikan.WarikanUseCases
+import jp.co.tbdeveloper.warikanapp.feature_roulette.utils.getCalendarStr
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 
 @HiltViewModel
@@ -48,6 +51,7 @@ class RouletteViewModel @Inject constructor(
     private val _isRotatingState = mutableStateOf(false)
     val isRotatingState: State<Boolean> = _isRotatingState
 
+    var rotated = false
     private val _resultDeg = mutableStateOf(0.0f)
     val resultDeg: State<Float> = _resultDeg
 
@@ -59,6 +63,7 @@ class RouletteViewModel @Inject constructor(
         val total = savedStateHandle.get<String>("total") ?: 0
         val memberData = savedStateHandle.get<Array<Member>>("members") ?: arrayOf()
         val warikanData = savedStateHandle.get<Array<Warikan>>("warikans") ?: arrayOf()
+        for (warikand in warikanData) Log.i("pro", warikand.proportion.toString())
         val isSave = savedStateHandle.get<Boolean>("isSave") ?: false
         _rouletteState.value = Roulette(
             Total = total.toString().toInt(),
@@ -84,34 +89,60 @@ class RouletteViewModel @Inject constructor(
             }
     }
 
+    val resultPayments = mutableListOf<Int>()
+    val resultProportions = mutableListOf<Double>()
+
     fun onEvent(event: RoulettesEvent) {
         when (event) {
             is RoulettesEvent.StartClickEvent -> {
+                if (rotated) return
                 _isRotatingState.value = true
-                // 割り勘結果を計算
-                _resultDeg.value = 420f
+                val warikans = _rouletteState.value.Warikans
+                // 割り勘結果のindex取得
+                val drawnIndex =
+                    rouletteUseCases.getRouletteResultIndex(warikans, getCalendarStr())
+                // 目的回転角度取得
+                _resultDeg.value = rouletteUseCases.getResultDeg(warikans, drawnIndex)
+                // 割り勘情報取得
+                val ratios: List<Int> = warikans[drawnIndex].ratios.map { it.toInt() }
+                resultPayments += rouletteUseCases.getWarikanResult(
+                    _rouletteState.value.Total,
+                    ratios
+                )
+                resultProportions +=
+                    ratios.map { getDoubleOneDecimalPlaces(it.toDouble() / ratios.sum()) }
+                viewModelScope.launch { _eventFlow.emit(UiEvent.StartRoulette) }
             }
 
             is RoulettesEvent.StopClickEvent -> {
+                rotated = true
                 _isRotatingState.value = false
+                viewModelScope.launch { _eventFlow.emit(UiEvent.StopRoulette) }
             }
             is RoulettesEvent.EndRouletteEvent -> {
+                Log.i("pro", "$resultProportions")
+                Log.i("pay", "$resultPayments")
+                _resultWarikanState.value =
+                    _resultWarikanState.value.mapIndexed { index, resultWarikan ->
+                        resultWarikan.copy(
+                            proportion = resultProportions[index],
+                            payment = resultPayments[index]
+                        )
+                    }
                 viewModelScope.launch { _eventFlow.emit(UiEvent.EndRoulette) }
             }
         }
     }
+
+    private fun getDoubleOneDecimalPlaces(num: Double): Double {
+        return (num * 100).roundToInt() / 10.0
+    }
+
 
     sealed class UiEvent {
         object SaveEvent : UiEvent()
         object StartRoulette : UiEvent()
         object StopRoulette : UiEvent()
         object EndRoulette : UiEvent()
-    }
-
-    fun getRoulette() {
-        /*
-        getRouletteJob?.cancel()
-        rouletteUseCases.getRoulettes().launchIn(viewModelScope)
-         */
     }
 }

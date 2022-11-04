@@ -63,7 +63,7 @@ fun RouletteScreen(
                 is RouletteViewModel.UiEvent.StartRoulette -> {}
                 is RouletteViewModel.UiEvent.StopRoulette -> {}
                 is RouletteViewModel.UiEvent.EndRoulette -> {
-                    Toast.makeText(context, "ルーレットが終了しました", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(context, "ルーレットが終了しました", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -149,7 +149,6 @@ fun MuteBar(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.End,
     ) {
-        //Spacer(modifier = Modifier.size(10.dp))
         if (isMuted) {
             Image(
                 painter = painterResource(id = R.drawable.ic_volume_off),
@@ -240,10 +239,14 @@ fun CircleOfRoulette(
         } else {
             if (currentRotation > 0f) {
                 // Slow down rotation on pause
+                // current % 360 = 0にして角度調整
+                var targetRotation = currentRotation + 360f - (currentRotation % 360f) + resultDeg
+                targetRotation %= 360f
+
                 val state = rotation.animateTo(
-                    targetValue = currentRotation + resultDeg,
+                    targetValue = if (targetRotation - currentRotation >= 180f) targetRotation else targetRotation + 360f,
                     animationSpec = tween(
-                        durationMillis = 1250,
+                        durationMillis = 1200 + 50 * (targetRotation % 100).toInt(),
                         easing = LinearOutSlowInEasing,
                     ),
                 ) {

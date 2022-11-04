@@ -6,7 +6,7 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.MemberRep
 class DeleteMember(
     private val repository: MemberRepository
 ) {
-    suspend operator fun invoke(member: MemberEntity){
+    suspend operator fun invoke(member: MemberEntity) {
         repository.deleteMember(member)
     }
 }
