@@ -4,4 +4,5 @@ sealed class RoulettesEvent {
     object StartClickEvent : RoulettesEvent()
     object StopClickEvent : RoulettesEvent()
     object EndRouletteEvent : RoulettesEvent()
+    data class MuteClickEvent(val isMuted:Boolean) : RoulettesEvent()
 }

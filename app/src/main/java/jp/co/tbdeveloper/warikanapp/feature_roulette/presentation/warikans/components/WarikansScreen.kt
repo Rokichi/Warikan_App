@@ -45,9 +45,9 @@ fun WarikansScreen(
     val focusManager = LocalFocusManager.current
     val warikanState = viewModel.warikanState.collectAsState()
     val proportionState = viewModel.proportionState.collectAsState()
-    val context = LocalContext.current
     val isSave = remember { viewModel.isSave }
 
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewModel.eventFlow.collectLatest { event ->
