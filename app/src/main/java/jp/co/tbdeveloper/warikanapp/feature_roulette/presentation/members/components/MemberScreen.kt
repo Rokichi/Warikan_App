@@ -82,7 +82,7 @@ fun MembersScreen(
     ) {
         // トップバー
         SettingAndHistoryBar(
-            onSettingClick = { },
+            onSettingClick = { navController.navigate(Screen.SettingsScreen.route) },
             onHistoryClick = { }
         )
         Text(

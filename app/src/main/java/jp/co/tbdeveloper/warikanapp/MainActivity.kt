@@ -30,6 +30,7 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.parser.MemberArrayType
 import jp.co.tbdeveloper.warikanapp.feature_roulette.parser.WarikanArrayType
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.components.MembersScreen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.components.RouletteScreen
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.settings.components.SettingScreen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Screen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikans.components.WarikansScreen
 import jp.co.tbdeveloper.warikanapp.ui.theme.WarikanAppTheme
@@ -105,6 +106,9 @@ class MainActivity : ComponentActivity() {
                                         )
                                     }
                                 )
+                            }
+                            composable(route = Screen.SettingsScreen.route) {
+                                SettingScreen(navController)
                             }
                         }
                         // admob
