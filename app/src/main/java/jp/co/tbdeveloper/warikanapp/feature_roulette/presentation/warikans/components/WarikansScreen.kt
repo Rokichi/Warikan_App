@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -45,9 +46,9 @@ fun WarikansScreen(
     val focusManager = LocalFocusManager.current
     val warikanState = viewModel.warikanState.collectAsState()
     val proportionState = viewModel.proportionState.collectAsState()
-    val context = LocalContext.current
     val isSave = remember { viewModel.isSave }
 
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewModel.eventFlow.collectLatest { event ->
@@ -232,7 +233,7 @@ fun NameToColor(
                     .height(size)
                     .width(size)
                     .background(
-                        Member.memberColors[member.color]
+                        Member.memberColors(isSystemInDarkTheme())[member.color]
                     )
             )
             Spacer(modifier = Modifier.padding(end = 5.dp))

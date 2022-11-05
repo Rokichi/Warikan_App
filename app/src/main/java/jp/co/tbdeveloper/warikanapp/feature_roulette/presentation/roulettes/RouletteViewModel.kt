@@ -51,6 +51,9 @@ class RouletteViewModel @Inject constructor(
     private val _isRotatingState = mutableStateOf(false)
     val isRotatingState: State<Boolean> = _isRotatingState
 
+    private val _isMuteState = mutableStateOf(false)
+    val isMuteState: State<Boolean> = _isMuteState
+
     var rotated = false
     private val _resultDeg = mutableStateOf(0.0f)
     val resultDeg: State<Float> = _resultDeg
@@ -94,8 +97,14 @@ class RouletteViewModel @Inject constructor(
 
     fun onEvent(event: RoulettesEvent) {
         when (event) {
+            is RoulettesEvent.MuteClickEvent ->{
+                _isMuteState.value = event.isMuted
+                if(event.isMuted) viewModelScope.launch { _eventFlow.emit(UiEvent.MuteON) }
+                else viewModelScope.launch { _eventFlow.emit(UiEvent.MuteOFF) }
+            }
             is RoulettesEvent.StartClickEvent -> {
                 if (rotated) return
+                viewModelScope.launch { _eventFlow.emit(UiEvent.StartRoulette) }
                 _isRotatingState.value = true
                 val warikans = _rouletteState.value.Warikans
                 // 割り勘結果のindex取得
@@ -111,7 +120,6 @@ class RouletteViewModel @Inject constructor(
                 )
                 resultProportions +=
                     ratios.map { getDoubleOneDecimalPlaces(it.toDouble() / ratios.sum()) }
-                viewModelScope.launch { _eventFlow.emit(UiEvent.StartRoulette) }
             }
 
             is RoulettesEvent.StopClickEvent -> {
@@ -120,8 +128,6 @@ class RouletteViewModel @Inject constructor(
                 viewModelScope.launch { _eventFlow.emit(UiEvent.StopRoulette) }
             }
             is RoulettesEvent.EndRouletteEvent -> {
-                Log.i("pro", "$resultProportions")
-                Log.i("pay", "$resultPayments")
                 _resultWarikanState.value =
                     _resultWarikanState.value.mapIndexed { index, resultWarikan ->
                         resultWarikan.copy(
@@ -143,6 +149,8 @@ class RouletteViewModel @Inject constructor(
         object SaveEvent : UiEvent()
         object StartRoulette : UiEvent()
         object StopRoulette : UiEvent()
+        object MuteON : UiEvent()
+        object MuteOFF : UiEvent()
         object EndRoulette : UiEvent()
     }
 }

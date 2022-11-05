@@ -1,6 +1,7 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -29,7 +30,7 @@ fun MemberAndColor(
                 Modifier
                     .height(height - 10.dp)
                     .width(height - 10.dp)
-                    .background(Member.memberColors[result.color])
+                    .background(Member.memberColors(isSystemInDarkTheme())[result.color])
             )
         }
         Spacer(modifier = Modifier.weight(0.5f))

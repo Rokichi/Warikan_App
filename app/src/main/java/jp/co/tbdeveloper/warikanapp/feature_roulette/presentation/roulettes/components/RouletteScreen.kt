@@ -1,11 +1,9 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.components
 
+import android.media.MediaPlayer
 import android.widget.Toast
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -42,17 +40,23 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlin.math.cos
 import kotlin.math.sin
 
+
 @Composable
 fun RouletteScreen(
     navController: NavController,
     viewModel: RouletteViewModel = hiltViewModel(),
 ) {
-    val context = LocalContext.current
-
+    var isMuted = remember { viewModel.isMuteState }
     val rouletteState = viewModel.rouletteState.collectAsState()
     val resultWarikanState = viewModel.resultWarikanState.collectAsState()
     val isRotating = remember { viewModel.isRotatingState }
     val resultDeg = remember { viewModel.resultDeg }
+
+    val context = LocalContext.current
+    val mpDram = MediaPlayer.create(context, R.raw.dram)
+    val mpStop = MediaPlayer.create(context, R.raw.stop)
+    val mpResult = MediaPlayer.create(context, R.raw.result)
+    mpDram?.isLooping = true
 
     LaunchedEffect(Unit) {
         viewModel.eventFlow.collectLatest { event ->
@@ -60,10 +64,21 @@ fun RouletteScreen(
                 is RouletteViewModel.UiEvent.SaveEvent -> {
                     Toast.makeText(context, "データを保存しました", Toast.LENGTH_SHORT).show()
                 }
-                is RouletteViewModel.UiEvent.StartRoulette -> {}
-                is RouletteViewModel.UiEvent.StopRoulette -> {}
+                is RouletteViewModel.UiEvent.MuteON -> {
+                    if(mpDram.isPlaying) mpDram.pause()
+                }
+                is RouletteViewModel.UiEvent.MuteOFF -> {
+                    if(!mpDram.isPlaying) mpDram.start()
+                }
+                is RouletteViewModel.UiEvent.StartRoulette -> {
+                    if (!isMuted.value) mpDram?.start()
+                }
+                is RouletteViewModel.UiEvent.StopRoulette -> {
+                    if (!isMuted.value) mpStop.start()
+                }
                 is RouletteViewModel.UiEvent.EndRoulette -> {
-                    //Toast.makeText(context, "ルーレットが終了しました", Toast.LENGTH_SHORT).show()
+                    mpDram?.stop()
+                    if (!viewModel.isMuteState.value) mpResult.start()
                 }
             }
         }
@@ -134,7 +149,11 @@ fun RouletteScreen(
                     .weight(6.0f),
                 results = resultWarikanState.value
             )
-            MuteBar(Modifier.weight(1.0f))
+            MuteBar(
+                Modifier.weight(1.0f),
+                viewModel,
+                isMuted
+            )
         }
     }
 }
@@ -142,14 +161,14 @@ fun RouletteScreen(
 @Composable
 fun MuteBar(
     modifier: Modifier = Modifier,
-    isMuted: Boolean = false
+    viewModel: RouletteViewModel,
+    isMuted: State<Boolean>,
 ) {
-    var isMuted by remember { mutableStateOf(isMuted) }
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.End,
     ) {
-        if (isMuted) {
+        if (isMuted.value) {
             Image(
                 painter = painterResource(id = R.drawable.ic_volume_off),
                 contentScale = ContentScale.Crop,
@@ -158,7 +177,9 @@ fun MuteBar(
                     .clickable(
                         interactionSource = MutableInteractionSource(),
                         indication = rememberRipple(color = Color.Black, radius = 18.dp),
-                        onClick = { isMuted = !isMuted }
+                        onClick = {
+                            viewModel.onEvent(RoulettesEvent.MuteClickEvent(false))
+                        }
                     ),
                 contentDescription = "Now is muted"
             )
@@ -171,7 +192,9 @@ fun MuteBar(
                     .clickable(
                         interactionSource = MutableInteractionSource(),
                         indication = rememberRipple(color = Color.Black, radius = 18.dp),
-                        onClick = { isMuted = !isMuted }
+                        onClick = {
+                            viewModel.onEvent(RoulettesEvent.MuteClickEvent(true))
+                        }
                     ),
                 contentDescription = "Now is not muted"
             )
@@ -221,7 +244,7 @@ fun CircleOfRoulette(
     var oldDegree = 0f
     var deg: Float = 360f / sumOfpr
     val memberColors = List(members.size) { i ->
-        Member.memberColors[members[i].color]
+        Member.memberColors(isSystemInDarkTheme())[members[i].color]
     }
     var currentRotation by rememberSaveable { mutableStateOf(0f) }
     val rotation = remember { Animatable(currentRotation) }
@@ -269,7 +292,7 @@ fun CircleOfRoulette(
             FunShape(
                 modifier = modifier.size(size),
                 backGroundColor =
-                if (warikan.color != -1) Member.memberColors[warikan.color]
+                if (warikan.color != -1) Member.memberColors(isSystemInDarkTheme())[warikan.color]
                 else Color.LightGray,
                 startAngle = oldDegree,
                 sweepAngle = sweepAngle,

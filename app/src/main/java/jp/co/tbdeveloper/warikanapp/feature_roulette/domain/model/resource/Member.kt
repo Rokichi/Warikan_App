@@ -2,6 +2,8 @@ package jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource
 
 import android.os.Parcelable
 import androidx.compose.ui.graphics.Color
+import jp.co.tbdeveloper.warikanapp.ui.theme.DarkMemberColors
+import jp.co.tbdeveloper.warikanapp.ui.theme.LightMemberColors
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -16,6 +18,8 @@ data class Member(
     val color: Int,
 ) : Parcelable {
     companion object {
-        val memberColors = listOf(Color.Red, Color.Blue, Color.Green, Color.DarkGray)
+        fun memberColors(isDarKMode: Boolean): List<Color> {
+            return if (isDarKMode) DarkMemberColors else LightMemberColors
+        }
     }
 }

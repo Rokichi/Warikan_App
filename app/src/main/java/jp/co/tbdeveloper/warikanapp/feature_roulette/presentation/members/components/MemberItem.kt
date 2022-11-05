@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ripple.rememberRipple
@@ -48,7 +49,7 @@ fun MemberItem(
                 Modifier
                     .height(height - 15.dp)
                     .width(height - 15.dp)
-                    .background(Member.memberColors[member.color])
+                    .background(Member.memberColors(isSystemInDarkTheme())[member.color])
             )
         }
         Image(
