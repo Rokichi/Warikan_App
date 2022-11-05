@@ -31,7 +31,7 @@ class MemberViewModel @Inject constructor(
 ) : ViewModel() {
 
     // 不使用色データ
-    private val unusedColorNums = MutableList(Member.memberColors.size) { it }
+    private val unusedColorNums = MutableList(Member.memberColors(true).size) { it }
     private var hashLongNum: Int = getMD5HashInt(getCalendarStr())
 
     // メンバー

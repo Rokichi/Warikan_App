@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import jp.co.tbdeveloper.warikanapp.ui.theme.LightTextBlack
 
 @Composable
 fun RoundedRatio(
@@ -37,7 +38,7 @@ fun RoundedRatio(
                 modifier = Modifier
                     .offset(y = (-5).dp),
                 style = MaterialTheme.typography.body2,
-                color = MaterialTheme.colors.surface
+                color = LightTextBlack
             )
         }
         for (i in 1 until ratios.size) {

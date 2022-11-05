@@ -3,10 +3,7 @@ package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.com
 import android.media.MediaPlayer
 import android.widget.Toast
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -247,7 +244,7 @@ fun CircleOfRoulette(
     var oldDegree = 0f
     var deg: Float = 360f / sumOfpr
     val memberColors = List(members.size) { i ->
-        Member.memberColors[members[i].color]
+        Member.memberColors(isSystemInDarkTheme())[members[i].color]
     }
     var currentRotation by rememberSaveable { mutableStateOf(0f) }
     val rotation = remember { Animatable(currentRotation) }
@@ -295,7 +292,7 @@ fun CircleOfRoulette(
             FunShape(
                 modifier = modifier.size(size),
                 backGroundColor =
-                if (warikan.color != -1) Member.memberColors[warikan.color]
+                if (warikan.color != -1) Member.memberColors(isSystemInDarkTheme())[warikan.color]
                 else Color.LightGray,
                 startAngle = oldDegree,
                 sweepAngle = sweepAngle,

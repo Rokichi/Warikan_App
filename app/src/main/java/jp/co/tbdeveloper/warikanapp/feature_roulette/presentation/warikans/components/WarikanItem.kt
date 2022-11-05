@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -51,7 +52,7 @@ fun WarikanItem(
                     .height(height - 15.dp)
                     .width(height - 15.dp)
                     .background(
-                        if (warikan.color != -1) Member.memberColors[warikan.color]
+                        if (warikan.color != -1) Member.memberColors(isSystemInDarkTheme())[warikan.color]
                         else Color.LightGray
                     )
             )
