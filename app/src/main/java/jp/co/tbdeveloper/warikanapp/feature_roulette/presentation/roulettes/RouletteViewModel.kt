@@ -71,7 +71,7 @@ class RouletteViewModel @Inject constructor(
         val total = savedStateHandle.get<String>("total") ?: 0
         val memberData = savedStateHandle.get<Array<Member>>("members") ?: arrayOf()
         val warikanData = savedStateHandle.get<Array<Warikan>>("warikans") ?: arrayOf()
-        for (warikand in warikanData) Log.i("pro", warikand.proportion.toString())
+
         val isSave = savedStateHandle.get<Boolean>("isSave") ?: false
         _rouletteState.value = Roulette(
             Total = total.toString().toInt(),

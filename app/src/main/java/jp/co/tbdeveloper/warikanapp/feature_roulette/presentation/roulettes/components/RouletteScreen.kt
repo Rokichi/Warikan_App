@@ -46,6 +46,10 @@ import kotlin.math.sin
 @Composable
 fun RouletteScreen(
     navController: NavController,
+    initializeInterstitialAd: (() -> Unit) -> Unit,
+    showInterstitialAd: (() -> Unit) -> Unit,
+    initializeRewardedAd: (() -> Unit) -> Unit,
+    showRewardedAd: (() -> Unit) -> Unit,
     viewModel: RouletteViewModel = hiltViewModel(),
 ) {
     var isMuted = remember { viewModel.isMuteState }
@@ -59,6 +63,12 @@ fun RouletteScreen(
     val mpStop = MediaPlayer.create(context, R.raw.stop)
     val mpResult = MediaPlayer.create(context, R.raw.result)
     mpDram?.isLooping = true
+    initializeInterstitialAd {
+        navController.navigate(Screen.MemberScreen.route) {
+            popUpTo(0)
+        }
+    }
+    initializeRewardedAd { navController.navigateUp() }
 
     LaunchedEffect(Unit) {
         viewModel.eventFlow.collectLatest { event ->
@@ -83,11 +93,15 @@ fun RouletteScreen(
                     if (!viewModel.isMuteState.value) mpResult.start()
                 }
                 is RouletteViewModel.UiEvent.Retry -> {
-                    navController.navigateUp()
+                    showRewardedAd{
+                        navController.navigateUp()
+                    }
                 }
                 is RouletteViewModel.UiEvent.GoHome -> {
-                    navController.navigate(Screen.MemberScreen.route) {
-                        popUpTo(0)
+                    showInterstitialAd {
+                        navController.navigate(Screen.MemberScreen.route) {
+                            popUpTo(0)
+                        }
                     }
                 }
             }
