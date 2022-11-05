@@ -1,6 +1,7 @@
 package jp.co.tbdeveloper.warikanapp.di
 
 import android.app.Application
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
@@ -8,15 +9,21 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import jp.co.tbdeveloper.warikanapp.feature_roulette.data.data_source.MemberDatabase
 import jp.co.tbdeveloper.warikanapp.feature_roulette.data.data_source.RouletteDatabase
+import jp.co.tbdeveloper.warikanapp.feature_roulette.data.data_source.SettingsDatabase
 import jp.co.tbdeveloper.warikanapp.feature_roulette.data.data_source.WarikanDatabase
 import jp.co.tbdeveloper.warikanapp.feature_roulette.data.repository.MemberRepositoryImpl
 import jp.co.tbdeveloper.warikanapp.feature_roulette.data.repository.RouletteRepositoryImpl
+import jp.co.tbdeveloper.warikanapp.feature_roulette.data.repository.SettingsRepositoryImpl
 import jp.co.tbdeveloper.warikanapp.feature_roulette.data.repository.WarikanRepositoryImpl
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.MemberRepository
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.RouletteRepository
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.SettingsRepository
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.WarikanRepository
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.member.*
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.roulette.*
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.settings.GetSettings
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.settings.SettingsUseCases
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.settings.UpdateSettings
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.warikan.*
 import javax.inject.Singleton
 
@@ -117,5 +124,29 @@ object AppModule {
             addWarikan = AddWarikan(repository),
             warikanValidation = WarikanValidation()
         )
+    }
+
+    @Provides
+    @Singleton
+    fun provideSettingsUseCases(repository: SettingsRepository):SettingsUseCases {
+        return SettingsUseCases(
+            getSettings = GetSettings(repository),
+            updateSettings = UpdateSettings(repository)
+        )
+    }
+    @Provides
+    @Singleton
+    fun provideSettingsDatabase(app: Application): SettingsDatabase {
+        return Room.databaseBuilder(
+            app,
+            SettingsDatabase::class.java,
+            SettingsDatabase.DATABASE_NAME
+        ).build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideSettingRepository(db: SettingsDatabase): SettingsRepository {
+        return SettingsRepositoryImpl(db.settingsDao)
     }
 }
