@@ -54,7 +54,12 @@ class RouletteViewModel @Inject constructor(
     private val _isMuteState = mutableStateOf(false)
     val isMuteState: State<Boolean> = _isMuteState
 
-    var rotated = false
+    private val _isRotated = mutableStateOf(false)
+    val isRotated: State<Boolean> = _isRotated
+
+    private val _isShowBottom = mutableStateOf(false)
+    val isShowBottom: State<Boolean> = _isShowBottom
+
     private val _resultDeg = mutableStateOf(0.0f)
     val resultDeg: State<Float> = _resultDeg
 
@@ -66,7 +71,7 @@ class RouletteViewModel @Inject constructor(
         val total = savedStateHandle.get<String>("total") ?: 0
         val memberData = savedStateHandle.get<Array<Member>>("members") ?: arrayOf()
         val warikanData = savedStateHandle.get<Array<Warikan>>("warikans") ?: arrayOf()
-        for (warikand in warikanData) Log.i("pro", warikand.proportion.toString())
+
         val isSave = savedStateHandle.get<Boolean>("isSave") ?: false
         _rouletteState.value = Roulette(
             Total = total.toString().toInt(),
@@ -97,13 +102,14 @@ class RouletteViewModel @Inject constructor(
 
     fun onEvent(event: RoulettesEvent) {
         when (event) {
-            is RoulettesEvent.MuteClickEvent ->{
+            is RoulettesEvent.MuteClickEvent -> {
                 _isMuteState.value = event.isMuted
-                if(event.isMuted) viewModelScope.launch { _eventFlow.emit(UiEvent.MuteON) }
+                if (event.isMuted) viewModelScope.launch { _eventFlow.emit(UiEvent.MuteON) }
                 else viewModelScope.launch { _eventFlow.emit(UiEvent.MuteOFF) }
             }
             is RoulettesEvent.StartClickEvent -> {
-                if (rotated) return
+                if (_isRotated.value) return
+                _isRotated.value = true
                 viewModelScope.launch { _eventFlow.emit(UiEvent.StartRoulette) }
                 _isRotatingState.value = true
                 val warikans = _rouletteState.value.Warikans
@@ -123,7 +129,6 @@ class RouletteViewModel @Inject constructor(
             }
 
             is RoulettesEvent.StopClickEvent -> {
-                rotated = true
                 _isRotatingState.value = false
                 viewModelScope.launch { _eventFlow.emit(UiEvent.StopRoulette) }
             }
@@ -135,7 +140,14 @@ class RouletteViewModel @Inject constructor(
                             payment = resultPayments[index]
                         )
                     }
+                _isShowBottom.value = true
                 viewModelScope.launch { _eventFlow.emit(UiEvent.EndRoulette) }
+            }
+            is RoulettesEvent.RetryClickEvent -> {
+                viewModelScope.launch { _eventFlow.emit(UiEvent.Retry) }
+            }
+            is RoulettesEvent.GoHomeClickEvent -> {
+                viewModelScope.launch { _eventFlow.emit(UiEvent.GoHome) }
             }
         }
     }
@@ -152,5 +164,7 @@ class RouletteViewModel @Inject constructor(
         object MuteON : UiEvent()
         object MuteOFF : UiEvent()
         object EndRoulette : UiEvent()
+        object Retry : UiEvent()
+        object GoHome : UiEvent()
     }
 }
