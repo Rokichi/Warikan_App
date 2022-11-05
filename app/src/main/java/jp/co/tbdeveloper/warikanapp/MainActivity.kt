@@ -1,10 +1,8 @@
 package jp.co.tbdeveloper.warikanapp
 
-import android.content.Context
 import android.content.res.Resources
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
@@ -174,7 +172,7 @@ class MainActivity : ComponentActivity() {
 
     private fun initializeRewardedAd(id: String, onComplete: () -> Unit) {
         var adRequest = AdRequest.Builder().build()
-        RewardedAd.load(this,id, adRequest, object : RewardedAdLoadCallback() {
+        RewardedAd.load(this, id, adRequest, object : RewardedAdLoadCallback() {
             override fun onAdFailedToLoad(adError: LoadAdError) {
                 mRewardedAd = null
             }
@@ -185,12 +183,13 @@ class MainActivity : ComponentActivity() {
             }
         })
 
-        mRewardedAd?.fullScreenContentCallback = object: FullScreenContentCallback() {
+        mRewardedAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
             override fun onAdShowedFullScreenContent() {
                 onComplete()
             }
         }
     }
+
     private fun showRewardedAd(mRewardedAd: RewardedAd?, popUpPage: () -> Unit) {
         if (mRewardedAd == null) {
             popUpPage()

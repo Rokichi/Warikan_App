@@ -93,7 +93,7 @@ fun RouletteScreen(
                     if (!viewModel.isMuteState.value) mpResult.start()
                 }
                 is RouletteViewModel.UiEvent.Retry -> {
-                    showRewardedAd{
+                    showRewardedAd {
                         navController.navigateUp()
                     }
                 }

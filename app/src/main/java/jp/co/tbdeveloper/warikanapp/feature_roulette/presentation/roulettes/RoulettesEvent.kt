@@ -6,5 +6,5 @@ sealed class RoulettesEvent {
     object RetryClickEvent : RoulettesEvent()
     object GoHomeClickEvent : RoulettesEvent()
     object EndRouletteEvent : RoulettesEvent()
-    data class MuteClickEvent(val isMuted:Boolean) : RoulettesEvent()
+    data class MuteClickEvent(val isMuted: Boolean) : RoulettesEvent()
 }
