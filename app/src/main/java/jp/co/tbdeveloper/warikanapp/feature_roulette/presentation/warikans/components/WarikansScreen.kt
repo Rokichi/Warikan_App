@@ -35,6 +35,8 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Screen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.ShadowButton
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikans.WarikanEvent
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikans.WarikanViewModel
+import jp.co.tbdeveloper.warikanapp.ui.theme.MainAccent
+import jp.co.tbdeveloper.warikanapp.ui.theme.SubAccent
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -104,7 +106,8 @@ fun WarikansScreen(
                         checked = isSave.value,
                         onCheckedChange = { isSave.value = it },
                         colors = SwitchDefaults.colors(
-                            checkedThumbColor = Color.Red,
+                            checkedThumbColor = MainAccent,
+                            checkedTrackColor = SubAccent,
                             uncheckedThumbColor = Color.Gray,
                             uncheckedTrackColor = Color.LightGray
                         )

@@ -6,15 +6,15 @@ import kotlinx.parcelize.Parcelize
 /**
  * ルーレットデータ
  *
- * @property Total 合計金額
- * @property RouletteId ルーレットID
- * @property Members メンバーデータ
- * @property Warikans 割り勘データ
+ * @property total 合計金額
+ * @property rouletteId ルーレットID
+ * @property members メンバーデータ
+ * @property warikans 割り勘データ
  */
 @Parcelize
 data class Roulette(
-    val Total: Int = 0,
-    val RouletteId: Long = 0,
-    val Members: List<Member> = listOf(),
-    val Warikans: List<Warikan> = listOf(),
+    val total: Int = 0,
+    val rouletteId: Long = 0,
+    val members: List<Member> = listOf(),
+    val warikans: List<Warikan> = listOf(),
 ) : Parcelable

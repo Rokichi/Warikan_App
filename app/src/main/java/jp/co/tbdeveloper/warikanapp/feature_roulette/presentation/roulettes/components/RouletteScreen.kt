@@ -119,7 +119,7 @@ fun RouletteScreen(
         // トップバー
         PageBackBar(viewModel) { navController.navigateUp() }
         Text(
-            text = rouletteState.value.Total.toString() + " 円",
+            text = rouletteState.value.total.toString() + " 円",
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.h1,
@@ -133,8 +133,8 @@ fun RouletteScreen(
             CircleOfRoulette(
                 viewModel = viewModel,
                 size = 350.dp,
-                members = rouletteState.value.Members,
-                warikans = rouletteState.value.Warikans,
+                members = rouletteState.value.members,
+                warikans = rouletteState.value.warikans,
                 sumOfpr = viewModel.sumOfProportion,
                 isRotating = isRotating.value,
                 isBordered = true,

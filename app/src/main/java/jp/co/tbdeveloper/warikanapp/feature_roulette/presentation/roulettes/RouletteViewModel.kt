@@ -73,15 +73,15 @@ class RouletteViewModel @Inject constructor(
 
         val isSave = savedStateHandle.get<Boolean>("isSave") ?: false
         _rouletteState.value = Roulette(
-            Total = total.toString().toInt(),
-            Members = memberData.toList(),
-            Warikans = warikanData.toList()
+            total = total.toString().toInt(),
+            members = memberData.toList(),
+            warikans = warikanData.toList()
         )
-        rouletteState.value.Warikans.forEach { warikan ->
+        rouletteState.value.warikans.forEach { warikan ->
             sumOfProportion += warikan.proportion
         }
         _resultWarikanState.value =
-            ResultWarikanFactory.create(rouletteState.value.Members)
+            ResultWarikanFactory.create(rouletteState.value.members)
         if (isSave)
             viewModelScope.launch {
                 // save
@@ -111,7 +111,7 @@ class RouletteViewModel @Inject constructor(
                 _isRotated.value = true
                 viewModelScope.launch { _eventFlow.emit(UiEvent.StartRoulette) }
                 _isRotatingState.value = true
-                val warikans = _rouletteState.value.Warikans
+                val warikans = _rouletteState.value.warikans
                 // 割り勘結果のindex取得
                 val drawnIndex =
                     rouletteUseCases.getRouletteResultIndex(warikans, getCalendarStr())
@@ -120,7 +120,7 @@ class RouletteViewModel @Inject constructor(
                 // 割り勘情報取得
                 val ratios: List<Int> = warikans[drawnIndex].ratios.map { it.toInt() }
                 resultPayments += rouletteUseCases.getWarikanResult(
-                    _rouletteState.value.Total,
+                    _rouletteState.value.total,
                     ratios
                 )
                 resultProportions +=

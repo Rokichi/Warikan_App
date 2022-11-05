@@ -23,10 +23,10 @@ object RouletteFactory {
         warikanEntities: List<Warikan>
     ): Roulette {
         return Roulette(
-            Total = rouletteEntity.total,
-            RouletteId = rouletteEntity.id,
-            Members = memberEntities,
-            Warikans = warikanEntities,
+            total = rouletteEntity.total,
+            rouletteId = rouletteEntity.id,
+            members = memberEntities,
+            warikans = warikanEntities,
         )
     }
 }

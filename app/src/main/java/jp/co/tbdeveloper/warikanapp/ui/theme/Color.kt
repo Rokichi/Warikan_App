@@ -2,6 +2,9 @@ package jp.co.tbdeveloper.warikanapp.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+val MainAccent = Color(0xFF5FBF1B)
+val SubAccent = Color(0xFFDAF2C9)
+
 val LightTextBlack = Color(0xFF1E1E1E)
 val LightTextGray = Color(0xFF505050)
 val LightBackGround = Color(0xFFFAFAFA)
