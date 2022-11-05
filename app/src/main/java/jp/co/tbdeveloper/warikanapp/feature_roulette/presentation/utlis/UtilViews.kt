@@ -57,15 +57,7 @@ fun ShadowButton(
                 )
                 .clip(RoundedCornerShape(10.dp))
                 .background(Color.Black.copy(alpha = 0.15f))
-        ) {
-            Text(
-                text = text,
-                textAlign = TextAlign.Center,
-                modifier = modifier.padding(horizontal = (padding + 1).dp),
-                style = MaterialTheme.typography.button,
-                color = MaterialTheme.colors.surface
-            )
-        }
+        )
         Card(
             //elevation = 3.dp,
             backgroundColor = backGroundColor,

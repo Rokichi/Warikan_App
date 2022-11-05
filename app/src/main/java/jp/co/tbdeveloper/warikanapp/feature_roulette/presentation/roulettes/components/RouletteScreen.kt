@@ -36,6 +36,8 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.Roul
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.RoulettesEvent
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Circle
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.FunShape
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Screen
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.ShadowButton
 import kotlinx.coroutines.flow.collectLatest
 import kotlin.math.cos
 import kotlin.math.sin
@@ -65,10 +67,10 @@ fun RouletteScreen(
                     Toast.makeText(context, "データを保存しました", Toast.LENGTH_SHORT).show()
                 }
                 is RouletteViewModel.UiEvent.MuteON -> {
-                    if(mpDram.isPlaying) mpDram.pause()
+                    if (mpDram.isPlaying) mpDram.pause()
                 }
                 is RouletteViewModel.UiEvent.MuteOFF -> {
-                    if(!mpDram.isPlaying) mpDram.start()
+                    if (!mpDram.isPlaying) mpDram.start()
                 }
                 is RouletteViewModel.UiEvent.StartRoulette -> {
                     if (!isMuted.value) mpDram?.start()
@@ -79,6 +81,14 @@ fun RouletteScreen(
                 is RouletteViewModel.UiEvent.EndRoulette -> {
                     mpDram?.stop()
                     if (!viewModel.isMuteState.value) mpResult.start()
+                }
+                is RouletteViewModel.UiEvent.Retry -> {
+                    navController.navigateUp()
+                }
+                is RouletteViewModel.UiEvent.GoHome -> {
+                    navController.navigate(Screen.MemberScreen.route) {
+                        popUpTo(0)
+                    }
                 }
             }
         }
@@ -93,7 +103,7 @@ fun RouletteScreen(
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         // トップバー
-        PageBackBar { navController.navigateUp() }
+        PageBackBar(viewModel) { navController.navigateUp() }
         Text(
             text = rouletteState.value.Total.toString() + " 円",
             modifier = Modifier.fillMaxWidth(),
@@ -150,7 +160,7 @@ fun RouletteScreen(
                 results = resultWarikanState.value
             )
             MuteBar(
-                Modifier.weight(1.0f),
+                Modifier.weight(1.5f),
                 viewModel,
                 isMuted
             )
@@ -164,10 +174,34 @@ fun MuteBar(
     viewModel: RouletteViewModel,
     isMuted: State<Boolean>,
 ) {
+    val isShowBottom = remember { viewModel.isShowBottom }
     Row(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.End,
+        horizontalArrangement = if (isShowBottom.value) Arrangement.spacedBy(5.dp)
+        else Arrangement.End,
     ) {
+        if (isShowBottom.value) {
+            ShadowButton(
+                text = "もう一度！",
+                padding = 40,
+                backGroundColor = MaterialTheme.colors.primary,
+                borderColor = MaterialTheme.colors.background,
+                textStyle = MaterialTheme.typography.body1,
+                offsetY = 9.dp,
+                offsetX = 0.dp,
+                onClick = { viewModel.onEvent(RoulettesEvent.RetryClickEvent) }
+            )
+            ShadowButton(
+                text = "ホームに戻る",
+                padding = 40,
+                backGroundColor = MaterialTheme.colors.primary,
+                borderColor = MaterialTheme.colors.background,
+                textStyle = MaterialTheme.typography.body1,
+                offsetY = 9.dp,
+                offsetX = 0.dp,
+                onClick = { viewModel.onEvent(RoulettesEvent.GoHomeClickEvent) }
+            )
+        }
         if (isMuted.value) {
             Image(
                 painter = painterResource(id = R.drawable.ic_volume_off),
@@ -204,8 +238,10 @@ fun MuteBar(
 
 @Composable
 fun PageBackBar(
-    onPageBackButtonClick: () -> Unit = {},
+    viewModel: RouletteViewModel,
+    onPageBackButtonClick: () -> Unit = {}
 ) {
+    val isRotated = remember { viewModel.isRotated }
     Row(
         // 横幅Max, 横は等間隔，縦は真ん中に
         modifier = Modifier
@@ -214,18 +250,22 @@ fun PageBackBar(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_arrow_left),
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxHeight()
-                .clickable(
-                    interactionSource = MutableInteractionSource(),
-                    indication = rememberRipple(color = Color.Black, radius = 18.dp),
-                    onClick = { onPageBackButtonClick(); }
-                ),
-            contentDescription = "page back button"
-        )
+        if (isRotated.value) {
+            Spacer(modifier = Modifier.width(10.dp))
+        } else {
+            Image(
+                painter = painterResource(id = R.drawable.ic_arrow_left),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .clickable(
+                        interactionSource = MutableInteractionSource(),
+                        indication = rememberRipple(color = Color.Black, radius = 18.dp),
+                        onClick = { if (!viewModel.isRotated.value) onPageBackButtonClick(); }
+                    ),
+                contentDescription = "page back button"
+            )
+        }
     }
 }
 
