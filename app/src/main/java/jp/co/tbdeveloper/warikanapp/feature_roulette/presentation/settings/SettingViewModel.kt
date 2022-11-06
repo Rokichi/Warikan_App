@@ -54,7 +54,7 @@ class SettingViewModel @Inject constructor(
             is SettingsEvent.onIsMutedChange -> {
                 _isMuted.value = event.flg
             }
-            is SettingsEvent.onSetDarkThemeSelecte -> {
+            is SettingsEvent.onSetDarkThemeSelect -> {
                 _setDarkTheme.value = event.value
             }
             is SettingsEvent.onSave -> {
