@@ -23,6 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import jp.co.tbdeveloper.warikanapp.DarkThemeValHolder
 import jp.co.tbdeveloper.warikanapp.R
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Settings
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.settings.SettingViewModel
@@ -108,7 +109,10 @@ fun SettingScreen(
                             modifier = Modifier
                                 .size(40.dp)
                                 .padding(top = 5.dp),
-                            painter = painterResource(id = R.drawable.ic_arrow_down),
+                            painter = painterResource(
+                                id = if (DarkThemeValHolder.isDarkTheme.value) R.drawable.ic_arrow_down_dark
+                                else R.drawable.ic_arrow_down_light
+                            ),
                             contentScale = ContentScale.Inside,
                             contentDescription = "drop down button"
                         )
@@ -172,7 +176,10 @@ fun PageBackBar(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            painter = painterResource(id = R.drawable.ic_arrow_left),
+            painter = painterResource(
+                id = if (DarkThemeValHolder.isDarkTheme.value) R.drawable.ic_arrow_left_dark
+                else R.drawable.ic_arrow_left_light
+            ),
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxHeight()

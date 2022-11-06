@@ -10,6 +10,7 @@ import jp.co.tbdeveloper.warikanapp.DarkThemeValHolder
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.InvalidMemberException
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.InvalidRouletteException
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Settings
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.SettingsFactory
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.member.MemberUseCases
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.roulette.RouletteUseCases
@@ -40,17 +41,17 @@ class MemberViewModel @Inject constructor(
     private val unusedColorNums = MutableList(Member.memberColors(true).size) { it }
     private var hashLongNum: Int = getMD5HashInt(getCalendarStr())
 
-
+    lateinit var settings:Settings
     init {
         // load theme settings
         val job = CoroutineScope(Dispatchers.IO).launch {
-            val settings = SettingsFactory.create(settingsUseCases.getSettings())
-            DarkThemeValHolder.isDarkThemeSelect.value = settings.setDarkTheme
+            settings = SettingsFactory.create(settingsUseCases.getSettings())
         }
         // wait
         while (!job.isCompleted) {
             Thread.sleep(100)
         }
+        DarkThemeValHolder.isDarkThemeSelectIndex.value = settings.setDarkTheme
     }
 
     // メンバー
@@ -134,5 +135,6 @@ class MemberViewModel @Inject constructor(
         object DeleteError : UiEvent()
         data class InputError(val errorNum: Int) : UiEvent()
         data class NextPage(val members: String?, val total: String) : UiEvent()
+        object SettingPage:UiEvent()
     }
 }

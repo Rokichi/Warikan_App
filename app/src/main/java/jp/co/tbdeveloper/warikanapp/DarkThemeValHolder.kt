@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 
 class DarkThemeValHolder {
     companion object {
-        val isDarkThemeSelect = mutableStateOf(0)
+        val isDarkThemeSelectIndex = mutableStateOf(0)
+        val isDarkTheme = mutableStateOf(false)
     }
 }

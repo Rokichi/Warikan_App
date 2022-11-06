@@ -34,7 +34,7 @@ private val LightColorPalette = lightColors(
 @Composable
 fun WarikanAppTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val isDarkThemeSelect = remember {
-        DarkThemeValHolder.isDarkThemeSelect
+        DarkThemeValHolder.isDarkThemeSelectIndex
     }
     val colors = when (isDarkThemeSelect.value) {
         0 -> {
@@ -44,12 +44,13 @@ fun WarikanAppTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Compos
             DarkColorPalette
         }
         2 -> {
-            if(darkTheme) DarkColorPalette else LightColorPalette
+            if (darkTheme) DarkColorPalette else LightColorPalette
         }
         else -> {
             LightColorPalette
         }
     }
+    DarkThemeValHolder.isDarkTheme.value = colors == DarkColorPalette
 
     MaterialTheme(
         colors = colors,

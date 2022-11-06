@@ -24,6 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import jp.co.tbdeveloper.warikanapp.DarkThemeValHolder
 import jp.co.tbdeveloper.warikanapp.R
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.MemberEvent
@@ -63,6 +64,9 @@ fun MembersScreen(
                 }
                 is MemberViewModel.UiEvent.NextPage -> {
                     navController.navigate(Screen.WarikanScreen.route + "/${event.members}/${event.total}")
+                }
+                is MemberViewModel.UiEvent.SettingPage->{
+                    navController.navigate(Screen.SettingsScreen.route)
                 }
             }
         }
@@ -150,7 +154,10 @@ fun SettingAndHistoryBar(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            painter = painterResource(id = R.drawable.ic_settings),
+            painter = painterResource(
+                id = if (DarkThemeValHolder.isDarkTheme.value) R.drawable.ic_settings_dark
+                else R.drawable.ic_settings_light
+            ),
             contentScale = ContentScale.FillHeight,
             modifier = Modifier
                 .fillMaxHeight()

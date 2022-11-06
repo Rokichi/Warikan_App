@@ -16,6 +16,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import jp.co.tbdeveloper.warikanapp.DarkThemeValHolder
 import jp.co.tbdeveloper.warikanapp.R
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.CustomTextField
@@ -53,7 +54,10 @@ fun MemberItem(
             )
         }
         Image(
-            painter = painterResource(id = R.drawable.ic_close),
+            painter = painterResource(
+                id = if (DarkThemeValHolder.isDarkTheme.value) R.drawable.ic_close_dark
+                else R.drawable.ic_close_light
+            ),
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .weight(1.0f)

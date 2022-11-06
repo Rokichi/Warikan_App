@@ -65,7 +65,7 @@ class SettingViewModel @Inject constructor(
                             Settings(_autoSave.value, _isMuted.value, _setDarkTheme.value)
                         )
                     )
-                    DarkThemeValHolder.isDarkThemeSelect.value = _setDarkTheme.value
+                    DarkThemeValHolder.isDarkThemeSelectIndex.value = _setDarkTheme.value
                     _eventFlow.emit(UiEvent.SaveEvent)
                 }
             }
