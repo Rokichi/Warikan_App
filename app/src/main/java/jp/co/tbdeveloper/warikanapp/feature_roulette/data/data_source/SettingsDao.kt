@@ -18,6 +18,6 @@ interface SettingsDao {
      *
      * @param settings Entity
      */
-    @Update
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateSettings(settings: SettingsEntity)
 }

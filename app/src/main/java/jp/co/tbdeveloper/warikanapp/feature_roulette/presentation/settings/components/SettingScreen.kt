@@ -34,7 +34,7 @@ fun SettingScreen(
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is UiEvent.SaveEvent -> {
-                    navController.navigate(Screen.SettingsScreen.route) {
+                    navController.navigate(Screen.MemberScreen.route) {
                         popUpTo(0)
                     }
                 }
@@ -51,43 +51,50 @@ fun SettingScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(15.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         // トップバー
         PageBackBar {
-            navController.navigate(Screen.SettingsScreen.route) {
+            navController.navigate(Screen.MemberScreen.route) {
                 popUpTo(0)
             }
         }
-        // 自動保存
-        TextAndSwitch(text = "自動保存", isChecked = autoSave) { flg: Boolean ->
-            viewModel.onEvent(SettingsEvent.onAutoSaveChange(flg))
-        }
-
-        // ミュート
-        TextAndSwitch(text = "ミュート", isChecked = isMuted) { flg: Boolean ->
-            viewModel.onEvent(SettingsEvent.onIsMutedChange(flg))
-        }
-
-        // テーマのプルダウン
         Column(
-            modifier = Modifier.fillMaxHeight(),
-            verticalArrangement = Arrangement.Bottom,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 30.dp, start = 30.dp, end = 30.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(15.dp)
         ) {
-            ShadowButton(
-                text = "保存",
-                modifier = Modifier.weight(2.0f),
-                padding = 80,
-                backGroundColor = MaterialTheme.colors.primary,
-                borderColor = MaterialTheme.colors.background,
-                textStyle = MaterialTheme.typography.body1,
-                offsetY = 9.dp,
-                offsetX = 0.dp,
-                onClick = {
-                    viewModel.onEvent(SettingsEvent.onSave)
-                }
-            )
+            // 自動保存
+            TextAndSwitch(text = "自動保存", isChecked = autoSave) { flg: Boolean ->
+                viewModel.onEvent(SettingsEvent.onAutoSaveChange(flg))
+            }
+
+            // ミュート
+            TextAndSwitch(text = "ミュート", isChecked = isMuted) { flg: Boolean ->
+                viewModel.onEvent(SettingsEvent.onIsMutedChange(flg))
+            }
+
+            // テーマのプルダウン
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Bottom,
+            ) {
+                ShadowButton(
+                    text = "保存",
+                    modifier = Modifier.weight(2.0f),
+                    padding = 80,
+                    backGroundColor = MaterialTheme.colors.primary,
+                    borderColor = MaterialTheme.colors.background,
+                    textStyle = MaterialTheme.typography.body1,
+                    offsetY = 9.dp,
+                    offsetX = 0.dp,
+                    onClick = {
+                        viewModel.onEvent(SettingsEvent.onSave)
+                    }
+                )
+            }
         }
     }
 }

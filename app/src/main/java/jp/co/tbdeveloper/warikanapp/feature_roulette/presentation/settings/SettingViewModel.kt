@@ -9,6 +9,8 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Setti
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.SettingsEntityFactory
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.SettingsFactory
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.settings.SettingsUseCases
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
@@ -19,29 +21,33 @@ class SettingViewModel @Inject constructor(
     val settingUseCases: SettingsUseCases
 ) : ViewModel() {
 
-    private val _autoSave = mutableStateOf(true)
-    val autoSave:State<Boolean> = _autoSave
+    val _autoSave = mutableStateOf(true)
+    val autoSave: State<Boolean> = _autoSave
 
     private val _isMuted = mutableStateOf(true)
-    val isMuted:State<Boolean> = _isMuted
+    val isMuted: State<Boolean> = _isMuted
 
     private val _setDarkTheme = mutableStateOf(0)
-    val setDarkTheme:State<Int> = _setDarkTheme
+    val setDarkTheme: State<Int> = _setDarkTheme
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
     init {
-        viewModelScope.launch {
-            val settings = SettingsFactory.create(settingUseCases.getSettings())
-            _autoSave.value = settings.autoSave
-            _isMuted.value = settings.isMuted
-            _setDarkTheme.value = settings.setDarkTheme
+        lateinit var settings: Settings
+        val job = CoroutineScope(Dispatchers.IO).launch {
+            settings = SettingsFactory.create(settingUseCases.getSettings())
         }
+        while (!job.isCompleted) {
+            Thread.sleep(100)
+        }
+        _autoSave.value = settings.autoSave
+        _isMuted.value = settings.isMuted
+        _setDarkTheme.value = settings.setDarkTheme
     }
 
-    fun onEvent(event:SettingsEvent){
-        when(event){
+    fun onEvent(event: SettingsEvent) {
+        when (event) {
             is SettingsEvent.onAutoSaveChange -> {
                 _autoSave.value = event.flg
             }

@@ -2,6 +2,7 @@ package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.settings.comp
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Switch
 import androidx.compose.material.SwitchDefaults
@@ -16,11 +17,13 @@ import jp.co.tbdeveloper.warikanapp.ui.theme.SubAccent
 
 @Composable
 fun TextAndSwitch(
+    modifier: Modifier = Modifier,
     text: String,
     isChecked: State<Boolean>,
     onCheckedChange: (Boolean) -> Unit
 ) {
     Row(
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
