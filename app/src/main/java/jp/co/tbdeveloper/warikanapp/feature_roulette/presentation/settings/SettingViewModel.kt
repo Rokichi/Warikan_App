@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingViewModel @Inject constructor(
-    val settingUseCases: SettingsUseCases
+    private val settingsUseCases: SettingsUseCases
 ) : ViewModel() {
 
     val _autoSave = mutableStateOf(true)
@@ -36,7 +36,7 @@ class SettingViewModel @Inject constructor(
     init {
         lateinit var settings: Settings
         val job = CoroutineScope(Dispatchers.IO).launch {
-            settings = SettingsFactory.create(settingUseCases.getSettings())
+            settings = SettingsFactory.create(settingsUseCases.getSettings())
         }
         while (!job.isCompleted) {
             Thread.sleep(100)
@@ -59,7 +59,7 @@ class SettingViewModel @Inject constructor(
             }
             is SettingsEvent.onSave -> {
                 viewModelScope.launch {
-                    settingUseCases.updateSettings(
+                    settingsUseCases.updateSettings(
                         SettingsEntityFactory.create(
                             Settings(_autoSave.value, _isMuted.value, _setDarkTheme.value)
                         )

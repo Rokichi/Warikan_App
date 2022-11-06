@@ -80,7 +80,7 @@ fun RouletteScreen(
                     if (mpDram.isPlaying) mpDram.pause()
                 }
                 is RouletteViewModel.UiEvent.MuteOFF -> {
-                    if (!mpDram.isPlaying) mpDram.start()
+                    if (!mpDram.isPlaying && viewModel.isRotated.value) mpDram.start()
                 }
                 is RouletteViewModel.UiEvent.StartRoulette -> {
                     if (!isMuted.value) mpDram?.start()

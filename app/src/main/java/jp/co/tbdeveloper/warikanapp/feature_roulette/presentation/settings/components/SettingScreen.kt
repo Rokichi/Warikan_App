@@ -1,13 +1,13 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.settings.components
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.ripple.rememberRipple
@@ -28,10 +28,9 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Setti
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.settings.SettingViewModel
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.settings.SettingsEvent
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.settings.UiEvent
-import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Screen
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.NoRippleDropdownMenuItem
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.ShadowButton
 import kotlinx.coroutines.flow.collectLatest
-import kotlin.math.log
 
 @Composable
 fun SettingScreen(
@@ -42,9 +41,7 @@ fun SettingScreen(
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is UiEvent.SaveEvent -> {
-                    navController.navigate(Screen.MemberScreen.route) {
-                        popUpTo(0)
-                    }
+                    navController.navigateUp()
                 }
             }
         }
@@ -63,9 +60,7 @@ fun SettingScreen(
     ) {
         // トップバー
         PageBackBar {
-            navController.navigate(Screen.MemberScreen.route) {
-                popUpTo(0)
-            }
+            navController.navigateUp()
         }
         Column(
             modifier = Modifier
@@ -87,7 +82,7 @@ fun SettingScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(end = 5.dp),
+                    .padding(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
@@ -97,20 +92,24 @@ fun SettingScreen(
                     color = MaterialTheme.colors.surface,
                 )
                 // テーマのプルダウン
-                Box{
-                    Row{
+                Box(
+                    modifier = Modifier
+                        .border(1.dp, Color.LightGray, RoundedCornerShape(5.dp))
+                        .clickable { expanded.value = true }
+                ) {
+                    Row {
                         Text(
-                            modifier = Modifier.clickable{ expanded.value = true },
+                            modifier = Modifier.padding(start = 10.dp),
                             text = Settings.darkThemeText[setDarkTheme.value],
                             style = MaterialTheme.typography.body1,
                             color = MaterialTheme.colors.surface,
                         )
                         Image(
-                            painter = painterResource(id = R.drawable.ic_arrow_down),
-                            contentScale = ContentScale.Crop,
                             modifier = Modifier
-                                .fillMaxHeight()
-                                ,
+                                .size(40.dp)
+                                .padding(top = 5.dp),
+                            painter = painterResource(id = R.drawable.ic_arrow_down),
+                            contentScale = ContentScale.Inside,
                             contentDescription = "drop down button"
                         )
                     }
@@ -120,17 +119,13 @@ fun SettingScreen(
                         onDismissRequest = { expanded.value = false },
                     ) {
                         Settings.darkThemeText.forEachIndexed { index, _ ->
-                            DropdownMenuItem({}){
+                            NoRippleDropdownMenuItem(
+                                onClick = {
+                                    expanded.value = false
+                                    viewModel.onEvent(SettingsEvent.onSetDarkThemeSelect(index))
+                                }
+                            ) {
                                 Text(
-                                    modifier = Modifier.clickable(
-                                        interactionSource = remember {
-                                            MutableInteractionSource()
-                                        },
-                                        indication = null
-                                    ){
-                                        expanded.value = false
-                                        viewModel.onEvent(SettingsEvent.onSetDarkThemeSelect(index))
-                                    },
                                     text = Settings.darkThemeText[index],
                                     style = MaterialTheme.typography.body1,
                                     color = MaterialTheme.colors.surface,

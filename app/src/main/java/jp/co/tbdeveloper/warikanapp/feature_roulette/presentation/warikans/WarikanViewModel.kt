@@ -10,8 +10,13 @@ import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.InvalidWarikanException
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Settings
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Warikan
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.SettingsFactory
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.settings.SettingsUseCases
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.warikan.WarikanUseCases
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -24,6 +29,7 @@ const val DEFAULT_WARIKAN_NUM = 3
 @HiltViewModel
 class WarikanViewModel @Inject constructor(
     private val warikanUseCases: WarikanUseCases,
+    private val settingsUseCases: SettingsUseCases,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     // メンバー
@@ -70,6 +76,15 @@ class WarikanViewModel @Inject constructor(
         _proportionState.value = List(_warikanState.value.size) {
             "1"
         }
+
+        lateinit var settings: Settings
+        val job = CoroutineScope(Dispatchers.IO).launch {
+            settings = SettingsFactory.create(settingsUseCases.getSettings())
+        }
+        while (!job.isCompleted) {
+            Thread.sleep(100)
+        }
+        isSave.value = settings.autoSave
     }
 
     fun onEvent(event: WarikanEvent) {
@@ -99,7 +114,6 @@ class WarikanViewModel @Inject constructor(
                             if (index == event.num) event.value
                             else ratio
                         }
-
                         warikan.copy(
                             color =
                             if (ratios.any { it.isEmpty() or !it.isDigitsOnly() }) -1
