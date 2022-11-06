@@ -42,7 +42,8 @@ fun RoundedRatio(
             )
         }
         for (i in 1 until ratios.size) {
-            Text(":",
+            Text(
+                ":",
                 style = MaterialTheme.typography.body2,
                 color = LightTextBlack
             )

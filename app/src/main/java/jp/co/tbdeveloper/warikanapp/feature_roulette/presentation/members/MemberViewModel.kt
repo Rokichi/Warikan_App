@@ -41,7 +41,8 @@ class MemberViewModel @Inject constructor(
     private val unusedColorNums = MutableList(Member.memberColors(true).size) { it }
     private var hashLongNum: Int = getMD5HashInt(getCalendarStr())
 
-    lateinit var settings:Settings
+    lateinit var settings: Settings
+
     init {
         // load theme settings
         val job = CoroutineScope(Dispatchers.IO).launch {
@@ -135,6 +136,6 @@ class MemberViewModel @Inject constructor(
         object DeleteError : UiEvent()
         data class InputError(val errorNum: Int) : UiEvent()
         data class NextPage(val members: String?, val total: String) : UiEvent()
-        object SettingPage:UiEvent()
+        object SettingPage : UiEvent()
     }
 }

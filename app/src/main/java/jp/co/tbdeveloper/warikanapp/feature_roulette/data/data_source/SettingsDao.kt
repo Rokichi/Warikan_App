@@ -1,6 +1,9 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.data.data_source
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.SettingsEntity
 
 @Dao

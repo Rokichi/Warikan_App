@@ -1,7 +1,6 @@
 package jp.co.tbdeveloper.warikanapp.di
 
 import android.app.Application
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
@@ -128,12 +127,13 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideSettingsUseCases(repository: SettingsRepository):SettingsUseCases {
+    fun provideSettingsUseCases(repository: SettingsRepository): SettingsUseCases {
         return SettingsUseCases(
             getSettings = GetSettings(repository),
             updateSettings = UpdateSettings(repository)
         )
     }
+
     @Provides
     @Singleton
     fun provideSettingsDatabase(app: Application): SettingsDatabase {

@@ -6,7 +6,7 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.SettingsR
 class UpdateSettings(
     private val repository: SettingsRepository
 ) {
-    suspend operator fun invoke(settingsEntity: SettingsEntity){
+    suspend operator fun invoke(settingsEntity: SettingsEntity) {
         repository.updateSettings(settingsEntity)
     }
 }
