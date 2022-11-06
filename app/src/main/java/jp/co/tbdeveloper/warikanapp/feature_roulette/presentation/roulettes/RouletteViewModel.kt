@@ -6,18 +6,15 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.ResultWarikan
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Roulette
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Warikan
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.MemberEntityFactory
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.ResultWarikanFactory
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.RouletteEntityFactory
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.WarikanEntityFactory
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.*
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.*
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.member.MemberUseCases
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.roulette.RouletteUseCases
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.settings.SettingsUseCases
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.warikan.WarikanUseCases
 import jp.co.tbdeveloper.warikanapp.feature_roulette.utils.getCalendarStr
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -32,6 +29,7 @@ class RouletteViewModel @Inject constructor(
     private val rouletteUseCases: RouletteUseCases,
     private val memberUseCases: MemberUseCases,
     private val warikanUseCases: WarikanUseCases,
+    private val settingsUseCases: SettingsUseCases,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -73,15 +71,15 @@ class RouletteViewModel @Inject constructor(
 
         val isSave = savedStateHandle.get<Boolean>("isSave") ?: false
         _rouletteState.value = Roulette(
-            Total = total.toString().toInt(),
-            Members = memberData.toList(),
-            Warikans = warikanData.toList()
+            total = total.toString().toInt(),
+            members = memberData.toList(),
+            warikans = warikanData.toList()
         )
-        rouletteState.value.Warikans.forEach { warikan ->
+        rouletteState.value.warikans.forEach { warikan ->
             sumOfProportion += warikan.proportion
         }
         _resultWarikanState.value =
-            ResultWarikanFactory.create(rouletteState.value.Members)
+            ResultWarikanFactory.create(rouletteState.value.members)
         if (isSave)
             viewModelScope.launch {
                 // save
@@ -94,6 +92,14 @@ class RouletteViewModel @Inject constructor(
                 warikanUseCases.addWarikan(WarikanEntityFactory.create(id, warikanData.toList()))
                 _eventFlow.emit(UiEvent.SaveEvent)
             }
+        lateinit var settings: Settings
+        val job = CoroutineScope(Dispatchers.IO).launch {
+            settings = SettingsFactory.create(settingsUseCases.getSettings())
+        }
+        while (!job.isCompleted) {
+            Thread.sleep(100)
+        }
+        _isMuteState.value = settings.isMuted
     }
 
     val resultPayments = mutableListOf<Int>()
@@ -111,7 +117,7 @@ class RouletteViewModel @Inject constructor(
                 _isRotated.value = true
                 viewModelScope.launch { _eventFlow.emit(UiEvent.StartRoulette) }
                 _isRotatingState.value = true
-                val warikans = _rouletteState.value.Warikans
+                val warikans = _rouletteState.value.warikans
                 // 割り勘結果のindex取得
                 val drawnIndex =
                     rouletteUseCases.getRouletteResultIndex(warikans, getCalendarStr())
@@ -120,7 +126,7 @@ class RouletteViewModel @Inject constructor(
                 // 割り勘情報取得
                 val ratios: List<Int> = warikans[drawnIndex].ratios.map { it.toInt() }
                 resultPayments += rouletteUseCases.getWarikanResult(
-                    _rouletteState.value.Total,
+                    _rouletteState.value.total,
                     ratios
                 )
                 resultProportions +=

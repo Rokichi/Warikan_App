@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import jp.co.tbdeveloper.warikanapp.DarkThemeValHolder
 import jp.co.tbdeveloper.warikanapp.R
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.ResultWarikan
@@ -80,7 +81,7 @@ fun RouletteScreen(
                     if (mpDram.isPlaying) mpDram.pause()
                 }
                 is RouletteViewModel.UiEvent.MuteOFF -> {
-                    if (!mpDram.isPlaying) mpDram.start()
+                    if (!mpDram.isPlaying && viewModel.isRotated.value) mpDram.start()
                 }
                 is RouletteViewModel.UiEvent.StartRoulette -> {
                     if (!isMuted.value) mpDram?.start()
@@ -119,7 +120,7 @@ fun RouletteScreen(
         // トップバー
         PageBackBar(viewModel) { navController.navigateUp() }
         Text(
-            text = rouletteState.value.Total.toString() + " 円",
+            text = rouletteState.value.total.toString() + " 円",
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.h1,
@@ -133,8 +134,8 @@ fun RouletteScreen(
             CircleOfRoulette(
                 viewModel = viewModel,
                 size = 350.dp,
-                members = rouletteState.value.Members,
-                warikans = rouletteState.value.Warikans,
+                members = rouletteState.value.members,
+                warikans = rouletteState.value.warikans,
                 sumOfpr = viewModel.sumOfProportion,
                 isRotating = isRotating.value,
                 isBordered = true,
@@ -218,7 +219,10 @@ fun MuteBar(
         }
         if (isMuted.value) {
             Image(
-                painter = painterResource(id = R.drawable.ic_volume_off),
+                painter = painterResource(
+                    id = if (DarkThemeValHolder.isDarkTheme.value) R.drawable.ic_volume_off_dark
+                    else R.drawable.ic_volume_off_light
+                ),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxHeight()
@@ -233,7 +237,10 @@ fun MuteBar(
             )
         } else {
             Image(
-                painter = painterResource(id = R.drawable.ic_volume_on),
+                painter = painterResource(
+                    id = if (DarkThemeValHolder.isDarkTheme.value) R.drawable.ic_volume_on_dark
+                    else R.drawable.ic_volume_on_light
+                ),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxHeight()
@@ -268,7 +275,10 @@ fun PageBackBar(
             Spacer(modifier = Modifier.width(10.dp))
         } else {
             Image(
-                painter = painterResource(id = R.drawable.ic_arrow_left),
+                painter = painterResource(
+                    id = if (DarkThemeValHolder.isDarkTheme.value) R.drawable.ic_arrow_left_dark
+                    else R.drawable.ic_arrow_left_light
+                ),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxHeight()

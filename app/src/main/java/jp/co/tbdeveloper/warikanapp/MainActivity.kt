@@ -22,7 +22,6 @@ import androidx.navigation.navArgument
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
-import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,6 +29,7 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.parser.MemberArrayType
 import jp.co.tbdeveloper.warikanapp.feature_roulette.parser.WarikanArrayType
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.components.MembersScreen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.components.RouletteScreen
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.settings.components.SettingScreen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Screen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikans.components.WarikansScreen
 import jp.co.tbdeveloper.warikanapp.ui.theme.WarikanAppTheme
@@ -83,28 +83,27 @@ class MainActivity : ComponentActivity() {
                                     initializeInterstitialAd = { onComplete: () -> Unit ->
                                         initializeInterstitialAd(
                                             "ca-app-pub-3940256099942544/1033173712",
-                                            onComplete
-                                        )
+                                        ) { onComplete() }
                                     },
                                     showInterstitialAd = { popUpPage: () -> Unit ->
                                         showInterstitialAd(
                                             mInterstitialAd,
-                                            popUpPage
-                                        )
+                                        ) { popUpPage() }
                                     },
                                     initializeRewardedAd = { onComplete: () -> Unit ->
                                         initializeRewardedAd(
-                                            "ca-app-pub-3940256099942544/5224354917",
-                                            onComplete
-                                        )
+                                            "ca-app-pub-3940256099942544/5224354917"
+                                        ) { onComplete() }
                                     },
                                     showRewardedAd = { popUpPage: () -> Unit ->
                                         showRewardedAd(
                                             mRewardedAd,
-                                            popUpPage
-                                        )
+                                        ) { popUpPage() }
                                     }
                                 )
+                            }
+                            composable(route = Screen.SettingsScreen.route) {
+                                SettingScreen(navController)
                             }
                         }
                         // admob
@@ -195,9 +194,7 @@ class MainActivity : ComponentActivity() {
             popUpPage()
         } else {
             mRewardedAd?.show(this, OnUserEarnedRewardListener() {
-                fun onUserEarnedReward(rewardItem: RewardItem) {
-                    popUpPage()
-                }
+                popUpPage()
             })
         }
     }

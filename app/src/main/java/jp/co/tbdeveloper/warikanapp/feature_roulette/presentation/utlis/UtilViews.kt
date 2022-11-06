@@ -12,10 +12,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
-import androidx.compose.material.Card
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -266,6 +263,67 @@ fun FunShape(
                     useCenter = true,
                     style = Stroke(5f),
                 )
+            }
+        }
+    }
+}
+
+@Composable
+fun NoRippleDropdownMenuItem(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    contentPadding: PaddingValues = MenuDefaults.DropdownMenuItemContentPadding,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    content: @Composable RowScope.() -> Unit
+) {
+    NoRippleDropdownMenuItemContent(
+        onClick = onClick,
+        modifier = modifier,
+        enabled = enabled,
+        contentPadding = contentPadding,
+        interactionSource = interactionSource,
+        content = content
+    )
+}
+
+
+@Composable
+internal fun NoRippleDropdownMenuItemContent(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    contentPadding: PaddingValues = MenuDefaults.DropdownMenuItemContentPadding,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    content: @Composable RowScope.() -> Unit
+) {
+    val DropdownMenuItemDefaultMinWidth = 112.dp
+    val DropdownMenuItemDefaultMaxWidth = 280.dp
+    val DropdownMenuItemDefaultMinHeight = 48.dp
+    // TODO(popam, b/156911853): investigate replacing this Row with ListItem
+    Row(
+        modifier = modifier
+            .clickable(
+                enabled = enabled,
+                onClick = onClick,
+                interactionSource = interactionSource,
+                indication = null
+            )
+            .fillMaxWidth()
+            // Preferred min and max width used during the intrinsic measurement.
+            .sizeIn(
+                minWidth = DropdownMenuItemDefaultMinWidth,
+                maxWidth = DropdownMenuItemDefaultMaxWidth,
+                minHeight = DropdownMenuItemDefaultMinHeight
+            )
+            .padding(contentPadding),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        val typography = MaterialTheme.typography
+        ProvideTextStyle(typography.subtitle1) {
+            val contentAlpha = if (enabled) ContentAlpha.high else ContentAlpha.disabled
+            CompositionLocalProvider(LocalContentAlpha provides contentAlpha) {
+                content()
             }
         }
     }
