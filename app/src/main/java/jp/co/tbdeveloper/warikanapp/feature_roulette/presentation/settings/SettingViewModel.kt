@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import jp.co.tbdeveloper.warikanapp.DarkThemeValHolder
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Settings
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.SettingsEntityFactory
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.SettingsFactory
@@ -64,6 +65,7 @@ class SettingViewModel @Inject constructor(
                             Settings(_autoSave.value, _isMuted.value, _setDarkTheme.value)
                         )
                     )
+                    DarkThemeValHolder.isDarkThemeSelect.value = _setDarkTheme.value
                     _eventFlow.emit(UiEvent.SaveEvent)
                 }
             }

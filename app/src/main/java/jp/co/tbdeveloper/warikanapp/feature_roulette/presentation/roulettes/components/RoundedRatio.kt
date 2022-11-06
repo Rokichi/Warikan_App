@@ -42,7 +42,10 @@ fun RoundedRatio(
             )
         }
         for (i in 1 until ratios.size) {
-            Text(":", style = MaterialTheme.typography.body2, color = MaterialTheme.colors.surface)
+            Text(":",
+                style = MaterialTheme.typography.body2,
+                color = LightTextBlack
+            )
             Box(
                 modifier = Modifier
                     .padding(vertical = 5.dp)
@@ -53,14 +56,13 @@ fun RoundedRatio(
                     )
                     .padding(horizontal = 10.dp)
                     .height(25.dp),
-                //contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = ratios[i],
                     modifier = Modifier
                         .offset(y = (-5).dp),
                     style = MaterialTheme.typography.body2,
-                    color = MaterialTheme.colors.surface
+                    color = LightTextBlack
                 )
             }
         }

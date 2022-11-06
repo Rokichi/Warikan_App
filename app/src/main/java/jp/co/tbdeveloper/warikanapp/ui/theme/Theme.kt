@@ -5,6 +5,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import jp.co.tbdeveloper.warikanapp.DarkThemeValHolder
 
 private val DarkColorPalette = darkColors(
     primary = DarkMainAccent,
@@ -31,12 +33,22 @@ private val LightColorPalette = lightColors(
 
 @Composable
 fun WarikanAppTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
-
-    val colors = if (darkTheme) {
-        //DarkColorPalette
-        LightColorPalette
-    } else {
-        LightColorPalette
+    val isDarkThemeSelect = remember {
+        DarkThemeValHolder.isDarkThemeSelect
+    }
+    val colors = when (isDarkThemeSelect.value) {
+        0 -> {
+            LightColorPalette
+        }
+        1 -> {
+            DarkColorPalette
+        }
+        2 -> {
+            if(darkTheme) DarkColorPalette else LightColorPalette
+        }
+        else -> {
+            LightColorPalette
+        }
     }
 
     MaterialTheme(

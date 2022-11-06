@@ -6,13 +6,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
+import jp.co.tbdeveloper.warikanapp.DarkThemeValHolder
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.InvalidMemberException
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.InvalidRouletteException
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.SettingsFactory
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.member.MemberUseCases
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.roulette.RouletteUseCases
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.settings.SettingsUseCases
 import jp.co.tbdeveloper.warikanapp.feature_roulette.utils.getCalendarStr
 import jp.co.tbdeveloper.warikanapp.feature_roulette.utils.getMD5HashInt
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -27,12 +32,26 @@ const val MAX_MEMBER_NUM = 3
 @HiltViewModel
 class MemberViewModel @Inject constructor(
     private val rouletteUseCases: RouletteUseCases,
-    private val memberUseCases: MemberUseCases
+    private val memberUseCases: MemberUseCases,
+    private val settingsUseCases: SettingsUseCases
 ) : ViewModel() {
 
     // 不使用色データ
     private val unusedColorNums = MutableList(Member.memberColors(true).size) { it }
     private var hashLongNum: Int = getMD5HashInt(getCalendarStr())
+
+
+    init {
+        // load theme settings
+        val job = CoroutineScope(Dispatchers.IO).launch {
+            val settings = SettingsFactory.create(settingsUseCases.getSettings())
+            DarkThemeValHolder.isDarkThemeSelect.value = settings.setDarkTheme
+        }
+        // wait
+        while (!job.isCompleted) {
+            Thread.sleep(100)
+        }
+    }
 
     // メンバー
     private val _memberState = MutableStateFlow(
