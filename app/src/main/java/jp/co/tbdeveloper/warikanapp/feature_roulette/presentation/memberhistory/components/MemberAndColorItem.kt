@@ -4,13 +4,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import jp.co.tbdeveloper.warikanapp.DarkThemeValHolder
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.AutoResizeText
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.FontSizeRange
 
 
 @Composable
@@ -50,8 +52,13 @@ fun MemberAndColorItem(
                 .size(15.dp)
                 .background(Member.memberColors(DarkThemeValHolder.isDarkTheme.value)[member.color])
         )
-        Text(
+        AutoResizeText(
             text = member.name,
+            maxLines = 1,
+            fontSizeRange = (FontSizeRange(
+                min = (MaterialTheme.typography.button.fontSize.value - 4).sp,
+                max = MaterialTheme.typography.button.fontSize
+            )),
             style = MaterialTheme.typography.button,
             color = MaterialTheme.colors.surface
         )
