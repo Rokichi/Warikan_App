@@ -2,17 +2,14 @@ package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.memberhistory
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import jp.co.tbdeveloper.warikanapp.DarkThemeValHolder
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 
 
@@ -49,11 +46,13 @@ fun MemberAndColorItem(
         horizontalArrangement = Arrangement.spacedBy(5.dp)
     ) {
         Box(
-            modifier = modifier.background(Member.memberColors(isSystemInDarkTheme())[member.color])
+            modifier = Modifier
+                .size(15.dp)
+                .background(Member.memberColors(DarkThemeValHolder.isDarkTheme.value)[member.color])
         )
         Text(
             text = member.name,
-            style = MaterialTheme.typography.body1,
+            style = MaterialTheme.typography.button,
             color = MaterialTheme.colors.surface
         )
     }

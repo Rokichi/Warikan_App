@@ -65,9 +65,6 @@ fun MembersScreen(
                 is MemberViewModel.UiEvent.NextPage -> {
                     navController.navigate(Screen.WarikanScreen.route + "/${event.members}/${event.total}")
                 }
-                is MemberViewModel.UiEvent.SettingPage -> {
-                    navController.navigate(Screen.SettingsScreen.route)
-                }
             }
         }
     }
@@ -87,7 +84,7 @@ fun MembersScreen(
         // トップバー
         SettingAndHistoryBar(
             onSettingClick = { navController.navigate(Screen.SettingsScreen.route) },
-            onHistoryClick = { }
+            onHistoryClick = { navController.navigate(Screen.MemberHistoryScreen.route) }
         )
         Text(
             text = "メンバーを決めてね",

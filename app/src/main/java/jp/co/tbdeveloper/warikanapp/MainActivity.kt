@@ -27,6 +27,7 @@ import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import dagger.hilt.android.AndroidEntryPoint
 import jp.co.tbdeveloper.warikanapp.feature_roulette.parser.MemberArrayType
 import jp.co.tbdeveloper.warikanapp.feature_roulette.parser.WarikanArrayType
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.memberhistory.components.MemberHistoryScreen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.components.MembersScreen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.components.RouletteScreen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.settings.components.SettingScreen
@@ -58,6 +59,17 @@ class MainActivity : ComponentActivity() {
                             composable(route = Screen.MemberScreen.route) {
                                 MembersScreen(navController)
                             }
+                            composable(
+                                route = Screen.MemberScreen.route + "/{members}",
+                                arguments = listOf(
+                                    navArgument("members") { type = MemberArrayType() },
+                                )
+                            ) {
+                                MembersScreen(navController)
+                            }
+                            composable(route = Screen.MemberHistoryScreen.route) {
+                                MemberHistoryScreen(navController)
+                            }
 
                             composable(
                                 route = Screen.WarikanScreen.route + "/{members}/{total}",
@@ -88,7 +100,10 @@ class MainActivity : ComponentActivity() {
                                     showInterstitialAd = { popUpPage: () -> Unit ->
                                         showInterstitialAd(
                                             mInterstitialAd,
-                                        ) { popUpPage() }
+                                        ) {
+                                            popUpPage()
+                                            mInterstitialAd = null
+                                        }
                                     },
                                     initializeRewardedAd = { onComplete: () -> Unit ->
                                         initializeRewardedAd(
@@ -98,7 +113,10 @@ class MainActivity : ComponentActivity() {
                                     showRewardedAd = { popUpPage: () -> Unit ->
                                         showRewardedAd(
                                             mRewardedAd,
-                                        ) { popUpPage() }
+                                        ) {
+                                            popUpPage()
+                                            mRewardedAd = null
+                                        }
                                     }
                                 )
                             }
@@ -133,6 +151,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun initializeInterstitialAd(id: String, onComplete: () -> Unit) {
+        if (mInterstitialAd != null) return
         var adRequest = AdRequest.Builder().build()
         InterstitialAd.load(
             this,
@@ -170,6 +189,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun initializeRewardedAd(id: String, onComplete: () -> Unit) {
+        if (mRewardedAd != null) return
         var adRequest = AdRequest.Builder().build()
         RewardedAd.load(this, id, adRequest, object : RewardedAdLoadCallback() {
             override fun onAdFailedToLoad(adError: LoadAdError) {

@@ -2,6 +2,7 @@ package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members
 
 import android.net.Uri
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
@@ -34,7 +35,8 @@ const val MAX_MEMBER_NUM = 3
 class MemberViewModel @Inject constructor(
     private val rouletteUseCases: RouletteUseCases,
     private val memberUseCases: MemberUseCases,
-    private val settingsUseCases: SettingsUseCases
+    private val settingsUseCases: SettingsUseCases,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     // 不使用色データ
@@ -42,29 +44,36 @@ class MemberViewModel @Inject constructor(
     private var hashLongNum: Int = getMD5HashInt(getCalendarStr())
 
     lateinit var settings: Settings
+    var memberData: Array<Member>? = null
+
+    // メンバー
+    private val _memberState = MutableStateFlow(mutableListOf<Member>())
+    val memberState = _memberState.asStateFlow()
 
     init {
         // load theme settings
         val job = CoroutineScope(Dispatchers.IO).launch {
             settings = SettingsFactory.create(settingsUseCases.getSettings())
+            // load from navigation
+            memberData = savedStateHandle.get<Array<Member>>("members")
         }
         // wait
         while (!job.isCompleted) {
             Thread.sleep(100)
         }
+        try {
+            _memberState.value = memberData!!.toMutableList()
+        } catch (e: NullPointerException) {
+            _memberState.value = MutableList(DEFAULT_MEMBER_NUM) {
+                Member(
+                    "",
+                    unusedColorNums.removeAt(getMD5HashInt(hashLongNum.toString()) % unusedColorNums.size)
+                )
+            }
+        }
         DarkThemeValHolder.isDarkThemeSelectIndex.value = settings.setDarkTheme
     }
 
-    // メンバー
-    private val _memberState = MutableStateFlow(
-        MutableList(DEFAULT_MEMBER_NUM) { _ ->
-            Member(
-                "",
-                unusedColorNums.removeAt(getMD5HashInt(hashLongNum.toString()) % unusedColorNums.size)
-            )
-        }
-    )
-    val memberState = _memberState.asStateFlow()
 
     // 合計金額
     private val _totalState = mutableStateOf("")
@@ -136,6 +145,5 @@ class MemberViewModel @Inject constructor(
         object DeleteError : UiEvent()
         data class InputError(val errorNum: Int) : UiEvent()
         data class NextPage(val members: String?, val total: String) : UiEvent()
-        object SettingPage : UiEvent()
     }
 }

@@ -4,7 +4,6 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -28,6 +27,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import jp.co.tbdeveloper.warikanapp.DarkThemeValHolder
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Warikan
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Screen
@@ -251,7 +251,7 @@ fun NameToColor(
                     .height(size)
                     .width(size)
                     .background(
-                        Member.memberColors(isSystemInDarkTheme())[member.color]
+                        Member.memberColors(DarkThemeValHolder.isDarkTheme.value)[member.color]
                     )
             )
             Spacer(modifier = Modifier.padding(end = 5.dp))
