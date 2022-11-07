@@ -104,6 +104,9 @@ fun RouletteScreen(
                             popUpTo(0)
                         }
                     }
+                    navController.navigate(Screen.MemberScreen.route) {
+                        popUpTo(0)
+                    }
                 }
             }
         }
@@ -308,7 +311,7 @@ fun CircleOfRoulette(
     var oldDegree = 0f
     var deg: Float = 360f / sumOfpr
     val memberColors = List(members.size) { i ->
-        Member.memberColors(isSystemInDarkTheme())[members[i].color]
+        Member.memberColors(DarkThemeValHolder.isDarkTheme.value)[members[i].color]
     }
     var currentRotation by rememberSaveable { mutableStateOf(0f) }
     val rotation = remember { Animatable(currentRotation) }
@@ -356,7 +359,7 @@ fun CircleOfRoulette(
             FunShape(
                 modifier = modifier.size(size),
                 backGroundColor =
-                if (warikan.color != -1) Member.memberColors(isSystemInDarkTheme())[warikan.color]
+                if (warikan.color != -1) Member.memberColors(DarkThemeValHolder.isDarkTheme.value)[warikan.color]
                 else Color.LightGray,
                 startAngle = oldDegree,
                 sweepAngle = sweepAngle,

@@ -9,13 +9,29 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Membe
 object MemberFactory {
     /**
      * MemberEntityList -> MemberList
-     *
+     * idが一致するものをまとめる
      * @param memberEntities DBから取得してきたデータ
-     * @return MemberList
+     * @return id毎に分けたメンバーリストリスト
      */
-    fun create(memberEntities: List<MemberEntity>): List<Member> {
-        return List(memberEntities.size) { i ->
-            Member(memberEntities[i].name, memberEntities[i].color)
+    fun create(memberEntities: List<MemberEntity>): List<List<Member>> {
+        val membersMap = mutableMapOf<Long, MutableList<Member>>()
+        for (memberEntity in memberEntities) {
+            val id = memberEntity.RouletteId
+            val member = convert2Member(memberEntity)
+            if (membersMap.containsKey(id)) {
+                membersMap[id]?.add(member)
+            } else {
+                membersMap[id] = mutableListOf(member)
+            }
         }
+        val result = membersMap.toSortedMap()
+        return result.map { it.value }
+    }
+
+    private fun convert2Member(memberEntity: MemberEntity): Member {
+        return Member(
+            name = memberEntity.name,
+            color = memberEntity.color
+        )
     }
 }

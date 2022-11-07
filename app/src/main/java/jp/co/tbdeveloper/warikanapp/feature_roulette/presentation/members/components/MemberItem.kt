@@ -50,7 +50,7 @@ fun MemberItem(
                 Modifier
                     .height(height - 15.dp)
                     .width(height - 15.dp)
-                    .background(Member.memberColors(isSystemInDarkTheme())[member.color])
+                    .background(Member.memberColors(DarkThemeValHolder.isDarkTheme.value)[member.color])
             )
         }
         Image(
