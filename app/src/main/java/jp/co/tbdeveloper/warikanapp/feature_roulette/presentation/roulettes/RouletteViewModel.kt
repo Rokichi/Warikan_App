@@ -1,5 +1,6 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
@@ -23,6 +24,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
+private val MAX_SUM_OF_PROPORTION = 24
 
 @HiltViewModel
 class RouletteViewModel @Inject constructor(
@@ -45,6 +47,9 @@ class RouletteViewModel @Inject constructor(
     // 合計比率
     var sumOfProportion = 0
 
+    private val _deg = mutableStateOf(0f)
+    val deg = _deg
+
     private val _isRotatingState = mutableStateOf(false)
     val isRotatingState: State<Boolean> = _isRotatingState
 
@@ -56,6 +61,9 @@ class RouletteViewModel @Inject constructor(
 
     private val _isShowBottom = mutableStateOf(false)
     val isShowBottom: State<Boolean> = _isShowBottom
+
+    private val _isShowResultOrRatio = mutableStateOf(false)
+    val isShowResultOrRatio: State<Boolean> = _isShowResultOrRatio
 
     private val _resultDeg = mutableStateOf(0.0f)
     val resultDeg: State<Float> = _resultDeg
@@ -78,6 +86,7 @@ class RouletteViewModel @Inject constructor(
         rouletteState.value.warikans.forEach { warikan ->
             sumOfProportion += warikan.proportion
         }
+        _deg.value = 360f / sumOfProportion
         _resultWarikanState.value =
             ResultWarikanFactory.create(rouletteState.value.members)
         if (isSave)
@@ -114,6 +123,7 @@ class RouletteViewModel @Inject constructor(
             }
             is RoulettesEvent.StartClickEvent -> {
                 if (_isRotated.value) return
+                _isShowResultOrRatio.value = true
                 _isRotated.value = true
                 viewModelScope.launch { _eventFlow.emit(UiEvent.StartRoulette) }
                 _isRotatingState.value = true
@@ -148,6 +158,20 @@ class RouletteViewModel @Inject constructor(
                 _isShowBottom.value = true
                 viewModelScope.launch { _eventFlow.emit(UiEvent.EndRoulette) }
             }
+            is RoulettesEvent.EditRatioButtonClick -> {
+                val warikans = _rouletteState.value.warikans.mapIndexed { index, warikan ->
+                    if (event.index == index) warikan.copy(
+                        proportion = if (event.flg) plusProportion(
+                            sumOfProportion,
+                            warikan.proportion
+                        ) else minusProportion(warikan.proportion)
+                    )
+                    else warikan
+                }
+                sumOfProportion = warikans.sumOf { it.proportion }
+                _deg.value = 360f / sumOfProportion
+                _rouletteState.value = _rouletteState.value.copy(warikans = warikans)
+            }
             is RoulettesEvent.RetryClickEvent -> {
                 viewModelScope.launch { _eventFlow.emit(UiEvent.Retry) }
             }
@@ -155,6 +179,16 @@ class RouletteViewModel @Inject constructor(
                 viewModelScope.launch { _eventFlow.emit(UiEvent.GoHome) }
             }
         }
+    }
+
+    private fun plusProportion(sum: Int, proportion: Int): Int {
+        return if (sum + 1 <= MAX_SUM_OF_PROPORTION) proportion + 1
+        else proportion
+    }
+
+    private fun minusProportion(proportion: Int): Int {
+        return if (proportion - 1 > 0) proportion - 1
+        else proportion
     }
 
     private fun getDoubleOneDecimalPlaces(num: Double): Double {
