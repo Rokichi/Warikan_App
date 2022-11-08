@@ -35,7 +35,7 @@ fun EditRatioButtons(
         for ((index, warikan) in warikans.withIndex()) {
             EditRatioButton(
                 columnModifier = Modifier.weight(1.0f),
-                modifier = Modifier.size(30.dp),
+                modifier = Modifier.size(25.dp),
                 warikan = warikan
             ) {
                 viewModel.onEvent(RoulettesEvent.EditRatioButtonClick(index, it))
@@ -82,7 +82,6 @@ fun EditRatioButton(
         Box(
             modifier = modifier
                 .weight(3.0f)
-                .fillMaxSize()
                 .background(
                     if (warikan.color != -1) Member.memberColors(DarkThemeValHolder.isDarkTheme.value)[warikan.color]
                     else Color.LightGray,

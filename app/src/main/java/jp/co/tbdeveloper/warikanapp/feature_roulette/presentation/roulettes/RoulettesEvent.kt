@@ -6,6 +6,6 @@ sealed class RoulettesEvent {
     object RetryClickEvent : RoulettesEvent()
     object GoHomeClickEvent : RoulettesEvent()
     object EndRouletteEvent : RoulettesEvent()
-    data class EditRatioButtonClick(val index:Int, val flg:Boolean):RoulettesEvent()
+    data class EditRatioButtonClick(val index: Int, val flg: Boolean) : RoulettesEvent()
     data class MuteClickEvent(val isMuted: Boolean) : RoulettesEvent()
 }
