@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -12,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import jp.co.tbdeveloper.warikanapp.DarkThemeValHolder
@@ -35,7 +38,7 @@ fun EditRatioButtons(
         for ((index, warikan) in warikans.withIndex()) {
             EditRatioButton(
                 columnModifier = Modifier.weight(1.0f),
-                modifier = Modifier.size(25.dp),
+                modifier = Modifier.size(40.dp),
                 warikan = warikan
             ) {
                 viewModel.onEvent(RoulettesEvent.EditRatioButtonClick(index, it))
@@ -81,12 +84,20 @@ fun EditRatioButton(
         )
         Box(
             modifier = modifier
-                .weight(3.0f)
                 .background(
                     if (warikan.color != -1) Member.memberColors(DarkThemeValHolder.isDarkTheme.value)[warikan.color]
                     else Color.LightGray,
-                )
-        )
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                modifier = Modifier.fillMaxSize().offset(y = (-8).dp),
+                text = "${warikan.proportion}",
+                style = MaterialTheme.typography.h1,
+                color = MaterialTheme.colors.surface,
+                textAlign = TextAlign.Center
+            )
+        }
         Image(
             painter = painterResource(
                 id = if (DarkThemeValHolder.isDarkTheme.value) R.drawable.ic_keyboard_arrow_down_dark
