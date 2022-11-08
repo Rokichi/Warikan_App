@@ -25,13 +25,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import jp.co.tbdeveloper.warikanapp.DarkThemeValHolder
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Warikan
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.MAX_MEMBER_NUM
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.AutoResizeText
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.FontSizeRange
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Screen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.ShadowButton
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikans.WARIKAN_MAX_NUM
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikans.WarikanEvent
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikans.WarikanViewModel
 import jp.co.tbdeveloper.warikanapp.ui.theme.MainAccent
@@ -56,6 +61,10 @@ fun WarikansScreen(
             when (event) {
                 is WarikanViewModel.UiEvent.DeleteError -> {
                     Toast.makeText(context, "割り勘要素を2つ未満にすることはできません", Toast.LENGTH_SHORT).show()
+                }
+                is WarikanViewModel.UiEvent.AddError -> {
+                    Toast.makeText(context, "割り勘要素は${WARIKAN_MAX_NUM}個までです", Toast.LENGTH_SHORT)
+                        .show()
                 }
                 is WarikanViewModel.UiEvent.InputError -> {
                     when (event.errorNum) {
@@ -141,7 +150,6 @@ fun WarikansScreen(
             WarikanAndColorsScrollView(
                 modifier = Modifier.weight(6.0f),
                 warikans = warikanState.value,
-                proportions = proportionState.value,
                 viewModel = viewModel
             )
             ShadowButton(
@@ -181,7 +189,6 @@ fun HistoryBar(
 fun WarikanAndColorsScrollView(
     modifier: Modifier = Modifier,
     warikans: List<Warikan>,
-    proportions: List<String>,
     viewModel: WarikanViewModel
 ) {
     LazyColumn(
@@ -193,11 +200,7 @@ fun WarikanAndColorsScrollView(
         itemsIndexed(warikans) { index, warikan ->
             WarikanItem(
                 warikan = warikan,
-                proportion = proportions[index],
                 onDeleteClick = { viewModel.onEvent(WarikanEvent.DeleteWarikanEvent(index)) },
-                onProportionValueChange = { value: String ->
-                    viewModel.onEvent(WarikanEvent.EditProportionEvent(value, index))
-                },
                 onWarikanValueChange = { value: String, num: Int ->
                     viewModel.onEvent(WarikanEvent.EditWarikanEvent(value, index, num))
                 }
@@ -215,16 +218,15 @@ fun ColumnTableText() {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(Modifier.weight(5.0f), contentAlignment = Alignment.Center) {
+        Text(
+            modifier = Modifier.weight(2.0f),
+            text = "一番払う",
+            style = MaterialTheme.typography.button,
+            color = MaterialTheme.colors.surface
+        )
+        Box(Modifier.weight(7.0f), contentAlignment = Alignment.Center) {
             Text(
                 text = "割り勘の割合",
-                style = MaterialTheme.typography.body1,
-                color = MaterialTheme.colors.surface
-            )
-        }
-        Box(Modifier.weight(1.0f), contentAlignment = Alignment.Center) {
-            Text(
-                text = "確率",
                 style = MaterialTheme.typography.body1,
                 color = MaterialTheme.colors.surface
             )
@@ -235,6 +237,50 @@ fun ColumnTableText() {
 
 @Composable
 fun NameToColor(
+    members: List<Member>,
+    size: Dp = 20.dp
+) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        for(i in members.indices){
+            Row(
+                Modifier.weight(1.0f),
+                horizontalArrangement = Arrangement.spacedBy(5.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Box(
+                    Modifier
+                        .height(size)
+                        .width(size)
+                        .background(
+                            Member.memberColors(DarkThemeValHolder.isDarkTheme.value)[members[i].color]
+                        )
+                )
+                AutoResizeText(
+                    text = members[i].name,
+                    maxLines = 1,
+                    fontSizeRange = (FontSizeRange(
+                        min = (MaterialTheme.typography.body1.fontSize.value - 4).sp,
+                        max = MaterialTheme.typography.body1.fontSize
+                    )),
+                    style = MaterialTheme.typography.body1,
+                    color = MaterialTheme.colors.surface
+                )
+            }
+        }
+        for(i in members.size until MAX_MEMBER_NUM ){
+            Spacer(modifier = Modifier.weight(1.0f))
+        }
+    }
+}
+
+@Composable
+fun NameToColorLazy(
     members: List<Member>,
     size: Dp = 20.dp
 ) {

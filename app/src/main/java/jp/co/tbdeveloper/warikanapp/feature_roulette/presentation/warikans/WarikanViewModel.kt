@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 const val DEFAULT_WARIKAN_NUM = 3
+const val WARIKAN_MAX_NUM = 6
 
 @HiltViewModel
 class WarikanViewModel @Inject constructor(
@@ -62,17 +63,27 @@ class WarikanViewModel @Inject constructor(
         }
         // init warikan
         _warikanState.value =
-            if (members.size == 2) listOf(
-                makeDefaultWarikan(listOf("1", "1")),
-                makeDefaultWarikan(listOf("1", "2")),
-                makeDefaultWarikan(listOf("2", "1")),
-            )
-            else listOf(
-                makeDefaultWarikan(listOf("1", "1", "1")),
-                makeDefaultWarikan(listOf("2", "1", "1")),
-                makeDefaultWarikan(listOf("1", "2", "1")),
-                makeDefaultWarikan(listOf("1", "1", "2")),
-            )
+            when (members.size) {
+                2 -> listOf(
+                    makeDefaultWarikan(listOf("1", "1")),
+                    makeDefaultWarikan(listOf("1", "2")),
+                    makeDefaultWarikan(listOf("2", "1")),
+                )
+                3 -> listOf(
+                    makeDefaultWarikan(listOf("1", "1", "1")),
+                    makeDefaultWarikan(listOf("2", "1", "1")),
+                    makeDefaultWarikan(listOf("1", "2", "1")),
+                    makeDefaultWarikan(listOf("1", "1", "2")),
+                )
+                4 -> listOf(
+                    makeDefaultWarikan(listOf("1", "1", "1", "1")),
+                    makeDefaultWarikan(listOf("2", "1", "1", "1")),
+                    makeDefaultWarikan(listOf("1", "2", "1", "1")),
+                    makeDefaultWarikan(listOf("1", "1", "2", "1")),
+                    makeDefaultWarikan(listOf("1", "1", "1", "2")),
+                )
+                else -> listOf()
+            }
         _proportionState.value = List(_warikanState.value.size) {
             "1"
         }
@@ -90,10 +101,15 @@ class WarikanViewModel @Inject constructor(
     fun onEvent(event: WarikanEvent) {
         when (event) {
             is WarikanEvent.AddWarikanEvent -> {
+                if (_warikanState.value.size >= WARIKAN_MAX_NUM) {
+                    viewModelScope.launch {
+                        _eventFlow.emit(UiEvent.AddError)
+                    }
+                    return
+                }
                 _warikanState.value =
                     (_warikanState.value + makeDefaultWarikan())
                 _proportionState.value = (_proportionState.value + "1")
-
             }
             is WarikanEvent.DeleteWarikanEvent -> {
                 if (_warikanState.value.size > 2) {
@@ -124,13 +140,6 @@ class WarikanViewModel @Inject constructor(
                     } else warikan
                 }
             }
-            is WarikanEvent.EditProportionEvent -> {
-                _proportionState.value = _proportionState.value.mapIndexed { index, proportion ->
-                    if (index == event.index) {
-                        event.value
-                    } else proportion
-                }
-            }
             is WarikanEvent.StartEvent -> {
                 viewModelScope.launch {
                     try {
@@ -144,7 +153,13 @@ class WarikanViewModel @Inject constructor(
                     }
                     /* json encode */
                     val memberJson = Uri.encode(Gson().toJson(members))
-                    val warikanJson = Uri.encode(Gson().toJson(warikanState.value))
+                    val warikanData = warikanState.value.map {
+                        it.copy(
+                            proportion = if (warikanState.value.size == 5) 6
+                            else 12 / warikanState.value.size
+                        )
+                    }
+                    val warikanJson = Uri.encode(Gson().toJson(warikanData))
                     _eventFlow.emit(UiEvent.NextPage(total, isSave.value, memberJson, warikanJson))
                 }
             }
@@ -166,6 +181,7 @@ class WarikanViewModel @Inject constructor(
 
     sealed class UiEvent {
         object DeleteError : UiEvent()
+        object AddError : UiEvent()
         data class InputError(val errorNum: Int) : UiEvent()
         data class NextPage(
             val total: String,

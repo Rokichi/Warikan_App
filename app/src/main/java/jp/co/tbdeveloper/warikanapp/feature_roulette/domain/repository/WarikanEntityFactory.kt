@@ -19,6 +19,7 @@ object WarikanEntityFactory {
             WarikanEntity(
                 0,
                 rouletteId,
+                warikans[i].ratios.size.toLong(),
                 warikans[i].ratios.joinToString(":"),
                 warikans[i].proportion,
                 warikans[i].color
@@ -43,6 +44,7 @@ object WarikanEntityFactory {
             WarikanEntity(
                 0,
                 rouletteId,
+                warikans[i].ratios.size.toLong(),
                 warikans[i].ratios.joinToString(":"),
                 proportions[i].toInt(),
                 warikans[i].color

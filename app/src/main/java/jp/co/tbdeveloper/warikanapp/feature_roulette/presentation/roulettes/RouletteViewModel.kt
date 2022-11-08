@@ -23,7 +23,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
-private val MAX_SUM_OF_PROPORTION = 24
+private const val MAX_SUM_OF_PROPORTION_5 = 60
+private const val MAX_SUM_OF_PROPORTION_OTHERS = 24
+private var MAX_SUM_OF_PROPORTION = 0
 
 @HiltViewModel
 class RouletteViewModel @Inject constructor(
@@ -88,6 +90,8 @@ class RouletteViewModel @Inject constructor(
         _deg.value = 360f / sumOfProportion
         _resultWarikanState.value =
             ResultWarikanFactory.create(rouletteState.value.members)
+        MAX_SUM_OF_PROPORTION = if (warikanData.size == 5) MAX_SUM_OF_PROPORTION_5
+        else MAX_SUM_OF_PROPORTION_OTHERS
         if (isSave)
             viewModelScope.launch {
                 // save

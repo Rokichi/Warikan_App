@@ -26,24 +26,21 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Warik
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.CustomTextField
 import jp.co.tbdeveloper.warikanapp.ui.theme.WarikanAppTheme
 
-const val MAX_LENGTH_NUM = 2
 
 @Composable
 fun WarikanItem(
     modifier: Modifier = Modifier,
     warikan: Warikan,
-    proportion: String,
     height: Dp = 50.dp,
     width: Dp = 35.dp,
     onDeleteClick: () -> Unit,
-    onProportionValueChange: (String) -> Unit,
     onWarikanValueChange: (String, Int) -> Unit,
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .height(height),
-        horizontalArrangement = Arrangement.spacedBy(20.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(Modifier.weight(2.0f), contentAlignment = Alignment.Center) {
@@ -58,7 +55,7 @@ fun WarikanItem(
             )
         }
         WarikanField(
-            modifier = Modifier.weight(6.0f),
+            modifier = Modifier.weight(7.0f),
             height = height,
             width = width,
             ratios = warikan.ratios,
@@ -66,25 +63,6 @@ fun WarikanItem(
                 onWarikanValueChange(value, num)
             }
         )
-        Box(
-            modifier = Modifier
-                .weight(2.0f)
-                .padding(horizontal = 5.dp)
-        ) {
-            CustomTextField(
-                maxLength = 2,
-                fontSize = MaterialTheme.typography.h2.fontSize,
-                offsetY = (-3).dp,
-                placeholderText = "1",
-                text = proportion,
-                height = height,
-                width = width,
-                isOnlyNum = true,
-                onValueChange = {
-                    onProportionValueChange(it)
-                }
-            )
-        }
         Image(
             painter = painterResource(
                 id = if (DarkThemeValHolder.isDarkTheme.value) R.drawable.ic_close_dark
@@ -151,21 +129,5 @@ fun WarikanField(
                 onValueChange = { onValueChange(it, i) }
             )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    WarikanAppTheme {
-        WarikanItem(warikan = Warikan(
-            ratios = "1:9".split(":"),
-            proportion = 1,
-            color = -1
-        ),
-            proportion = "",
-            onDeleteClick = { /*TODO*/ },
-            onWarikanValueChange = { _, _ -> },
-            onProportionValueChange = { _ -> })
     }
 }
