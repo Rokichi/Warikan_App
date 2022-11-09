@@ -1,4 +1,4 @@
-package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.memberhistory
+package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.member_history
 
 import android.net.Uri
 import android.util.Log
@@ -9,7 +9,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.MemberFactory
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.member.MemberUseCases
-import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.MemberViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -33,7 +32,6 @@ class MemberHistoryViewModel @Inject constructor(
         lateinit var membersData: List<List<Member>>
         val job = CoroutineScope(Dispatchers.IO).launch {
             membersData = MemberFactory.create(memberUseCases.getAllMembers())
-            Log.i("members", "${membersData}")
         }
         while (!job.isCompleted) {
             Thread.sleep(100)

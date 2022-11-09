@@ -29,7 +29,7 @@ import javax.inject.Inject
 
 
 const val DEFAULT_MEMBER_NUM = 2
-const val MAX_MEMBER_NUM = 3
+const val MAX_MEMBER_NUM = 4
 
 @HiltViewModel
 class MemberViewModel @Inject constructor(

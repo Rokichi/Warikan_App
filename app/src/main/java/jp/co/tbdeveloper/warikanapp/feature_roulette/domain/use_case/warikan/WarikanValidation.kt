@@ -6,7 +6,7 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Warik
 
 class WarikanValidation {
     @Throws(InvalidWarikanException::class)
-    operator fun invoke(warikans: List<Warikan>, proportions: List<String>) {
+    operator fun invoke(warikans: List<Warikan>) {
         for (warikan in warikans) {
             if (warikan.ratios.any { it.isEmpty() }) {
                 throw  InvalidWarikanException("ratios must not be empty.")
@@ -17,12 +17,6 @@ class WarikanValidation {
             if (warikan.ratios.all { it == "0" }) {
                 throw  InvalidWarikanException("at least one ratio must be over 0")
             }
-        }
-        if (proportions.any { it.isEmpty() }) {
-            throw  InvalidWarikanException("proportions must not be empty.")
-        }
-        if (proportions.any { !it.isDigitsOnly() || it.toInt() <= 0 }) {
-            throw  InvalidWarikanException("proportions must be only digits.")
         }
     }
 }

@@ -18,6 +18,7 @@ object WarikanEntityFactory {
         return List(warikans.size) { i ->
             WarikanEntity(
                 0,
+                warikans[i].ratios.size.toLong(),
                 rouletteId,
                 warikans[i].ratios.joinToString(":"),
                 warikans[i].proportion,
@@ -42,6 +43,7 @@ object WarikanEntityFactory {
         return List(warikans.size) { i ->
             WarikanEntity(
                 0,
+                warikans[i].ratios.size.toLong(),
                 rouletteId,
                 warikans[i].ratios.joinToString(":"),
                 proportions[i].toInt(),

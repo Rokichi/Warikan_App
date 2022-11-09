@@ -1,9 +1,13 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.components
 
 import android.media.MediaPlayer
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -53,16 +57,19 @@ fun RouletteScreen(
     showRewardedAd: (() -> Unit) -> Unit,
     viewModel: RouletteViewModel = hiltViewModel(),
 ) {
-    var isMuted = remember { viewModel.isMuteState }
     val rouletteState = viewModel.rouletteState.collectAsState()
     val resultWarikanState = viewModel.resultWarikanState.collectAsState()
-    val isRotating = remember { viewModel.isRotatingState }
     val resultDeg = remember { viewModel.resultDeg }
+
+    var isMuted = remember { viewModel.isMuteState }
+    val isShowResultOrRatio = remember { viewModel.isShowResultOrRatio }
+    val isRotating = remember { viewModel.isRotatingState }
 
     val context = LocalContext.current
     val mpDram = MediaPlayer.create(context, R.raw.dram)
     val mpStop = MediaPlayer.create(context, R.raw.stop)
     val mpResult = MediaPlayer.create(context, R.raw.result)
+
     mpDram?.isLooping = true
     initializeInterstitialAd {
         navController.navigate(Screen.MemberScreen.route) {
@@ -139,7 +146,6 @@ fun RouletteScreen(
                 size = 350.dp,
                 members = rouletteState.value.members,
                 warikans = rouletteState.value.warikans,
-                sumOfpr = viewModel.sumOfProportion,
                 isRotating = isRotating.value,
                 isBordered = true,
                 resultDeg = resultDeg.value
@@ -171,12 +177,21 @@ fun RouletteScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(15.dp),
         ) {
-            MemberAndColorsScrollView(
-                Modifier
-                    .padding(top = 20.dp)
-                    .weight(6.0f),
-                results = resultWarikanState.value
-            )
+            if (isShowResultOrRatio.value) {
+                MemberAndColorsScrollView(
+                    Modifier
+                        .padding(top = 20.dp)
+                        .weight(6.0f),
+                    results = resultWarikanState.value
+                )
+            } else {
+                EditRatioButtons(
+                    modifier = Modifier
+                        .padding(top = 20.dp)
+                        .weight(6.0f),
+                    warikans = rouletteState.value.warikans
+                )
+            }
             MuteBar(
                 Modifier.weight(1.5f),
                 viewModel,
@@ -303,16 +318,19 @@ fun CircleOfRoulette(
     size: Dp,
     members: List<Member>,
     warikans: List<Warikan>,
-    sumOfpr: Int,
     isRotating: Boolean = false,
     isBordered: Boolean = false,
     resultDeg: Float
 ) {
-    var oldDegree = 0f
-    var deg: Float = 360f / sumOfpr
     val memberColors = List(members.size) { i ->
         Member.memberColors(DarkThemeValHolder.isDarkTheme.value)[members[i].color]
     }
+    var oldDegree = 0f
+    val deg = remember { viewModel.deg }
+
+    Log.i("warikan", "$warikans")
+    Log.i("deg", "$deg")
+
     var currentRotation by rememberSaveable { mutableStateOf(0f) }
     val rotation = remember { Animatable(currentRotation) }
 
@@ -355,7 +373,7 @@ fun CircleOfRoulette(
     ) {
         val radius = size / 2
         for (warikan in warikans) {
-            val sweepAngle: Float = warikan.proportion * deg
+            val sweepAngle: Float = warikan.proportion * deg.value
             FunShape(
                 modifier = modifier.size(size),
                 backGroundColor =
@@ -365,14 +383,14 @@ fun CircleOfRoulette(
                 sweepAngle = sweepAngle,
                 isBordered = isBordered
             )
-            val deg = (oldDegree + 270f + sweepAngle / 2) % 360f
+            val nextDeg = (oldDegree + 270f + sweepAngle / 2) % 360f
             Box(
                 modifier = Modifier
                     .offset(
-                        (radius.value * 7 / 10 * cos(Math.toRadians(deg.toDouble()))).dp,
-                        (radius.value * 7 / 10 * sin(Math.toRadians(deg.toDouble()))).dp
+                        (radius.value * 7 / 10 * cos(Math.toRadians(nextDeg.toDouble()))).dp,
+                        (radius.value * 7 / 10 * sin(Math.toRadians(nextDeg.toDouble()))).dp
                     )
-                    .rotate(deg + 90f)
+                    .rotate(nextDeg + 90f)
                     .clip(RoundedCornerShape(20.dp))
                     .background(Color.White)
                     .border(
@@ -442,5 +460,6 @@ fun MemberAndColorsScrollView(
         }
     }
 }
+
 
 

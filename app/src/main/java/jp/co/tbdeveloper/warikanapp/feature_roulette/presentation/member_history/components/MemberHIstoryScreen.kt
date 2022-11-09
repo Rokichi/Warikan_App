@@ -1,4 +1,4 @@
-package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.memberhistory.components
+package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.member_history.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -24,8 +24,8 @@ import androidx.navigation.NavController
 import jp.co.tbdeveloper.warikanapp.DarkThemeValHolder
 import jp.co.tbdeveloper.warikanapp.R
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
-import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.memberhistory.MemberHistoryEvent
-import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.memberhistory.MemberHistoryViewModel
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.member_history.MemberHistoryEvent
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.member_history.MemberHistoryViewModel
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Screen
 import jp.co.tbdeveloper.warikanapp.ui.theme.DarkTextGray
 import jp.co.tbdeveloper.warikanapp.ui.theme.LightTextGray
@@ -110,7 +110,7 @@ fun PageBackBar(
                 .clickable(
                     interactionSource = MutableInteractionSource(),
                     indication = rememberRipple(color = Color.Black, radius = 18.dp),
-                    onClick = { onPageBackButtonClick(); }
+                    onClick = { onPageBackButtonClick() }
                 ),
             contentDescription = "page back button"
         )

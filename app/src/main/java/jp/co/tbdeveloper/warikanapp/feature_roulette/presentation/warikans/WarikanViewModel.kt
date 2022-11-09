@@ -6,6 +6,7 @@ import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.InvalidWarikanException
@@ -25,6 +26,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 const val DEFAULT_WARIKAN_NUM = 3
+const val WARIKAN_MAX_NUM = 6
 
 @HiltViewModel
 class WarikanViewModel @Inject constructor(
@@ -42,12 +44,6 @@ class WarikanViewModel @Inject constructor(
     )
     val warikanState = _warikanState.asStateFlow()
 
-    // 割り勘
-    private val _proportionState = MutableStateFlow(
-        listOf<String>()
-    )
-    val proportionState = _proportionState.asStateFlow()
-
     val isSave = mutableStateOf(false)
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
@@ -62,20 +58,27 @@ class WarikanViewModel @Inject constructor(
         }
         // init warikan
         _warikanState.value =
-            if (members.size == 2) listOf(
-                makeDefaultWarikan(listOf("1", "1")),
-                makeDefaultWarikan(listOf("1", "2")),
-                makeDefaultWarikan(listOf("2", "1")),
-            )
-            else listOf(
-                makeDefaultWarikan(listOf("1", "1", "1")),
-                makeDefaultWarikan(listOf("2", "1", "1")),
-                makeDefaultWarikan(listOf("1", "2", "1")),
-                makeDefaultWarikan(listOf("1", "1", "2")),
-            )
-        _proportionState.value = List(_warikanState.value.size) {
-            "1"
-        }
+            when (members.size) {
+                2 -> listOf(
+                    makeDefaultWarikan(listOf("1", "1")),
+                    makeDefaultWarikan(listOf("1", "2")),
+                    makeDefaultWarikan(listOf("2", "1")),
+                )
+                3 -> listOf(
+                    makeDefaultWarikan(listOf("1", "1", "1")),
+                    makeDefaultWarikan(listOf("2", "1", "1")),
+                    makeDefaultWarikan(listOf("1", "2", "1")),
+                    makeDefaultWarikan(listOf("1", "1", "2")),
+                )
+                4 -> listOf(
+                    makeDefaultWarikan(listOf("1", "1", "1", "1")),
+                    makeDefaultWarikan(listOf("2", "1", "1", "1")),
+                    makeDefaultWarikan(listOf("1", "2", "1", "1")),
+                    makeDefaultWarikan(listOf("1", "1", "2", "1")),
+                    makeDefaultWarikan(listOf("1", "1", "1", "2")),
+                )
+                else -> listOf()
+            }
 
         lateinit var settings: Settings
         val job = CoroutineScope(Dispatchers.IO).launch {
@@ -90,17 +93,18 @@ class WarikanViewModel @Inject constructor(
     fun onEvent(event: WarikanEvent) {
         when (event) {
             is WarikanEvent.AddWarikanEvent -> {
+                if (_warikanState.value.size >= WARIKAN_MAX_NUM) {
+                    viewModelScope.launch {
+                        _eventFlow.emit(UiEvent.AddError)
+                    }
+                    return
+                }
                 _warikanState.value =
                     (_warikanState.value + makeDefaultWarikan())
-                _proportionState.value = (_proportionState.value + "1")
-
             }
             is WarikanEvent.DeleteWarikanEvent -> {
                 if (_warikanState.value.size > 2) {
                     _warikanState.value = _warikanState.value.filterIndexed { index, _ ->
-                        index != event.index
-                    }
-                    _proportionState.value = _proportionState.value.filterIndexed { index, _ ->
                         index != event.index
                     }
                     return
@@ -110,45 +114,67 @@ class WarikanViewModel @Inject constructor(
             is WarikanEvent.EditWarikanEvent -> {
                 _warikanState.value = _warikanState.value.mapIndexed { index, warikan ->
                     if (index == event.index) {
+                        // 割合更新
                         val ratios = warikan.ratios.mapIndexed { index, ratio ->
                             if (index == event.num) event.value
                             else ratio
                         }
-                        warikan.copy(
-                            color =
-                            if (ratios.any { it.isEmpty() or !it.isDigitsOnly() }) -1
-                            else if (ratios.all { it == ratios[0] }) -1
-                            else members[ratios.indexOf(ratios.maxBy { it.toInt() })].color,
-                            ratios = ratios
-                        )
+                        val newWarikan = warikan.copy(ratios = ratios)
+                        getWarikanOfMaxRatioColorSelected(newWarikan)
                     } else warikan
-                }
-            }
-            is WarikanEvent.EditProportionEvent -> {
-                _proportionState.value = _proportionState.value.mapIndexed { index, proportion ->
-                    if (index == event.index) {
-                        event.value
-                    } else proportion
                 }
             }
             is WarikanEvent.StartEvent -> {
                 viewModelScope.launch {
                     try {
-                        warikanUseCases.warikanValidation(warikanState.value, proportionState.value)
+                        warikanUseCases.warikanValidation(warikanState.value)
                     } catch (e: InvalidWarikanException) {
                         _eventFlow.emit(UiEvent.InputError(0))
                         return@launch
                     }
-                    _warikanState.value = _warikanState.value.mapIndexed { index, warikan ->
-                        warikan.copy(proportion = _proportionState.value[index].toInt())
-                    }
+
                     /* json encode */
                     val memberJson = Uri.encode(Gson().toJson(members))
-                    val warikanJson = Uri.encode(Gson().toJson(warikanState.value))
+                    val warikanData = warikanState.value.map {
+                        it.copy(
+                            proportion = if (warikanState.value.size == 5) 6
+                            else 12 / warikanState.value.size
+                        )
+                    }
+                    val warikanJson = Uri.encode(Gson().toJson(warikanData))
                     _eventFlow.emit(UiEvent.NextPage(total, isSave.value, memberJson, warikanJson))
                 }
             }
+            is WarikanEvent.HistoryClickEvent -> {
+                /* json encode */
+                val memberJson = Uri.encode(Gson().toJson(members))
+                viewModelScope.launch{
+                    _eventFlow.emit(UiEvent.HistoryPage(memberJson))
+                }
+            }
+            is WarikanEvent.LoadWarikansEvent -> {
+                _warikanState.value = event.warikans.mapIndexed { index, warikan ->
+                    getWarikanOfMaxRatioColorSelected(warikan)
+                }
+            }
         }
+    }
+
+    /**
+     * 適切な色を選択したwarikanを取得
+     *
+     * @param warikan 現在の割り勘
+     * @return 適切な色に更新した割り勘
+     */
+    private fun getWarikanOfMaxRatioColorSelected(warikan: Warikan): Warikan {
+        val ratios = warikan.ratios
+        return warikan.copy(
+            color =
+            if (ratios.any { it.isEmpty() or !it.isDigitsOnly() }) -1
+            else if (ratios.all { it == ratios[0] }) -1
+            else members[ratios.indexOf(ratios.maxBy { it.toInt() })].color,
+            ratios = ratios
+        )
     }
 
     private fun makeDefaultWarikan(ratios: List<String> = List(members.size) { "1" }): Warikan {
@@ -166,7 +192,9 @@ class WarikanViewModel @Inject constructor(
 
     sealed class UiEvent {
         object DeleteError : UiEvent()
+        object AddError : UiEvent()
         data class InputError(val errorNum: Int) : UiEvent()
+        data class HistoryPage(val memberJson: String) : UiEvent()
         data class NextPage(
             val total: String,
             val isSave: Boolean,
