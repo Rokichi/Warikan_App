@@ -1,6 +1,7 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikan_history.component
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -18,12 +19,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import jp.co.tbdeveloper.warikanapp.DarkThemeValHolder
 import jp.co.tbdeveloper.warikanapp.R
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Warikan
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.MAX_MEMBER_NUM
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.AutoResizeText
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.FontSizeRange
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikan_history.WarikanHistoryEvent
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikan_history.WarikanHistoryViewModel
 import jp.co.tbdeveloper.warikanapp.ui.theme.DarkTextGray
@@ -59,24 +66,18 @@ fun WarikanHistoryScreen(
         PageBackBar(viewModel) {
             navController.navigateUp()
         }
+        NameToColor(members = viewModel.members)
         if (warikansList.value.isNotEmpty()) {
             LazyColumn(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 itemsIndexed(warikansList.value) { index: Int, warikans: List<Warikan> ->
-                    //    viewModel.onEvent(WarikanHistoryEvent.OnItemClick(index))
-                    /*
-                    Text(
-                        modifier = Modifier.clickable(
-                            interactionSource = MutableInteractionSource(),
-                            indication = rememberRipple(color = Color.Black, radius = 18.dp),
-                            onClick = { viewModel.onEvent(WarikanHistoryEvent.OnItemClick(index)) }
-                        ),
-                        text = "${warikans}"
-                    )
-                     */
-                    WarikanHistoryItem(memberSize = viewModel.members.size, warikans = warikans) {
+                    WarikanHistoryItem(
+                        memberSize = viewModel.members.size,
+                        members = viewModel.members,
+                        warikans = warikans
+                    ) {
                         viewModel.onEvent(WarikanHistoryEvent.OnItemClick(index))
                     }
                     if (index < warikansList.value.lastIndex) {
@@ -134,5 +135,49 @@ fun PageBackBar(
             style = MaterialTheme.typography.body1,
             color = MaterialTheme.colors.surface,
         )
+    }
+}
+
+@Composable
+fun NameToColor(
+    members: List<Member>,
+    size: Dp = 15.dp
+) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 10.dp),
+        horizontalArrangement = Arrangement.spacedBy(5.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        for (i in members.indices) {
+            Row(
+                Modifier.weight(1.0f),
+                horizontalArrangement = Arrangement.spacedBy(5.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    Modifier
+                        .height(size)
+                        .width(size)
+                        .background(
+                            Member.memberColors(DarkThemeValHolder.isDarkTheme.value)[members[i].color]
+                        )
+                )
+                AutoResizeText(
+                    text = members[i].name,
+                    maxLines = 2,
+                    fontSizeRange = (FontSizeRange(
+                        min = (MaterialTheme.typography.button.fontSize.value - 4).sp,
+                        max = MaterialTheme.typography.button.fontSize
+                    )),
+                    style = MaterialTheme.typography.button,
+                    color = MaterialTheme.colors.surface
+                )
+            }
+        }
+        for (i in members.size until MAX_MEMBER_NUM) {
+            Spacer(modifier = Modifier.weight(1.0f))
+        }
     }
 }
