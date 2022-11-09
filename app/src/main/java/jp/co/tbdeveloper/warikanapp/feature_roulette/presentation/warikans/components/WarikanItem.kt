@@ -2,6 +2,7 @@ package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikans.comp
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -54,15 +55,19 @@ fun WarikanItem(
                     )
             )
         }
-        WarikanField(
-            modifier = Modifier.weight(7.0f),
-            height = height,
-            width = width,
-            ratios = warikan.ratios,
-            onValueChange = { value: String, num: Int ->
-                onWarikanValueChange(value, num)
-            }
-        )
+        Box(
+            Modifier.weight(7.0f),
+            contentAlignment = Alignment.Center
+        ){
+            WarikanField(
+                height = height,
+                width = width,
+                ratios = warikan.ratios,
+                onValueChange = { value: String, num: Int ->
+                    onWarikanValueChange(value, num)
+                }
+            )
+        }
         Image(
             painter = painterResource(
                 id = if (DarkThemeValHolder.isDarkTheme.value) R.drawable.ic_close_dark
@@ -92,7 +97,6 @@ fun WarikanField(
 ) {
     Row(
         modifier = modifier
-            .fillMaxWidth()
             .height(height),
         horizontalArrangement = Arrangement.spacedBy(5.dp),
         verticalAlignment = Alignment.CenterVertically

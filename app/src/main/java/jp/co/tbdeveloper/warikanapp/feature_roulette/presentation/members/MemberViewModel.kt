@@ -137,6 +137,9 @@ class MemberViewModel @Inject constructor(
                     _eventFlow.emit(UiEvent.NextPage(memberJson, totalState.value))
                 }
             }
+            is MemberEvent.LoadMemberEvent -> {
+                _memberState.value = event.members.toMutableList()
+            }
         }
     }
 

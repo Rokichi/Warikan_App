@@ -24,7 +24,6 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
-import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Warikan
@@ -38,7 +37,6 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Screen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikan_history.component.WarikanHistoryScreen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikans.components.WarikansScreen
 import jp.co.tbdeveloper.warikanapp.ui.theme.WarikanAppTheme
-import java.lang.NullPointerException
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -62,18 +60,20 @@ class MainActivity : ComponentActivity() {
                             startDestination = Screen.MemberScreen.route
                         ) {
                             composable(route = Screen.MemberScreen.route) {
-                                MembersScreen(navController)
+                                val members =
+                                    navController.currentBackStackEntry!!.savedStateHandle.get<Array<Member>>(
+                                        "members"
+                                    )
+                                MembersScreen(navController, members)
                             }
-                            composable(
-                                route = Screen.MemberScreen.route + "/{members}",
-                                arguments = listOf(
-                                    navArgument("members") { type = MemberArrayType() },
-                                )
-                            ) {
-                                MembersScreen(navController)
-                            }
+
                             composable(route = Screen.MemberHistoryScreen.route) {
-                                MemberHistoryScreen(navController)
+                                MemberHistoryScreen(navController) {
+                                    navController.previousBackStackEntry
+                                        ?.savedStateHandle
+                                        ?.set("members", it)
+                                    navController.popBackStack()
+                                }
                             }
 
                             composable(
@@ -97,7 +97,10 @@ class MainActivity : ComponentActivity() {
                                     navArgument("total") { type = NavType.StringType },
                                 )
                             ) {
-                                val warikans = navController.currentBackStackEntry!!.savedStateHandle.get<Array<Warikan>>("warikans")
+                                val warikans =
+                                    navController.currentBackStackEntry!!.savedStateHandle.get<Array<Warikan>>(
+                                        "warikans"
+                                    )
                                 WarikansScreen(navController, warikans)
                             }
 
