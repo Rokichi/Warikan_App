@@ -29,6 +29,7 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Membe
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Warikan
 import jp.co.tbdeveloper.warikanapp.feature_roulette.parser.MemberArrayType
 import jp.co.tbdeveloper.warikanapp.feature_roulette.parser.WarikanArrayType
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.license.components.LicencePage
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.member_history.components.MemberHistoryScreen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.components.MembersScreen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.components.RouletteScreen
@@ -145,6 +146,9 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(route = Screen.SettingsScreen.route) {
                                 SettingScreen(navController)
+                            }
+                            composable(route = Screen.LicenceScreen.route) {
+                                LicencePage(navController)
                             }
                         }
                         // admob

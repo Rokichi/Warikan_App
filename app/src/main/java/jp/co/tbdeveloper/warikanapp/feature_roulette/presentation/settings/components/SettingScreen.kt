@@ -30,6 +30,7 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.settings.Setti
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.settings.SettingsEvent
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.settings.UiEvent
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.NoRippleDropdownMenuItem
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Screen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.ShadowButton
 import kotlinx.coroutines.flow.collectLatest
 
@@ -145,6 +146,15 @@ fun SettingScreen(
                     }
                 }
             }
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { navController.navigate(Screen.LicenceScreen.route) },
+                text = "ライセンス",
+                style = MaterialTheme.typography.body1,
+                color = MaterialTheme.colors.surface
+            )
+
             // 保存ボタン
             Column(
                 modifier = Modifier.fillMaxSize(),
