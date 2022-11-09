@@ -22,11 +22,14 @@ class SettingViewModel @Inject constructor(
     private val settingsUseCases: SettingsUseCases
 ) : ViewModel() {
 
-    val _autoSave = mutableStateOf(true)
+    val _autoSave = mutableStateOf(false)
     val autoSave: State<Boolean> = _autoSave
 
-    private val _isMuted = mutableStateOf(true)
+    private val _isMuted = mutableStateOf(false)
     val isMuted: State<Boolean> = _isMuted
+
+    private val _isApproximate = mutableStateOf(false)
+    val isApproximate: State<Boolean> = _isApproximate
 
     private val _setDarkTheme = mutableStateOf(0)
     val setDarkTheme: State<Int> = _setDarkTheme
@@ -44,25 +47,34 @@ class SettingViewModel @Inject constructor(
         }
         _autoSave.value = settings.autoSave
         _isMuted.value = settings.isMuted
+        _isApproximate.value = settings.isApproximate
         _setDarkTheme.value = settings.setDarkTheme
     }
 
     fun onEvent(event: SettingsEvent) {
         when (event) {
-            is SettingsEvent.onAutoSaveChange -> {
+            is SettingsEvent.OnAutoSaveChange -> {
                 _autoSave.value = event.flg
             }
-            is SettingsEvent.onIsMutedChange -> {
+            is SettingsEvent.OnIsMutedChange -> {
                 _isMuted.value = event.flg
             }
-            is SettingsEvent.onSetDarkThemeSelect -> {
+            is SettingsEvent.OnIsApproximateChange -> {
+                _isApproximate.value = event.flg
+            }
+            is SettingsEvent.OnSetDarkThemeSelect -> {
                 _setDarkTheme.value = event.value
             }
-            is SettingsEvent.onSave -> {
+            is SettingsEvent.OnSave -> {
                 viewModelScope.launch {
                     settingsUseCases.updateSettings(
                         SettingsEntityFactory.create(
-                            Settings(_autoSave.value, _isMuted.value, _setDarkTheme.value)
+                            Settings(
+                                _autoSave.value,
+                                _isMuted.value,
+                                _isApproximate.value,
+                                _setDarkTheme.value
+                            )
                         )
                     )
                     DarkThemeValHolder.isDarkThemeSelectIndex.value = _setDarkTheme.value

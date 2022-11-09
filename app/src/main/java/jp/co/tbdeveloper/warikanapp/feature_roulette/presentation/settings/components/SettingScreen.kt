@@ -50,6 +50,7 @@ fun SettingScreen(
 
     val autoSave = remember { viewModel.autoSave }
     val isMuted = remember { viewModel.isMuted }
+    val isApproximate = remember { viewModel.isApproximate }
     val setDarkTheme = remember { viewModel.setDarkTheme }
     val expanded = remember { mutableStateOf(false) }
 
@@ -72,12 +73,17 @@ fun SettingScreen(
         ) {
             // 自動保存
             TextAndSwitch(text = "自動保存", isChecked = autoSave) { flg: Boolean ->
-                viewModel.onEvent(SettingsEvent.onAutoSaveChange(flg))
+                viewModel.onEvent(SettingsEvent.OnAutoSaveChange(flg))
             }
 
             // ミュート
             TextAndSwitch(text = "ミュート", isChecked = isMuted) { flg: Boolean ->
-                viewModel.onEvent(SettingsEvent.onIsMutedChange(flg))
+                viewModel.onEvent(SettingsEvent.OnIsMutedChange(flg))
+            }
+
+            // ミュート
+            TextAndSwitch(text = "キリよく割り勘", isChecked = isApproximate) { flg: Boolean ->
+                viewModel.onEvent(SettingsEvent.OnIsApproximateChange(flg))
             }
 
             Row(
@@ -126,7 +132,7 @@ fun SettingScreen(
                             NoRippleDropdownMenuItem(
                                 onClick = {
                                     expanded.value = false
-                                    viewModel.onEvent(SettingsEvent.onSetDarkThemeSelect(index))
+                                    viewModel.onEvent(SettingsEvent.OnSetDarkThemeSelect(index))
                                 }
                             ) {
                                 Text(
@@ -155,7 +161,7 @@ fun SettingScreen(
                     offsetY = 9.dp,
                     offsetX = 0.dp,
                     onClick = {
-                        viewModel.onEvent(SettingsEvent.onSave)
+                        viewModel.onEvent(SettingsEvent.OnSave)
                     }
                 )
             }

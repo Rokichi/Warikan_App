@@ -38,8 +38,10 @@ class GetWarikanResultTest {
     fun normalAssert() {
         for (total in normalTotals) {
             for (ratio in normalRatios) {
-                val result = getWarikanResult(total, ratio).sum()
+                val result = getWarikanResult(total, ratio, false).sum()
+                val resultIsApproximate = getWarikanResult(total, ratio, true).sum()
                 assertEquals(total, result)
+                assertEquals(total, resultIsApproximate)
             }
         }
     }
@@ -53,8 +55,10 @@ class GetWarikanResultTest {
     fun edgeTotalAssert() {
         for (total in edgeTotals) {
             for (ratio in normalRatios) {
-                val result = getWarikanResult(total, ratio).sum()
+                val result = getWarikanResult(total, ratio,false).sum()
+                val resultIsApproximate = getWarikanResult(total, ratio, true).sum()
                 assertEquals(total, result)
+                assertEquals(total, resultIsApproximate)
             }
         }
     }
@@ -68,8 +72,10 @@ class GetWarikanResultTest {
     fun edgeRationsAssert() {
         for (total in normalTotals) {
             for (ratio in edgeRatios) {
-                val result = getWarikanResult(total, ratio).sum()
+                val result = getWarikanResult(total, ratio, false).sum()
+                val resultIsApproximate = getWarikanResult(total, ratio, true).sum()
                 assertEquals(total, result)
+                assertEquals(total, resultIsApproximate)
             }
         }
     }
@@ -83,8 +89,10 @@ class GetWarikanResultTest {
     fun edgeTotalsAndRationsAssert() {
         for (total in edgeTotals) {
             for (ratio in edgeRatios) {
-                val result = getWarikanResult(total, ratio).sum()
+                val result = getWarikanResult(total, ratio,false).sum()
+                val resultIsApproximate = getWarikanResult(total, ratio, true).sum()
                 assertEquals(total, result)
+                assertEquals(total, resultIsApproximate)
             }
         }
     }
