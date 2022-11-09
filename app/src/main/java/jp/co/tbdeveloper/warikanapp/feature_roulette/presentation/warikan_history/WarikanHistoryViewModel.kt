@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Warikan
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.WarikanFactory
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.warikan.WarikanUseCases
@@ -26,13 +27,15 @@ class WarikanHistoryViewModel @Inject constructor(
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    var size: Long
+    var members:List<Member>
 
     init {
-        size = savedStateHandle.get<Long>("size") ?: 0
+        // load from navigation
+        val memberData = savedStateHandle.get<Array<Member>>("members")
+        members = memberData?.toList() ?: listOf()
         lateinit var warikansData: List<List<Warikan>>
         val job = CoroutineScope(Dispatchers.IO).launch {
-            warikansData = WarikanFactory.create(size, warikanUseCases.getAllWarikans())
+            warikansData = WarikanFactory.create(members.size.toLong(), warikanUseCases.getAllWarikans())
         }
         while (!job.isCompleted) {
             Thread.sleep(100)

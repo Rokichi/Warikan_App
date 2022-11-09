@@ -1,6 +1,5 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikans.components
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,7 +27,6 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import jp.co.tbdeveloper.warikanapp.DarkThemeValHolder
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
@@ -59,7 +57,7 @@ fun WarikansScreen(
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        if(!warikans.isNullOrEmpty()){
+        if (!warikans.isNullOrEmpty()) {
             viewModel.onEvent(WarikanEvent.LoadWarikansEvent(warikans.toList()))
         }
         viewModel.eventFlow.collectLatest { event ->
@@ -77,6 +75,9 @@ fun WarikansScreen(
                             Toast.makeText(context, "数値を入力してください", Toast.LENGTH_SHORT).show()
                         }
                     }
+                }
+                is WarikanViewModel.UiEvent.HistoryPage -> {
+                    navController.navigate(Screen.WarikanHistoryScreen.route + "/${event.memberJson}")
                 }
                 is WarikanViewModel.UiEvent.NextPage -> {
                     navController.navigate(
@@ -100,7 +101,7 @@ fun WarikansScreen(
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         // トップバー
-        HistoryBar { navController.navigate(Screen.WarikanHistoryScreen.route + "/${viewModel.members.size.toLong()}") }
+        HistoryBar { viewModel.onEvent(WarikanEvent.HistoryClickEvent) }
         Text(
             text = "割合を決めてね",
             modifier = Modifier.fillMaxWidth(),
@@ -243,13 +244,13 @@ fun ColumnTableText() {
 @Composable
 fun NameToColor(
     members: List<Member>,
-    size: Dp = 20.dp
+    size: Dp = 15.dp
 ) {
     Row(
         Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+            .padding(horizontal = 10.dp),
+        horizontalArrangement = Arrangement.spacedBy(5.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         for (i in members.indices) {
@@ -268,12 +269,12 @@ fun NameToColor(
                 )
                 AutoResizeText(
                     text = members[i].name,
-                    maxLines = 1,
+                    maxLines = 2,
                     fontSizeRange = (FontSizeRange(
-                        min = (MaterialTheme.typography.body1.fontSize.value - 4).sp,
-                        max = MaterialTheme.typography.body1.fontSize
+                        min = (MaterialTheme.typography.button.fontSize.value - 4).sp,
+                        max = MaterialTheme.typography.button.fontSize
                     )),
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.button,
                     color = MaterialTheme.colors.surface
                 )
             }

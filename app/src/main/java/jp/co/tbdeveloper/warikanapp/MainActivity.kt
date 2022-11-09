@@ -77,9 +77,9 @@ class MainActivity : ComponentActivity() {
                             }
 
                             composable(
-                                route = Screen.WarikanHistoryScreen.route + "/{size}",
+                                route = Screen.WarikanHistoryScreen.route + "/{members}",
                                 arguments = listOf(
-                                    navArgument("size") { type = NavType.Companion.LongType },
+                                    navArgument("members") { type = MemberArrayType() },
                                 )
                             ) {
                                 WarikanHistoryScreen(navController) {

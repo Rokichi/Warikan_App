@@ -56,7 +56,9 @@ fun WarikanHistoryScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        PageBackBar { navController.navigateUp() }
+        PageBackBar(viewModel) {
+            navController.navigateUp()
+        }
         if (warikansList.value.isNotEmpty()) {
             LazyColumn(
                 modifier = Modifier.fillMaxWidth(),
@@ -64,6 +66,7 @@ fun WarikanHistoryScreen(
             ) {
                 itemsIndexed(warikansList.value) { index: Int, warikans: List<Warikan> ->
                     //    viewModel.onEvent(WarikanHistoryEvent.OnItemClick(index))
+                    /*
                     Text(
                         modifier = Modifier.clickable(
                             interactionSource = MutableInteractionSource(),
@@ -72,6 +75,10 @@ fun WarikanHistoryScreen(
                         ),
                         text = "${warikans}"
                     )
+                     */
+                    WarikanHistoryItem(memberSize = viewModel.members.size, warikans = warikans) {
+                        viewModel.onEvent(WarikanHistoryEvent.OnItemClick(index))
+                    }
                     if (index < warikansList.value.lastIndex) {
                         Divider(
                             color = if (DarkThemeValHolder.isDarkTheme.value) DarkTextGray
@@ -82,7 +89,7 @@ fun WarikanHistoryScreen(
             }
         } else {
             Text(
-                text = "メンバー数:${viewModel.size}の履歴はありません",
+                text = "メンバー数:${viewModel.members.size}の履歴はありません",
                 style = MaterialTheme.typography.h1,
                 color = MaterialTheme.colors.surface,
             )
@@ -92,6 +99,7 @@ fun WarikanHistoryScreen(
 
 @Composable
 fun PageBackBar(
+    viewModel: WarikanHistoryViewModel,
     onPageBackButtonClick: () -> Unit = {}
 ) {
     Row(
@@ -116,6 +124,15 @@ fun PageBackBar(
                     onClick = { onPageBackButtonClick(); }
                 ),
             contentDescription = "page back button"
+        )
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 10.dp)
+                .offset(y = (-5).dp),
+            text = "メンバー数:${viewModel.members.size}の履歴",
+            style = MaterialTheme.typography.body1,
+            color = MaterialTheme.colors.surface,
         )
     }
 }
