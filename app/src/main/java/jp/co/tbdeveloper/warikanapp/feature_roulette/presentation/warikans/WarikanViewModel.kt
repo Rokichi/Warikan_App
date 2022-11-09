@@ -1,6 +1,7 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikans
 
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
@@ -15,6 +16,7 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Warik
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.SettingsFactory
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.settings.SettingsUseCases
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.warikan.WarikanUseCases
+import jp.co.tbdeveloper.warikanapp.feature_roulette.parser.WarikanArrayType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -31,7 +33,7 @@ const val WARIKAN_MAX_NUM = 6
 class WarikanViewModel @Inject constructor(
     private val warikanUseCases: WarikanUseCases,
     private val settingsUseCases: SettingsUseCases,
-    savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     // メンバー
     var members = mutableListOf<Member>()
@@ -47,7 +49,7 @@ class WarikanViewModel @Inject constructor(
     private val _proportionState = MutableStateFlow(
         listOf<String>()
     )
-    val proportionState = _proportionState.asStateFlow()
+    private val proportionState = _proportionState.asStateFlow()
 
     val isSave = mutableStateOf(false)
 
@@ -87,7 +89,6 @@ class WarikanViewModel @Inject constructor(
         _proportionState.value = List(_warikanState.value.size) {
             "1"
         }
-
         lateinit var settings: Settings
         val job = CoroutineScope(Dispatchers.IO).launch {
             settings = SettingsFactory.create(settingsUseCases.getSettings())
@@ -97,7 +98,6 @@ class WarikanViewModel @Inject constructor(
         }
         isSave.value = settings.autoSave
     }
-
     fun onEvent(event: WarikanEvent) {
         when (event) {
             is WarikanEvent.AddWarikanEvent -> {
@@ -162,6 +162,9 @@ class WarikanViewModel @Inject constructor(
                     val warikanJson = Uri.encode(Gson().toJson(warikanData))
                     _eventFlow.emit(UiEvent.NextPage(total, isSave.value, memberJson, warikanJson))
                 }
+            }
+            is WarikanEvent.LoadWarikansEvent -> {
+                _warikanState.value = event.warikans
             }
         }
     }

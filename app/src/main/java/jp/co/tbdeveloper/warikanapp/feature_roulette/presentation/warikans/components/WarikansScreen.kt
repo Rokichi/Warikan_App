@@ -1,5 +1,6 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikans.components
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import jp.co.tbdeveloper.warikanapp.DarkThemeValHolder
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
@@ -46,17 +48,20 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun WarikansScreen(
     navController: NavController,
-    viewModel: WarikanViewModel = hiltViewModel()
+    warikans: Array<Warikan>?,
+    viewModel: WarikanViewModel = hiltViewModel(),
 ) {
     // 画面外のフォーカスを検知
     val focusManager = LocalFocusManager.current
     val warikanState = viewModel.warikanState.collectAsState()
-    val proportionState = viewModel.proportionState.collectAsState()
     val isSave = remember { viewModel.isSave }
 
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
+        if(!warikans.isNullOrEmpty()){
+            viewModel.onEvent(WarikanEvent.LoadWarikansEvent(warikans.toList()))
+        }
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is WarikanViewModel.UiEvent.DeleteError -> {
@@ -95,7 +100,7 @@ fun WarikansScreen(
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         // トップバー
-        HistoryBar()
+        HistoryBar { navController.navigate(Screen.WarikanHistoryScreen.route + "/${viewModel.members.size.toLong()}") }
         Text(
             text = "割合を決めてね",
             modifier = Modifier.fillMaxWidth(),
@@ -247,12 +252,12 @@ fun NameToColor(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        for(i in members.indices){
+        for (i in members.indices) {
             Row(
                 Modifier.weight(1.0f),
                 horizontalArrangement = Arrangement.spacedBy(5.dp),
                 verticalAlignment = Alignment.CenterVertically
-            ){
+            ) {
                 Box(
                     Modifier
                         .height(size)
@@ -273,7 +278,7 @@ fun NameToColor(
                 )
             }
         }
-        for(i in members.size until MAX_MEMBER_NUM ){
+        for (i in members.size until MAX_MEMBER_NUM) {
             Spacer(modifier = Modifier.weight(1.0f))
         }
     }

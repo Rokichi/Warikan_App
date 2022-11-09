@@ -24,16 +24,21 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Warikan
 import jp.co.tbdeveloper.warikanapp.feature_roulette.parser.MemberArrayType
 import jp.co.tbdeveloper.warikanapp.feature_roulette.parser.WarikanArrayType
-import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.memberhistory.components.MemberHistoryScreen
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.member_history.components.MemberHistoryScreen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.components.MembersScreen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.components.RouletteScreen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.settings.components.SettingScreen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Screen
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikan_history.component.WarikanHistoryScreen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikans.components.WarikansScreen
 import jp.co.tbdeveloper.warikanapp.ui.theme.WarikanAppTheme
+import java.lang.NullPointerException
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -72,13 +77,28 @@ class MainActivity : ComponentActivity() {
                             }
 
                             composable(
+                                route = Screen.WarikanHistoryScreen.route + "/{size}",
+                                arguments = listOf(
+                                    navArgument("size") { type = NavType.Companion.LongType },
+                                )
+                            ) {
+                                WarikanHistoryScreen(navController) {
+                                    navController.previousBackStackEntry
+                                        ?.savedStateHandle
+                                        ?.set("warikans", it)
+                                    navController.popBackStack()
+                                }
+                            }
+
+                            composable(
                                 route = Screen.WarikanScreen.route + "/{members}/{total}",
                                 arguments = listOf(
                                     navArgument("members") { type = MemberArrayType() },
                                     navArgument("total") { type = NavType.StringType },
                                 )
                             ) {
-                                WarikansScreen(navController)
+                                val warikans = navController.currentBackStackEntry!!.savedStateHandle.get<Array<Warikan>>("warikans")
+                                WarikansScreen(navController, warikans)
                             }
 
                             composable(

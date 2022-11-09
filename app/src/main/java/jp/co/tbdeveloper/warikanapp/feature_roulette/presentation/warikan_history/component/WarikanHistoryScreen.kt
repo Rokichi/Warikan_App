@@ -1,4 +1,4 @@
-package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.memberhistory.components
+package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikan_history.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -23,28 +23,26 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import jp.co.tbdeveloper.warikanapp.DarkThemeValHolder
 import jp.co.tbdeveloper.warikanapp.R
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
-import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.memberhistory.MemberHistoryEvent
-import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.memberhistory.MemberHistoryViewModel
-import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Screen
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Warikan
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikan_history.WarikanHistoryEvent
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikan_history.WarikanHistoryViewModel
 import jp.co.tbdeveloper.warikanapp.ui.theme.DarkTextGray
 import jp.co.tbdeveloper.warikanapp.ui.theme.LightTextGray
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun MemberHistoryScreen(
+fun WarikanHistoryScreen(
     navController: NavController,
-    viewModel: MemberHistoryViewModel = hiltViewModel()
+    viewModel: WarikanHistoryViewModel = hiltViewModel(),
+    popBackStack: (Array<Warikan>) -> Unit
 ) {
-    val membersList = viewModel.memberHistoriesState.collectAsState()
+    val warikansList = viewModel.warikanHistoriesState.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
-                is MemberHistoryViewModel.UiEvent.ItemSelected -> {
-                    navController.navigate(Screen.MemberScreen.route + "/${event.members}") {
-                        popUpTo(0)
-                    }
+                is WarikanHistoryViewModel.UiEvent.ItemSelected -> {
+                    popBackStack(event.warikans)
                 }
             }
         }
@@ -59,16 +57,22 @@ fun MemberHistoryScreen(
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         PageBackBar { navController.navigateUp() }
-        if (membersList.value.isNotEmpty()) {
+        if (warikansList.value.isNotEmpty()) {
             LazyColumn(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                itemsIndexed(membersList.value) { index: Int, members: List<Member> ->
-                    MemberAndColorItemBar(members = members) {
-                        viewModel.onEvent(MemberHistoryEvent.OnItemClick(index))
-                    }
-                    if (index < membersList.value.lastIndex) {
+                itemsIndexed(warikansList.value) { index: Int, warikans: List<Warikan> ->
+                    //    viewModel.onEvent(WarikanHistoryEvent.OnItemClick(index))
+                    Text(
+                        modifier = Modifier.clickable(
+                            interactionSource = MutableInteractionSource(),
+                            indication = rememberRipple(color = Color.Black, radius = 18.dp),
+                            onClick = { viewModel.onEvent(WarikanHistoryEvent.OnItemClick(index)) }
+                        ),
+                        text = "${warikans}"
+                    )
+                    if (index < warikansList.value.lastIndex) {
                         Divider(
                             color = if (DarkThemeValHolder.isDarkTheme.value) DarkTextGray
                             else LightTextGray
@@ -78,14 +82,13 @@ fun MemberHistoryScreen(
             }
         } else {
             Text(
-                text = "履歴はありません",
+                text = "メンバー数:${viewModel.size}の履歴はありません",
                 style = MaterialTheme.typography.h1,
                 color = MaterialTheme.colors.surface,
             )
         }
     }
 }
-
 
 @Composable
 fun PageBackBar(

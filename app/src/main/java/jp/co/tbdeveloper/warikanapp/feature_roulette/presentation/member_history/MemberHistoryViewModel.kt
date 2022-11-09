@@ -1,4 +1,4 @@
-package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.memberhistory
+package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.member_history
 
 import android.net.Uri
 import android.util.Log
@@ -32,7 +32,6 @@ class MemberHistoryViewModel @Inject constructor(
         lateinit var membersData: List<List<Member>>
         val job = CoroutineScope(Dispatchers.IO).launch {
             membersData = MemberFactory.create(memberUseCases.getAllMembers())
-            Log.i("members", "${membersData}")
         }
         while (!job.isCompleted) {
             Thread.sleep(100)
