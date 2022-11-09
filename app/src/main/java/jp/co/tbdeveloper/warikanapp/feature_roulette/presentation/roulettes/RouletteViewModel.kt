@@ -57,6 +57,8 @@ class RouletteViewModel @Inject constructor(
     private val _isMuteState = mutableStateOf(false)
     val isMuteState: State<Boolean> = _isMuteState
 
+    private var isApproximate = false
+
     private val _isRotated = mutableStateOf(false)
     val isRotated: State<Boolean> = _isRotated
 
@@ -112,6 +114,7 @@ class RouletteViewModel @Inject constructor(
             Thread.sleep(100)
         }
         _isMuteState.value = settings.isMuted
+        isApproximate = settings.isApproximate
     }
 
     val resultPayments = mutableListOf<Int>()
@@ -140,7 +143,8 @@ class RouletteViewModel @Inject constructor(
                 val ratios: List<Int> = warikans[drawnIndex].ratios.map { it.toInt() }
                 resultPayments += rouletteUseCases.getWarikanResult(
                     _rouletteState.value.total,
-                    ratios
+                    ratios,
+                    isApproximate
                 )
                 resultProportions +=
                     ratios.map { getDoubleOneDecimalPlaces(it.toDouble() / ratios.sum()) }
