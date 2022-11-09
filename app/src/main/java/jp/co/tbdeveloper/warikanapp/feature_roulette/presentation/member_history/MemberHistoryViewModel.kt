@@ -1,7 +1,6 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.member_history
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
@@ -19,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MemberHistoryViewModel @Inject constructor(
-    memberUseCases: MemberUseCases
+    memberUseCases: MemberUseCases,
 ) : ViewModel() {
 
     private val _memberHistoriesState = MutableStateFlow(listOf<List<Member>>())
@@ -42,16 +41,15 @@ class MemberHistoryViewModel @Inject constructor(
     fun onEvent(event: MemberHistoryEvent) {
         when (event) {
             is MemberHistoryEvent.OnItemClick -> {
-                /* json encode */
-                val memberJson = Uri.encode(Gson().toJson(_memberHistoriesState.value[event.index]))
+                val memberData = _memberHistoriesState.value[event.index]
                 viewModelScope.launch {
-                    _eventFlow.emit(UiEvent.ItemSelected(memberJson))
+                    _eventFlow.emit(UiEvent.ItemSelected(memberData.toTypedArray()))
                 }
             }
         }
     }
 
     sealed class UiEvent {
-        data class ItemSelected(val members: String?) : UiEvent()
+        data class ItemSelected(val members: Array<Member>) : UiEvent()
     }
 }

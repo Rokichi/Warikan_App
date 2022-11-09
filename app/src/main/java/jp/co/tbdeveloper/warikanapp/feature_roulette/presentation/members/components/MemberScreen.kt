@@ -27,16 +27,19 @@ import androidx.navigation.NavController
 import jp.co.tbdeveloper.warikanapp.DarkThemeValHolder
 import jp.co.tbdeveloper.warikanapp.R
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
+import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Warikan
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.MemberEvent
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.MemberViewModel
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.CustomTextField
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Screen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.ShadowButton
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikans.WarikanEvent
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun MembersScreen(
     navController: NavController,
+    members: Array<Member>?,
     viewModel: MemberViewModel = hiltViewModel(),
 ) {
     // 画面外のフォーカスを検知
@@ -47,6 +50,9 @@ fun MembersScreen(
 
     val context = LocalContext.current
     LaunchedEffect(Unit) {
+        if (!members.isNullOrEmpty()) {
+            viewModel.onEvent(MemberEvent.LoadMemberEvent(members.toList()))
+        }
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is MemberViewModel.UiEvent.DeleteError -> {

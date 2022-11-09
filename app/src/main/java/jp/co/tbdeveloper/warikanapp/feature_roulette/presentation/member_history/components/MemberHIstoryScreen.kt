@@ -34,7 +34,8 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun MemberHistoryScreen(
     navController: NavController,
-    viewModel: MemberHistoryViewModel = hiltViewModel()
+    viewModel: MemberHistoryViewModel = hiltViewModel(),
+    popBackStack: (Array<Member>) -> Unit
 ) {
     val membersList = viewModel.memberHistoriesState.collectAsState()
 
@@ -42,9 +43,7 @@ fun MemberHistoryScreen(
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is MemberHistoryViewModel.UiEvent.ItemSelected -> {
-                    navController.navigate(Screen.MemberScreen.route + "/${event.members}") {
-                        popUpTo(0)
-                    }
+                    popBackStack(event.members)
                 }
             }
         }
