@@ -90,8 +90,7 @@ class MemberViewModel @Inject constructor(
                         "",
                         unusedColorNums.removeAt(getMD5HashInt(hashLongNum.toString()) % unusedColorNums.size)
                     )) as MutableList<Member>
-                }
-                else viewModelScope.launch { _eventFlow.emit(UiEvent.AddMemberError) }
+                } else viewModelScope.launch { _eventFlow.emit(UiEvent.AddMemberError) }
 
             }
 

@@ -26,7 +26,6 @@ import jp.co.tbdeveloper.warikanapp.R
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.member_history.MemberHistoryEvent
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.member_history.MemberHistoryViewModel
-import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Screen
 import jp.co.tbdeveloper.warikanapp.ui.theme.DarkTextGray
 import jp.co.tbdeveloper.warikanapp.ui.theme.LightTextGray
 import kotlinx.coroutines.flow.collectLatest

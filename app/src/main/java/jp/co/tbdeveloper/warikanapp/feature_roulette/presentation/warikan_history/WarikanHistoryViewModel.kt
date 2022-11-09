@@ -27,7 +27,7 @@ class WarikanHistoryViewModel @Inject constructor(
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    var members:List<Member>
+    var members: List<Member>
 
     init {
         // load from navigation
@@ -35,7 +35,8 @@ class WarikanHistoryViewModel @Inject constructor(
         members = memberData?.toList() ?: listOf()
         lateinit var warikansData: List<List<Warikan>>
         val job = CoroutineScope(Dispatchers.IO).launch {
-            warikansData = WarikanFactory.create(members.size.toLong(), warikanUseCases.getAllWarikans())
+            warikansData =
+                WarikanFactory.create(members.size.toLong(), warikanUseCases.getAllWarikans())
         }
         while (!job.isCompleted) {
             Thread.sleep(100)

@@ -27,13 +27,11 @@ import androidx.navigation.NavController
 import jp.co.tbdeveloper.warikanapp.DarkThemeValHolder
 import jp.co.tbdeveloper.warikanapp.R
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
-import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Warikan
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.MemberEvent
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.members.MemberViewModel
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.CustomTextField
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Screen
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.ShadowButton
-import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikans.WarikanEvent
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -58,7 +56,7 @@ fun MembersScreen(
                 is MemberViewModel.UiEvent.DeleteError -> {
                     Toast.makeText(context, "メンバーを2人未満にすることはできません", Toast.LENGTH_SHORT).show()
                 }
-                is MemberViewModel.UiEvent.AddMemberError ->{
+                is MemberViewModel.UiEvent.AddMemberError -> {
                     Toast.makeText(context, "メンバーを5人以上にすることはできません", Toast.LENGTH_SHORT).show()
                 }
                 is MemberViewModel.UiEvent.InputError -> {

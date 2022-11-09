@@ -6,7 +6,6 @@ import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.InvalidWarikanException
@@ -148,7 +147,7 @@ class WarikanViewModel @Inject constructor(
             is WarikanEvent.HistoryClickEvent -> {
                 /* json encode */
                 val memberJson = Uri.encode(Gson().toJson(members))
-                viewModelScope.launch{
+                viewModelScope.launch {
                     _eventFlow.emit(UiEvent.HistoryPage(memberJson))
                 }
             }
