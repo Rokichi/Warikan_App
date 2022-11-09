@@ -1,7 +1,6 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.warikans
 
 import android.net.Uri
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
@@ -16,7 +15,6 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Warik
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.repository.SettingsFactory
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.settings.SettingsUseCases
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.warikan.WarikanUseCases
-import jp.co.tbdeveloper.warikanapp.feature_roulette.parser.WarikanArrayType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -33,7 +31,7 @@ const val WARIKAN_MAX_NUM = 6
 class WarikanViewModel @Inject constructor(
     private val warikanUseCases: WarikanUseCases,
     private val settingsUseCases: SettingsUseCases,
-    private val savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     // メンバー
     var members = mutableListOf<Member>()
@@ -44,12 +42,6 @@ class WarikanViewModel @Inject constructor(
         listOf<Warikan>()
     )
     val warikanState = _warikanState.asStateFlow()
-
-    // 割り勘
-    private val _proportionState = MutableStateFlow(
-        listOf<String>()
-    )
-    private val proportionState = _proportionState.asStateFlow()
 
     val isSave = mutableStateOf(false)
 
@@ -86,9 +78,7 @@ class WarikanViewModel @Inject constructor(
                 )
                 else -> listOf()
             }
-        _proportionState.value = List(_warikanState.value.size) {
-            "1"
-        }
+
         lateinit var settings: Settings
         val job = CoroutineScope(Dispatchers.IO).launch {
             settings = SettingsFactory.create(settingsUseCases.getSettings())
@@ -98,6 +88,7 @@ class WarikanViewModel @Inject constructor(
         }
         isSave.value = settings.autoSave
     }
+
     fun onEvent(event: WarikanEvent) {
         when (event) {
             is WarikanEvent.AddWarikanEvent -> {
@@ -109,14 +100,10 @@ class WarikanViewModel @Inject constructor(
                 }
                 _warikanState.value =
                     (_warikanState.value + makeDefaultWarikan())
-                _proportionState.value = (_proportionState.value + "1")
             }
             is WarikanEvent.DeleteWarikanEvent -> {
                 if (_warikanState.value.size > 2) {
                     _warikanState.value = _warikanState.value.filterIndexed { index, _ ->
-                        index != event.index
-                    }
-                    _proportionState.value = _proportionState.value.filterIndexed { index, _ ->
                         index != event.index
                     }
                     return
@@ -126,31 +113,25 @@ class WarikanViewModel @Inject constructor(
             is WarikanEvent.EditWarikanEvent -> {
                 _warikanState.value = _warikanState.value.mapIndexed { index, warikan ->
                     if (index == event.index) {
+                        // 割合更新
                         val ratios = warikan.ratios.mapIndexed { index, ratio ->
                             if (index == event.num) event.value
                             else ratio
                         }
-                        warikan.copy(
-                            color =
-                            if (ratios.any { it.isEmpty() or !it.isDigitsOnly() }) -1
-                            else if (ratios.all { it == ratios[0] }) -1
-                            else members[ratios.indexOf(ratios.maxBy { it.toInt() })].color,
-                            ratios = ratios
-                        )
+                        val newWarikan = warikan.copy(ratios = ratios)
+                        getWarikanOfMaxRatioColorSelected(newWarikan)
                     } else warikan
                 }
             }
             is WarikanEvent.StartEvent -> {
                 viewModelScope.launch {
                     try {
-                        warikanUseCases.warikanValidation(warikanState.value, proportionState.value)
+                        warikanUseCases.warikanValidation(warikanState.value)
                     } catch (e: InvalidWarikanException) {
                         _eventFlow.emit(UiEvent.InputError(0))
                         return@launch
                     }
-                    _warikanState.value = _warikanState.value.mapIndexed { index, warikan ->
-                        warikan.copy(proportion = _proportionState.value[index].toInt())
-                    }
+
                     /* json encode */
                     val memberJson = Uri.encode(Gson().toJson(members))
                     val warikanData = warikanState.value.map {
@@ -164,9 +145,28 @@ class WarikanViewModel @Inject constructor(
                 }
             }
             is WarikanEvent.LoadWarikansEvent -> {
-                _warikanState.value = event.warikans
+                _warikanState.value = event.warikans.mapIndexed { index, warikan ->
+                    getWarikanOfMaxRatioColorSelected(warikan)
+                }
             }
         }
+    }
+
+    /**
+     * 適切な色を選択したwarikanを取得
+     *
+     * @param warikan 現在の割り勘
+     * @return 適切な色に更新した割り勘
+     */
+    private fun getWarikanOfMaxRatioColorSelected(warikan: Warikan): Warikan {
+        val ratios = warikan.ratios
+        return warikan.copy(
+            color =
+            if (ratios.any { it.isEmpty() or !it.isDigitsOnly() }) -1
+            else if (ratios.all { it == ratios[0] }) -1
+            else members[ratios.indexOf(ratios.maxBy { it.toInt() })].color,
+            ratios = ratios
+        )
     }
 
     private fun makeDefaultWarikan(ratios: List<String> = List(members.size) { "1" }): Warikan {

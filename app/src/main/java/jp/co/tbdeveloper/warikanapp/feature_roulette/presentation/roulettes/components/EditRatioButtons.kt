@@ -23,6 +23,7 @@ import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Membe
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Warikan
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.RouletteViewModel
 import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.roulettes.RoulettesEvent
+import jp.co.tbdeveloper.warikanapp.ui.theme.DarkTextWhite
 
 @Composable
 fun EditRatioButtons(
@@ -91,10 +92,12 @@ fun EditRatioButton(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                modifier = Modifier.fillMaxSize().offset(y = (-8).dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .offset(y = (-8).dp),
                 text = "${warikan.proportion}",
                 style = MaterialTheme.typography.h1,
-                color = MaterialTheme.colors.surface,
+                color = DarkTextWhite,
                 textAlign = TextAlign.Center
             )
         }
