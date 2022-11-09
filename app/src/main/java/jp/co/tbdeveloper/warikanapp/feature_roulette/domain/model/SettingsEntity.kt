@@ -18,5 +18,6 @@ data class SettingsEntity(
     var id: Int = 0,
     val autoSave: Boolean,
     val isMuted: Boolean,
+    val isApproximate:Boolean,
     val setDarkTheme: Int
 )

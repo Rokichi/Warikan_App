@@ -10,6 +10,7 @@ class GetSettings(
         return repository.getSettings() ?: SettingsEntity(
             autoSave = false,
             isMuted = false,
+            isApproximate = false,
             setDarkTheme = 0
         )
     }

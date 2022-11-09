@@ -17,6 +17,7 @@ object SettingsEntityFactory {
         return SettingsEntity(
             autoSave = settings.autoSave,
             isMuted = settings.isMuted,
+            isApproximate = settings.isApproximate,
             setDarkTheme = settings.setDarkTheme
         )
     }
