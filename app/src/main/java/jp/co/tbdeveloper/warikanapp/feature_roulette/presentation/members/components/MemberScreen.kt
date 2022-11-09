@@ -58,6 +58,9 @@ fun MembersScreen(
                 is MemberViewModel.UiEvent.DeleteError -> {
                     Toast.makeText(context, "メンバーを2人未満にすることはできません", Toast.LENGTH_SHORT).show()
                 }
+                is MemberViewModel.UiEvent.AddMemberError ->{
+                    Toast.makeText(context, "メンバーを5人以上にすることはできません", Toast.LENGTH_SHORT).show()
+                }
                 is MemberViewModel.UiEvent.InputError -> {
                     when (event.errorNum) {
                         0 -> {

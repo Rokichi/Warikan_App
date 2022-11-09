@@ -91,6 +91,8 @@ class MemberViewModel @Inject constructor(
                         unusedColorNums.removeAt(getMD5HashInt(hashLongNum.toString()) % unusedColorNums.size)
                     )) as MutableList<Member>
                 }
+                else viewModelScope.launch { _eventFlow.emit(UiEvent.AddMemberError) }
+
             }
 
             is MemberEvent.EditTotalEvent -> {
@@ -146,6 +148,7 @@ class MemberViewModel @Inject constructor(
 
     sealed class UiEvent {
         object DeleteError : UiEvent()
+        object AddMemberError : UiEvent()
         data class InputError(val errorNum: Int) : UiEvent()
         data class NextPage(val members: String?, val total: String) : UiEvent()
     }
