@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.tbdeveloper.warikanapp.DarkThemeValHolder
+import com.tbdeveloper.warikanapp.R
 import com.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import com.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Warikan
 import com.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.CustomTextField

@@ -7,7 +7,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
-import dagger.hilt.android.lifecycle.HiltViewModel
 import com.tbdeveloper.warikanapp.feature_roulette.domain.model.InvalidWarikanException
 import com.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import com.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Settings
@@ -15,6 +14,7 @@ import com.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Warikan
 import com.tbdeveloper.warikanapp.feature_roulette.domain.repository.SettingsFactory
 import com.tbdeveloper.warikanapp.feature_roulette.domain.use_case.settings.SettingsUseCases
 import com.tbdeveloper.warikanapp.feature_roulette.domain.use_case.warikan.WarikanUseCases
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow

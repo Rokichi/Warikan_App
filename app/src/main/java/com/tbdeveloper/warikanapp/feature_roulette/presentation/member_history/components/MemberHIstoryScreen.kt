@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.tbdeveloper.warikanapp.DarkThemeValHolder
+import com.tbdeveloper.warikanapp.R
 import com.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import com.tbdeveloper.warikanapp.feature_roulette.presentation.member_history.MemberHistoryEvent
 import com.tbdeveloper.warikanapp.feature_roulette.presentation.member_history.MemberHistoryViewModel

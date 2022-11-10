@@ -4,12 +4,12 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
 import com.tbdeveloper.warikanapp.DarkThemeValHolder
 import com.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Settings
 import com.tbdeveloper.warikanapp.feature_roulette.domain.repository.SettingsEntityFactory
 import com.tbdeveloper.warikanapp.feature_roulette.domain.repository.SettingsFactory
 import com.tbdeveloper.warikanapp.feature_roulette.domain.use_case.settings.SettingsUseCases
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow

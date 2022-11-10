@@ -24,7 +24,6 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
-import dagger.hilt.android.AndroidEntryPoint
 import com.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import com.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Warikan
 import com.tbdeveloper.warikanapp.feature_roulette.parser.MemberArrayType
@@ -38,6 +37,7 @@ import com.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Screen
 import com.tbdeveloper.warikanapp.feature_roulette.presentation.warikan_history.component.WarikanHistoryScreen
 import com.tbdeveloper.warikanapp.feature_roulette.presentation.warikans.components.WarikansScreen
 import com.tbdeveloper.warikanapp.ui.theme.WarikanAppTheme
+import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

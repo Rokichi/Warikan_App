@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.tbdeveloper.warikanapp.DarkThemeValHolder
+import com.tbdeveloper.warikanapp.R
 import com.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import com.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Warikan
 import com.tbdeveloper.warikanapp.feature_roulette.presentation.members.MAX_MEMBER_NUM

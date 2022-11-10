@@ -23,11 +23,11 @@ internal class GetRouletteResultIndexTest {
             Warikan(ratios = listOf(), 1, 0),
         )
         val answers = MutableList(warikans.size) { 0 }
-        for(i in 0..10000){
+        for (i in 0..10000) {
             val index = getRouletteResultIndex(warikans, i.toString())
             answers[index]++
         }
         val p = answers[0].toDouble() / warikans[0].proportion
-        for(answer in answers) println("${answer.toDouble()/p}")
+        for (answer in answers) println("${answer.toDouble() / p}")
     }
 }

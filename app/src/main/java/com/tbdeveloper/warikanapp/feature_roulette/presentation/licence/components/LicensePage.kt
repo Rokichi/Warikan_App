@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import com.tbdeveloper.warikanapp.DarkThemeValHolder
+import com.tbdeveloper.warikanapp.R
 
 @Composable
 fun LicencePage(navController: NavController) {

@@ -2,10 +2,10 @@ package com.tbdeveloper.warikanapp.feature_roulette.presentation.member_history
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
 import com.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import com.tbdeveloper.warikanapp.feature_roulette.domain.repository.MemberFactory
 import com.tbdeveloper.warikanapp.feature_roulette.domain.use_case.member.MemberUseCases
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow

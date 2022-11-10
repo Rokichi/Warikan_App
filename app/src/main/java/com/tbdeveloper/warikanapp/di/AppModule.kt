@@ -2,10 +2,6 @@ package com.tbdeveloper.warikanapp.di
 
 import android.app.Application
 import androidx.room.Room
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
 import com.tbdeveloper.warikanapp.feature_roulette.data.data_source.MemberDatabase
 import com.tbdeveloper.warikanapp.feature_roulette.data.data_source.RouletteDatabase
 import com.tbdeveloper.warikanapp.feature_roulette.data.data_source.SettingsDatabase
@@ -24,6 +20,10 @@ import com.tbdeveloper.warikanapp.feature_roulette.domain.use_case.settings.GetS
 import com.tbdeveloper.warikanapp.feature_roulette.domain.use_case.settings.SettingsUseCases
 import com.tbdeveloper.warikanapp.feature_roulette.domain.use_case.settings.UpdateSettings
 import com.tbdeveloper.warikanapp.feature_roulette.domain.use_case.warikan.*
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 /**
