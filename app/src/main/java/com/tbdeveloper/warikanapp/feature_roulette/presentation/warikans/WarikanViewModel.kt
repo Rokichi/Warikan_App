@@ -24,7 +24,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-const val DEFAULT_WARIKAN_NUM = 3
 const val WARIKAN_MAX_NUM = 6
 
 @HiltViewModel
@@ -114,8 +113,8 @@ class WarikanViewModel @Inject constructor(
                 _warikanState.value = _warikanState.value.mapIndexed { index, warikan ->
                     if (index == event.index) {
                         // 割合更新
-                        val ratios = warikan.ratios.mapIndexed { index, ratio ->
-                            if (index == event.num) event.value
+                        val ratios = warikan.ratios.mapIndexed { ratioIndex, ratio ->
+                            if (ratioIndex == event.num) event.value
                             else ratio
                         }
                         val newWarikan = warikan.copy(ratios = ratios)
@@ -152,8 +151,8 @@ class WarikanViewModel @Inject constructor(
                 }
             }
             is WarikanEvent.LoadWarikansEvent -> {
-                _warikanState.value = event.warikans.mapIndexed { index, warikan ->
-                    getWarikanOfMaxRatioColorSelected(warikan)
+                _warikanState.value = event.warikans.map {
+                    getWarikanOfMaxRatioColorSelected(it)
                 }
             }
         }

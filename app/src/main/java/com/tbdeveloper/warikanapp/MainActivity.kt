@@ -211,7 +211,7 @@ class MainActivity : ComponentActivity() {
         if (mInterstitialAd == null) {
             popUpPage()
         } else {
-            mInterstitialAd?.show(this)
+            mInterstitialAd.show(this)
         }
     }
 
@@ -240,7 +240,7 @@ class MainActivity : ComponentActivity() {
         if (mRewardedAd == null) {
             popUpPage()
         } else {
-            mRewardedAd?.show(this, OnUserEarnedRewardListener() {
+            mRewardedAd.show(this, OnUserEarnedRewardListener() {
                 popUpPage()
             })
         }
