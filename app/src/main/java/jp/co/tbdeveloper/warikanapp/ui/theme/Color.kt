@@ -12,8 +12,8 @@ val LightMainAccent = Color(0xFFDAF2C9)
 val LightMainSubAccent = Color(0xFF999AC6)
 val LightSecondAccent = Color(0xFFE18335)
 val LightMemberColors = listOf(
-    Color(0xFF1E1E1E),
     Color(0xFF6665DD),
+    Color(0xFF2B59C3),
     Color(0xFF028090),
     Color(0xFF5FBF1B),
     Color(0xFFFCA311),
@@ -28,11 +28,11 @@ val DarkMainAccent = Color(0xFF5FBF1B)
 val DarkMainSubAccent = Color(0xFF05668D)
 val DarkSecondAccent = Color(0xFFF46036)
 val DarkMemberColors = listOf(
-    Color(0xFF998FC7),
-    Color(0xFF6369D1),
-    Color(0xFF56A3A6),
-    Color(0xFF5FBF1B),
-    Color(0xFFFCBA04),
-    Color(0xFFED7D3A),
-    Color(0xFFDB504A),
+    Color(0xFFAC92EB),
+    Color(0xFF3B429F),
+    Color(0xFF4FC1E8),
+    Color(0xFFA0D568),
+    Color(0xFFFFCE54),
+    Color(0xFFF9A03F),
+    Color(0xFFED5564),
 )
