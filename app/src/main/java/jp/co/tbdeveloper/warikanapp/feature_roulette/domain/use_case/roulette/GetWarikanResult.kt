@@ -1,5 +1,6 @@
 package jp.co.tbdeveloper.warikanapp.feature_roulette.domain.use_case.roulette
 
+import android.util.Log
 import kotlin.math.pow
 
 class GetWarikanResult {
@@ -45,6 +46,9 @@ class GetWarikanResult {
      */
     private fun getApproximatedPayment(payment: Int, numOfDigits: Int): Int {
         if (numOfDigits < 3) return payment
-        return (payment / 10.0.pow((numOfDigits - 2).toDouble())).toInt() * 100
+        else if(numOfDigits == 3 or 4){
+            return ((payment / 10.0.pow((numOfDigits - 2).toDouble())).toInt() * 10.0.pow((numOfDigits - 2))).toInt()
+        }
+        return ((payment / 10.0.pow((numOfDigits - 3).toDouble())).toInt() * 10.0.pow((numOfDigits - 3))).toInt()
     }
 }

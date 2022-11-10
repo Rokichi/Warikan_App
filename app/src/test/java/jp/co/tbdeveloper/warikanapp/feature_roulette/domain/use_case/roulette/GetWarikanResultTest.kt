@@ -35,6 +35,21 @@ class GetWarikanResultTest {
      *
      */
     @Test
+    fun normalAssertOf() {
+        val total = 250
+        val ratio = listOf(1, 1, 1, 2)
+        val result = getWarikanResult(total, ratio, false).sum()
+        val resultIsApproximate = getWarikanResult(total, ratio, true).sum()
+        assertEquals(total, result)
+        assertEquals(total, resultIsApproximate)
+    }
+
+
+    /**
+     * ノーマルケースの割り勘テスト
+     *
+     */
+    @Test
     fun normalAssert() {
         for (total in normalTotals) {
             for (ratio in normalRatios) {
@@ -55,7 +70,7 @@ class GetWarikanResultTest {
     fun edgeTotalAssert() {
         for (total in edgeTotals) {
             for (ratio in normalRatios) {
-                val result = getWarikanResult(total, ratio,false).sum()
+                val result = getWarikanResult(total, ratio, false).sum()
                 val resultIsApproximate = getWarikanResult(total, ratio, true).sum()
                 assertEquals(total, result)
                 assertEquals(total, resultIsApproximate)
@@ -89,7 +104,7 @@ class GetWarikanResultTest {
     fun edgeTotalsAndRationsAssert() {
         for (total in edgeTotals) {
             for (ratio in edgeRatios) {
-                val result = getWarikanResult(total, ratio,false).sum()
+                val result = getWarikanResult(total, ratio, false).sum()
                 val resultIsApproximate = getWarikanResult(total, ratio, true).sum()
                 assertEquals(total, result)
                 assertEquals(total, resultIsApproximate)

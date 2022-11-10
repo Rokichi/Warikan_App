@@ -9,9 +9,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import jp.co.tbdeveloper.warikanapp.DarkThemeValHolder
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.Member
 import jp.co.tbdeveloper.warikanapp.feature_roulette.domain.model.resource.ResultWarikan
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.AutoResizeText
+import jp.co.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.FontSizeRange
 
 @Composable
 fun MemberAndColor(
@@ -48,9 +51,14 @@ fun MemberAndColor(
                     style = MaterialTheme.typography.body1,
                     color = MaterialTheme.colors.surface
                 )
-                Text(
+                AutoResizeText(
                     modifier = Modifier.weight(2.0f),
                     text = "${result.payment} 円",
+                    maxLines = 2,
+                    fontSizeRange = (FontSizeRange(
+                        min = (MaterialTheme.typography.body1.fontSize.value - 4).sp,
+                        max = MaterialTheme.typography.body1.fontSize
+                    )),
                     style = MaterialTheme.typography.body1,
                     color = MaterialTheme.colors.surface
                 )
