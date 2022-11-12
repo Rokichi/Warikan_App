@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="../../../../layout/compose-model-1665214154231.xml" value="0.5537037037037037" />
+        <entry key="../../../../layout/compose-model-1665214162052.xml" value="0.165" />
+        <entry key="../../../../layout/compose-model-1665214501846.xml" value="0.335" />
+        <entry key="../../../../layout/compose-model-1667579069318.xml" value="0.1" />
+        <entry key="../../../../layout/compose-model-1667904264709.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.11" />
+        <entry key="app/src/main/res/drawable/ic_arrow_down.xml" value="0.1305" />
+        <entry key="app/src/main/res/drawable/ic_arrow_down_dark.xml" value="0.11" />
+        <entry key="app/src/main/res/drawable/ic_arrow_down_light.xml" value="0.1305" />
+        <entry key="app/src/main/res/drawable/ic_arrow_left.xml" value="0.1305" />
+        <entry key="app/src/main/res/drawable/ic_arrow_left_Dark.xml" value="0.11" />
+        <entry key="app/src/main/res/drawable/ic_arrow_left_dark.xml" value="0.11" />
+        <entry key="app/src/main/res/drawable/ic_arrow_left_light.xml" value="0.11" />
+        <entry key="app/src/main/res/drawable/ic_close.xml" value="0.1305" />
+        <entry key="app/src/main/res/drawable/ic_close_dark.xml" value="0.11" />
+        <entry key="app/src/main/res/drawable/ic_keyboard_arrow_down_dark.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_keyboard_arrow_down_light.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_keyboard_arrow_up_light.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.1305" />
+        <entry key="app/src/main/res/drawable/ic_settings.xml" value="0.1305" />
+        <entry key="app/src/main/res/drawable/ic_settings_light_dark.xml" value="0.11" />
+        <entry key="app/src/main/res/drawable/ic_volume_off.xml" value="0.1305" />
+        <entry key="app/src/main/res/drawable/ic_volume_off_dark.xml" value="0.11" />
+        <entry key="app/src/main/res/drawable/ic_volume_on.xml" value="0.1305" />
+        <entry key="app/src/main/res/drawable/ic_volume_on_dark.xml" value="0.11" />
+        <entry key="app/src/main/res/drawable/ic_volume_on_light.xml" value="0.11" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.11" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.11" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
