@@ -328,9 +328,6 @@ fun CircleOfRoulette(
     var oldDegree = 0f
     val deg = remember { viewModel.deg }
 
-    Log.i("warikan", "$warikans")
-    Log.i("deg", "$deg")
-
     var currentRotation by rememberSaveable { mutableStateOf(0f) }
     val rotation = remember { Animatable(currentRotation) }
 

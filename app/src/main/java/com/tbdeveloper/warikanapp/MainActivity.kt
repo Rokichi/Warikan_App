@@ -47,6 +47,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        MobileAds.initialize(this) {}
         setContent {
             val navController = rememberNavController()
             WarikanAppTheme {
@@ -118,7 +119,7 @@ class MainActivity : ComponentActivity() {
                                     navController = navController,
                                     initializeInterstitialAd = { onComplete: () -> Unit ->
                                         initializeInterstitialAd(
-                                            "ca-app-pub-3940256099942544/1033173712",
+                                            "ca-app-pub-1543593285163877/9224468573",
                                         ) { onComplete() }
                                     },
                                     showInterstitialAd = { popUpPage: () -> Unit ->
@@ -131,7 +132,7 @@ class MainActivity : ComponentActivity() {
                                     },
                                     initializeRewardedAd = { onComplete: () -> Unit ->
                                         initializeRewardedAd(
-                                            "ca-app-pub-3940256099942544/5224354917"
+                                            "ca-app-pub-1543593285163877/3588998515"
                                         ) { onComplete() }
                                     },
                                     showRewardedAd = { popUpPage: () -> Unit ->
@@ -151,7 +152,6 @@ class MainActivity : ComponentActivity() {
                                 LicencePage(navController)
                             }
                         }
-                        // admob
                         AndroidView(
                             modifier = Modifier.fillMaxWidth(),
                             factory = { context ->
@@ -165,7 +165,7 @@ class MainActivity : ComponentActivity() {
                                         width
                                     )
                                 )
-                                adView.adUnitId = "ca-app-pub-3940256099942544/6300978111"
+                                adView.adUnitId = "ca-app-pub-1543593285163877/7978550108"
                                 adView.loadAd(AdRequest.Builder().build())
                                 adView
                             },
@@ -174,7 +174,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-        MobileAds.initialize(this) {}
     }
 
     private fun initializeInterstitialAd(id: String, onComplete: () -> Unit) {
