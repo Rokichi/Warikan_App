@@ -230,6 +230,7 @@ fun WarikanAndColorsScrollView(
         itemsIndexed(warikans) { index, warikan ->
             WarikanItem(
                 warikan = warikan,
+                members = viewModel.members,
                 onDeleteClick = { viewModel.onEvent(WarikanEvent.DeleteWarikanEvent(index)) },
                 onWarikanValueChange = { value: String, num: Int ->
                     viewModel.onEvent(WarikanEvent.EditWarikanEvent(value, index, num))
@@ -267,11 +268,12 @@ fun ColumnTableText() {
 
 @Composable
 fun NameToColor(
+    modifier: Modifier=Modifier,
     members: List<Member>,
     size: Dp = 15.dp
 ) {
     Row(
-        Modifier
+        modifier
             .fillMaxWidth()
             .padding(horizontal = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(5.dp),
