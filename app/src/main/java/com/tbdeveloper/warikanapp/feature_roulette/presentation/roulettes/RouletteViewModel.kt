@@ -11,10 +11,11 @@ import com.tbdeveloper.warikanapp.feature_roulette.domain.use_case.member.Member
 import com.tbdeveloper.warikanapp.feature_roulette.domain.use_case.roulette.RouletteUseCases
 import com.tbdeveloper.warikanapp.feature_roulette.domain.use_case.settings.SettingsUseCases
 import com.tbdeveloper.warikanapp.feature_roulette.domain.use_case.warikan.WarikanUseCases
-import com.tbdeveloper.warikanapp.feature_roulette.utils.getCalendarStr
+import com.tbdeveloper.warikanapp.feature_roulette.utils.getMillisTimeStr
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -117,8 +118,8 @@ class RouletteViewModel @Inject constructor(
         isApproximate = settings.isApproximate
     }
 
-    val resultPayments = mutableListOf<Int>()
-    val resultProportions = mutableListOf<Double>()
+    private val resultPayments = mutableListOf<Int>()
+    private val resultProportions = mutableListOf<Double>()
 
     fun onEvent(event: RoulettesEvent) {
         when (event) {
@@ -136,7 +137,7 @@ class RouletteViewModel @Inject constructor(
                 val warikans = _rouletteState.value.warikans
                 // 割り勘結果のindex取得
                 val drawnIndex =
-                    rouletteUseCases.getRouletteResultIndex(warikans, getCalendarStr())
+                    rouletteUseCases.getRouletteResultIndex(warikans, getMillisTimeStr())
                 // 目的回転角度取得
                 _resultDeg.value = rouletteUseCases.getResultDeg(warikans, drawnIndex)
                 // 割り勘情報取得

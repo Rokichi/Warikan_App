@@ -165,7 +165,8 @@ class MainActivity : ComponentActivity() {
                                         width
                                     )
                                 )
-                                adView.adUnitId = "ca-app-pub-1543593285163877/7978550108"
+                                //adView.adUnitId = "ca-app-pub-1543593285163877/7978550108"
+                                adView.adUnitId = "ca-app-pub-3940256099942544/6300978111"
                                 adView.loadAd(AdRequest.Builder().build())
                                 adView
                             },

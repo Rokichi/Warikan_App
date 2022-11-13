@@ -1,7 +1,6 @@
 package com.tbdeveloper.warikanapp.feature_roulette.utils
 
 import java.security.MessageDigest
-import java.util.*
 import kotlin.math.abs
 
 /**
@@ -9,8 +8,8 @@ import kotlin.math.abs
  *
  * @return 現在時刻のstring
  */
-fun getCalendarStr(): String {
-    return Calendar.getInstance().time.toString()
+fun getMillisTimeStr(): String {
+    return System.currentTimeMillis().toString()
 }
 
 /**
