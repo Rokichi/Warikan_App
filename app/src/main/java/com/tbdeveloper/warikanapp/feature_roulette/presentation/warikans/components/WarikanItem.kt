@@ -2,6 +2,7 @@ package com.tbdeveloper.warikanapp.feature_roulette.presentation.warikans.compon
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -28,6 +29,7 @@ import com.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.CustomText
 @Composable
 fun WarikanItem(
     modifier: Modifier = Modifier,
+    members:List<Member>,
     warikan: Warikan,
     height: Dp = 50.dp,
     width: Dp = 35.dp,
@@ -59,6 +61,7 @@ fun WarikanItem(
             WarikanField(
                 height = height,
                 width = width,
+                members = members,
                 ratios = warikan.ratios,
                 onValueChange = { value: String, num: Int ->
                     onWarikanValueChange(value, num)
@@ -87,6 +90,7 @@ fun WarikanItem(
 @Composable
 fun WarikanField(
     modifier: Modifier = Modifier,
+    members:List<Member>,
     height: Dp = 40.dp,
     width: Dp = 20.dp,
     ratios: List<String>,
@@ -102,6 +106,7 @@ fun WarikanField(
             maxLength = 2,
             fontSize = MaterialTheme.typography.h2.fontSize,
             offsetY = (-3).dp,
+            color = Member.memberColors(DarkThemeValHolder.isDarkTheme.value)[members[0].color],
             placeholderText = "5",
             text = ratios[0],
             height = height,
@@ -122,6 +127,7 @@ fun WarikanField(
                 maxLength = 2,
                 fontSize = MaterialTheme.typography.h2.fontSize,
                 offsetY = (-3).dp,
+                color = Member.memberColors(DarkThemeValHolder.isDarkTheme.value)[members[i].color],
                 placeholderText = "5",
                 text = ratios[i],
                 height = height,

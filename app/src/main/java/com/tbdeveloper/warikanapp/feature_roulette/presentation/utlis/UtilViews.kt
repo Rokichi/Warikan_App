@@ -96,6 +96,7 @@ fun CustomTextField(
     leadingIcon: (@Composable () -> Unit)? = null,
     trailingIcon: (@Composable () -> Unit)? = null,
     placeholderText: String = "Placeholder",
+    color :Color = Color.LightGray,
     fontSize: TextUnit = MaterialTheme.typography.body1.fontSize,
     text: String = "",
     width: Dp = 150.dp,
@@ -123,7 +124,7 @@ fun CustomTextField(
                         MaterialTheme.colors.background,
                         RoundedCornerShape(0.dp),
                     )
-                    .border(1.dp, Color.LightGray, RoundedCornerShape(5.dp))
+                    .border(1.dp, color, RoundedCornerShape(5.dp))
                     .height(height)
                     .width(width)
                     .offset(

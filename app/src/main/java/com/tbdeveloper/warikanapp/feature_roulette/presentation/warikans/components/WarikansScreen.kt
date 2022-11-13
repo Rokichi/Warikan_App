@@ -230,6 +230,7 @@ fun WarikanAndColorsScrollView(
         itemsIndexed(warikans) { index, warikan ->
             WarikanItem(
                 warikan = warikan,
+                members = viewModel.members,
                 onDeleteClick = { viewModel.onEvent(WarikanEvent.DeleteWarikanEvent(index)) },
                 onWarikanValueChange = { value: String, num: Int ->
                     viewModel.onEvent(WarikanEvent.EditWarikanEvent(value, index, num))
