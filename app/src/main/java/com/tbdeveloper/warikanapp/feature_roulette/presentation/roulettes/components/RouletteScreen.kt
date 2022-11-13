@@ -43,6 +43,7 @@ import com.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Circle
 import com.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.FunShape
 import com.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.Screen
 import com.tbdeveloper.warikanapp.feature_roulette.presentation.utlis.ShadowButton
+import com.tbdeveloper.warikanapp.feature_roulette.presentation.warikans.components.NameToColor
 import kotlinx.coroutines.flow.collectLatest
 import kotlin.math.cos
 import kotlin.math.sin
@@ -125,20 +126,29 @@ fun RouletteScreen(
             .fillMaxSize()
             .padding(15.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(15.dp)
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         // トップバー
-        PageBackBar(viewModel) { navController.navigateUp() }
-        Text(
-            text = rouletteState.value.total.toString() + " 円",
+        Column(
             modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.h1,
-            color = MaterialTheme.colors.surface
-        )
+            horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+            PageBackBar(viewModel) { navController.navigateUp() }
+
+            Text(
+                text = rouletteState.value.total.toString() + " 円",
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.h1,
+                color = MaterialTheme.colors.surface
+            )
+
+            NameToColor(members = rouletteState.value.members)
+        }
+
         // ルーレット
         Box(
-            modifier = Modifier.padding(top = 30.dp),
+            modifier = Modifier.padding(top = 20.dp),
             contentAlignment = Alignment.Center
         ) {
             CircleOfRoulette(

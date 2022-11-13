@@ -268,11 +268,12 @@ fun ColumnTableText() {
 
 @Composable
 fun NameToColor(
+    modifier: Modifier=Modifier,
     members: List<Member>,
     size: Dp = 15.dp
 ) {
     Row(
-        Modifier
+        modifier
             .fillMaxWidth()
             .padding(horizontal = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(5.dp),
