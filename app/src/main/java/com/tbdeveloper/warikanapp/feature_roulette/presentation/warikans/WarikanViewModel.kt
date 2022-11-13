@@ -54,6 +54,7 @@ class WarikanViewModel @Inject constructor(
         if (memberData != null) {
             for (member in memberData) members.add(member)
         }
+
         // init warikan
         _warikanState.value =
             when (members.size) {

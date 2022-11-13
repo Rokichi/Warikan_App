@@ -2,7 +2,6 @@ package com.tbdeveloper.warikanapp.feature_roulette.presentation.members
 
 import android.net.Uri
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
@@ -15,8 +14,8 @@ import com.tbdeveloper.warikanapp.feature_roulette.domain.repository.SettingsFac
 import com.tbdeveloper.warikanapp.feature_roulette.domain.use_case.member.MemberUseCases
 import com.tbdeveloper.warikanapp.feature_roulette.domain.use_case.roulette.RouletteUseCases
 import com.tbdeveloper.warikanapp.feature_roulette.domain.use_case.settings.SettingsUseCases
-import com.tbdeveloper.warikanapp.feature_roulette.utils.getCalendarStr
 import com.tbdeveloper.warikanapp.feature_roulette.utils.getMD5HashInt
+import com.tbdeveloper.warikanapp.feature_roulette.utils.getMillisTimeStr
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,15 +35,14 @@ class MemberViewModel @Inject constructor(
     private val rouletteUseCases: RouletteUseCases,
     private val memberUseCases: MemberUseCases,
     private val settingsUseCases: SettingsUseCases,
-    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     // 不使用色データ
-    private val unusedColorNums = MutableList(Member.memberColors(true).size) { it }
-    private var hashLongNum: Int = getMD5HashInt(getCalendarStr())
+    private val unUsedColorNums =
+        MutableList(Member.memberColors(DarkThemeValHolder.isDarkTheme.value).size) { it }
+    private var hashLongNum: Int = getMD5HashInt(getMillisTimeStr())
 
     lateinit var settings: Settings
-    var memberData: Array<Member>? = null
 
     // メンバー
     private val _memberState = MutableStateFlow(mutableListOf<Member>())
@@ -54,20 +52,16 @@ class MemberViewModel @Inject constructor(
         // load theme settings
         val job = CoroutineScope(Dispatchers.IO).launch {
             settings = SettingsFactory.create(settingsUseCases.getSettings())
-            // load from navigation
-            memberData = savedStateHandle.get<Array<Member>>("members")
         }
         // wait
         while (!job.isCompleted) {
             Thread.sleep(100)
         }
-        try {
-            _memberState.value = memberData!!.toMutableList()
-        } catch (e: NullPointerException) {
+        if (_memberState.value.size == 0) {
             _memberState.value = MutableList(DEFAULT_MEMBER_NUM) {
                 Member(
                     "",
-                    unusedColorNums.removeAt(getMD5HashInt(hashLongNum.toString()) % unusedColorNums.size)
+                    unUsedColorNums.removeAt(updateHashLongNum() % unUsedColorNums.size)
                 )
             }
         }
@@ -88,7 +82,7 @@ class MemberViewModel @Inject constructor(
                 if (memberState.value.size < MAX_MEMBER_NUM) {
                     _memberState.value = (_memberState.value + Member(
                         "",
-                        unusedColorNums.removeAt(getMD5HashInt(hashLongNum.toString()) % unusedColorNums.size)
+                        unUsedColorNums.removeAt(updateHashLongNum() % unUsedColorNums.size)
                     )) as MutableList<Member>
                 } else viewModelScope.launch { _eventFlow.emit(UiEvent.AddMemberError) }
 
@@ -107,7 +101,7 @@ class MemberViewModel @Inject constructor(
 
             is MemberEvent.DeleteMemberEvent -> {
                 if (_memberState.value.size > 2) {
-                    unusedColorNums.add(_memberState.value[event.index].color)
+                    unUsedColorNums.add(_memberState.value[event.index].color)
                     _memberState.value = _memberState.value.filterIndexed { index, _ ->
                         index != event.index
                     } as MutableList<Member>
@@ -139,11 +133,22 @@ class MemberViewModel @Inject constructor(
                 }
             }
             is MemberEvent.LoadMemberEvent -> {
+                // initialize colors
+                for (member in _memberState.value) {
+                    unUsedColorNums.add(member.color)
+                }
                 _memberState.value = event.members.toMutableList()
+                for (member in _memberState.value) {
+                    unUsedColorNums.removeAt(unUsedColorNums.indexOf(member.color))
+                }
             }
         }
     }
 
+    fun updateHashLongNum(): Int {
+        this.hashLongNum = getMD5HashInt(hashLongNum.toString())
+        return this.hashLongNum
+    }
 
     sealed class UiEvent {
         object DeleteError : UiEvent()
