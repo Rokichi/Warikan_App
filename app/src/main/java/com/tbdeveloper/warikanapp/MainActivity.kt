@@ -119,7 +119,7 @@ class MainActivity : ComponentActivity() {
                                     navController = navController,
                                     initializeInterstitialAd = { onComplete: () -> Unit ->
                                         initializeInterstitialAd(
-                                            "ca-app-pub-1543593285163877/9224468573",
+                                            "ca-app-pub-3940256099942544/1033173712",
                                         ) { onComplete() }
                                     },
                                     showInterstitialAd = { popUpPage: () -> Unit ->
@@ -132,7 +132,7 @@ class MainActivity : ComponentActivity() {
                                     },
                                     initializeRewardedAd = { onComplete: () -> Unit ->
                                         initializeRewardedAd(
-                                            "ca-app-pub-1543593285163877/3588998515"
+                                            "ca-app-pub-3940256099942544/5224354917"
                                         ) { onComplete() }
                                     },
                                     showRewardedAd = { popUpPage: () -> Unit ->
@@ -165,7 +165,7 @@ class MainActivity : ComponentActivity() {
                                         width
                                     )
                                 )
-                                adView.adUnitId = "ca-app-pub-1543593285163877/7978550108"
+                                adView.adUnitId = "ca-app-pub-3940256099942544/6300978111"
                                 adView.loadAd(AdRequest.Builder().build())
                                 adView
                             },
